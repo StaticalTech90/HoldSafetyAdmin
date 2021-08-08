@@ -35,7 +35,7 @@
 
 ## Getting Started
   1. After pulling please create your own branch either here or on the CLI.
-  2. Naming convention should be <lastname>_<feature>_<featurename> e.g. fabul_feature_register.
+  2. Naming convention should be <lastname>_<feature>_<featurename> e.g. lastname_feature_register.
   
 ### Prerequisites
   * WIP
@@ -50,7 +50,7 @@
   * WIP
   
 ## Contributing
-  1. Create Feature Branch (git checkout -b fabul_feature_somefeature)
+  1. Create Feature Branch (git checkout -b lastname_feature_somefeature)
   2. Commit Changes (git commit -m 'Add some feature')
   3. Push (git push)
 

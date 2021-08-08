@@ -1,6 +1,6 @@
 [![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
+[![RepoSize][file-size-shield]][file-size-url]
 [![LastCommit][last-commit-shield]][last-commit-url]
 
 <!-- Project Logo -->
@@ -33,7 +33,7 @@
   </ol>
 </details>
 
-## Get Started
+## Getting Started
   1. After pulling please create your own branch either here or on the CLI.
   2. Naming convention should be <lastname>_<feature>_<featurename> e.g. fabul_feature_register.
   
@@ -56,8 +56,8 @@
 
 [contributors-shield]: https://img.shields.io/github/contributors/StaticalTech90/HoldSafety
 [contributors-url]: https://github.com/StaticalTech90/HoldSafety/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/StaticalTech90/HoldSafety
-[forks-url]: https://github.com/StaticalTech90/HoldSafety/network/members
+[file-size-shield]: https://img.shields.io/github/repo-size/StaticalTech90/HoldSafety
+[file-size-url]: https://github.com/StaticalTech90/HoldSafety
 [issues-shield]: https://img.shields.io/github/issues/StaticalTech90/HoldSafety
 [issues-url]: https://github.com/StaticalTech90/HoldSafety/issues
 [last-commit-shield]: https://img.shields.io/github/last-commit/StaticalTech90/HoldSafety

@@ -30,29 +30,40 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
   </ol>
 </details>
 
 ## Getting Started
+
   1. After pulling please create your own branch either here or on the CLI.
   2. Naming convention should be <lastname>_<feature>_<featurename> e.g. lastname_feature_register.
   
 ### Prerequisites
+  
   * WIP
   
 ### Installation
+  
   * WIP
 
 ## Usage
+  
   * WIP
   
 ## Roadmap
+  
   * WIP
   
 ## Contributing
+  
   1. Create Feature Branch (git checkout -b lastname_feature_somefeature)
   2. Commit Changes (git commit -m 'Add some feature')
   3. Push (git push)
+
+## License
+
+Distributed under the Apache 2.0 License. See [License](http://www.apache.org/licenses/LICENSE-2.0) for more information.
 
 [contributors-shield]: https://img.shields.io/github/contributors/StaticalTech90/HoldSafety
 [contributors-url]: https://github.com/StaticalTech90/HoldSafety/graphs/contributors

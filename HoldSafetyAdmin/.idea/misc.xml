@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/HoldSafety/HoldSafetyAdmin/HoldSafetyAdmin/app/src/main/res/layout/activity_admin_landing.xml" value="0.19067028985507245" />
+        <entry key="..\:/HoldSafety/HoldSafetyAdmin/HoldSafetyAdmin/app/src/main/res/layout/activity_landing.xml" value="0.19067028985507245" />
         <entry key="..\:/HoldSafety/HoldSafetyAdmin/HoldSafetyAdmin/app/src/main/res/layout/activity_login.xml" value="0.22" />
       </map>
     </option>

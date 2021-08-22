@@ -38,7 +38,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
     public void validateUser(View view){
         Toast.makeText(getApplicationContext(), "Validate User", Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent (this, AdminLandingActivity.class);
+//        Intent intent = new Intent (this, LandingActivity.class);
 //        startActivity(intent);
     }
 

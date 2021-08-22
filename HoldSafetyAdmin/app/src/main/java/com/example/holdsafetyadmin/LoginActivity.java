@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.txtEmail);
         txtPassword = findViewById(R.id.txtPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        txtToggle = findViewById(R.id.txtShow);
+        txtToggle = findViewById(R.id.txtToggle);
 
         txtToggle.setVisibility(View.GONE);
         txtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                 String email, password;
 
                 email = txtEmail.getText().toString().trim();
-                password = txtPassword.getText().toString().trim();
+                password = txtPassword.getText().toString();
 
                 if(TextUtils.isEmpty(email) && TextUtils.isEmpty(password)){
                     txtEmail.setError("Email is required");

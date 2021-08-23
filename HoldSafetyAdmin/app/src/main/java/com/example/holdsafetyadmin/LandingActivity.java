@@ -33,19 +33,21 @@ public class LandingActivity extends AppCompatActivity {
 
     public void viewReport(View view){
         Toast.makeText(getApplicationContext(), "View Report", Toast.LENGTH_LONG).show();
-//        Intent intent = new Intent (this, AccountDetails.class);
-//        startActivity(intent);
     }
 
     public void manageCoordinatedBrgys(View view){
-        Toast.makeText(getApplicationContext(), "Coordinated Barangays", Toast.LENGTH_LONG).show();
-//        Intent intent = new Intent (this, AccountDetails.class);
-//        startActivity(intent);
+        //Toast.makeText(getApplicationContext(), "Coordinated Barangays", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent (getApplicationContext(), CoordinatedBrgysActivity.class);
+        startActivity(intent);
     }
 
     public void validateUser(View view){
         //Toast.makeText(getApplicationContext(), "Verify Registration", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent (this, ValidationListActivity.class);
+        Intent intent = new Intent (getApplicationContext(), ValidationListActivity.class);
         startActivity(intent);
+    }
+
+    public void adminLogout(View view){
+        Toast.makeText(getApplicationContext(), "Logout", Toast.LENGTH_LONG).show();
     }
 }

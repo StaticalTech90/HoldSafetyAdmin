@@ -38,13 +38,11 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
     public void validateUser(View view){
         Toast.makeText(getApplicationContext(), "Validate User", Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent (this, LandingActivity.class);
-//        startActivity(intent);
     }
 
     public void rejectUser(View view){
         //Toast.makeText(getApplicationContext(), "Reject User", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent (this, RejectUserActivity.class);
+        Intent intent = new Intent (getApplicationContext(), RejectUserActivity.class);
         startActivity(intent);
     }
 }

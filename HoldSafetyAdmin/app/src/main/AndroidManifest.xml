@@ -11,7 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HoldSafetyAdmin">
-        <activity android:name=".RejectUserActivity"></activity>
+        <activity android:name=".AddCoordinatedBrgyActivity"></activity>
+        <activity
+            android:name=".CoordinatedBrgyDetailsActivity"
+            android:label="BrgyDetails"
+            android:parentActivityName=".CoordinatedBrgysActivity" />
+        <activity android:name=".CoordinatedBrgysActivity" />
+        <activity android:name=".RejectUserActivity" />
         <activity
             android:name=".RegistrationDetailsActivity"
             android:label="Details"

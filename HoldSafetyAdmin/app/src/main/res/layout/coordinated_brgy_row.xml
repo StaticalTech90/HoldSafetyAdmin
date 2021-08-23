@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_marginBottom="20dp"
+    android:id="@+id/layoutCoordinatedBrgys">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="20dp"
+
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp"
+            >
+
+            <TextView
+                android:id="@+id/lblBrgyName"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="Barangay:"
+                android:textColor="@color/dark_blue"
+
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtBrgyName"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="Santo Tomas"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+
+                app:layout_constraintStart_toEndOf= "@+id/lblBrgyName"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/btnDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@string/details_link"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/lblBrgyCity"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="City:"
+                android:textColor="@color/dark_blue"
+
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lblBrgyName" />
+
+            <TextView
+                android:id="@+id/txtBrgyCity"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="Pasig City"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+
+                app:layout_constraintStart_toEndOf= "@+id/lblBrgyCity"
+                app:layout_constraintTop_toBottomOf="@+id/lblBrgyName" />
+
+            <TextView
+                android:id="@+id/lblBrgyMobileNum"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="Mobile #:"
+                android:textColor="@color/dark_blue"
+
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lblBrgyCity" />
+
+            <TextView
+                android:id="@+id/txtBrgyMobileNum"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="09123456689"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+
+                app:layout_constraintStart_toEndOf= "@+id/lblBrgyMobileNum"
+                app:layout_constraintTop_toBottomOf="@+id/lblBrgyCity" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

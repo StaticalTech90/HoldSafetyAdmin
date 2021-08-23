@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.holdsafety">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.HoldSafety">
+        <activity android:name=".UpdateContactActivity" android:parentActivityName=".SelectContactActivity" android:label="Details"></activity>
+        <activity android:name=".SelectContactActivity" />
+        <activity android:name=".AddContactActivity" />
+        <activity android:name=".DesignateContactActivity" />
+        <activity android:name=".MenuActivity" />
+        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".VerifyUserActivity" />
+        <activity android:name=".AccountDetailsActivity" />
+        <activity android:name=".RegisterGoogleActivity" />
+        <activity android:name=".Register2Activity" />
+        <activity android:name=".Register1Activity" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

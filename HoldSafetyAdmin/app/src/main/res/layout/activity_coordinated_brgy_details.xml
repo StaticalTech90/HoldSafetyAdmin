@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CoordinatedBrgyDetailsActivity"
+    android:background="@color/dark_blue">
+
+    <ImageView
+        android:id="@+id/backArrow"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="40dp"
+        android:src="@drawable/left_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/btnRemoveBrgy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="190dp"
+
+        android:layout_marginTop="32dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/btnRemoveBrgy"
+        android:textColor="@color/red"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/backArrow"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lblDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="65dp"
+        android:fontFamily="sans-serif"
+        android:layout_marginLeft="40dp"
+        android:text="The details regarding the barangay: "
+        android:textColor="@color/gray"
+        android:textSize="18sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backArrow"
+        />
+
+    <TextView
+        android:id="@+id/txtBrgyName"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+
+
+        android:fontFamily="sans-serif-black"
+        android:text="Barangay: Santo Tomas"
+        android:layout_marginLeft="40dp"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblDesc"
+        />
+
+    <RelativeLayout
+        android:id="@+id/containerBrgyDetails"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtBrgyName"
+        android:layout_marginTop="25dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:background="@drawable/white_container">
+
+        <RelativeLayout
+            android:id="@+id/containerBrgyID"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lblBrgyID"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="Barangay ID:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtBrgyID"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_toEndOf="@+id/lblBrgyID"
+                android:fontFamily="sans-serif"
+                android:text="B001"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerBrgyCity"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/containerBrgyID"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:id="@+id/lblBrgyCity"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="City:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+
+                android:layout_centerVertical="true"/>
+
+            <EditText
+                android:id="@+id/txtBrgyCity"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:backgroundTint="@color/dark_blue"
+                android:layout_toEndOf="@+id/lblBrgyCity"
+                android:text="Pasig City"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerBrgyMobileNum"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/containerBrgyCity">
+
+            <TextView
+                android:id="@+id/lblBrgyMobileNum"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="Mobile #:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+
+            <EditText
+                android:id="@+id/txtBrgyMobileNum"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:backgroundTint="@color/dark_blue"
+                android:layout_toEndOf="@+id/lblBrgyMobileNum"
+                android:text="09123456789"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerBrgyEmail"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/containerBrgyMobileNum">
+
+            <TextView
+                android:id="@+id/lblBrgyEmail"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="Email:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+
+            <EditText
+                android:id="@+id/txtBrgyEmail"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:backgroundTint="@color/dark_blue"
+                android:layout_toEndOf="@+id/lblBrgyEmail"
+                android:text="santotomas@gmail.com"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerBrgyLatitude"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/containerBrgyEmail">
+
+            <TextView
+                android:id="@+id/lblBrgyLatitude"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="Latitude:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+
+            <EditText
+                android:id="@+id/txtBrgyLatitude"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:backgroundTint="@color/dark_blue"
+                android:layout_toEndOf="@+id/lblBrgyLatitude"
+                android:text="30.12345678910"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerBrgyLongitude"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/containerBrgyLatitude">
+
+            <TextView
+                android:id="@+id/lblBrgyLongitude"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="Longitude:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+
+            <EditText
+                android:id="@+id/txtBrgyLongitude"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:backgroundTint="@color/dark_blue"
+                android:layout_toEndOf="@+id/lblBrgyLongitude"
+                android:text="70.10987654321"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerBrgyAddress"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/containerBrgyLongitude"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:id="@+id/lblBrgyAddress"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="Address:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtBrgyAddress"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/lblBrgyAddress"
+                android:fontFamily="sans-serif"
+                android:text="Santo Tomas, Pasig City"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnSaveChanges"
+        android:layout_width="220dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/blue_button"
+        android:fontFamily="sans-serif-black"
+        android:onClick="saveChanges"
+        android:padding="10dp"
+        android:text="SAVE CHANGES"
+        android:gravity="center"
+        android:textColor="@color/dark_blue"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/containerBrgyDetails" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

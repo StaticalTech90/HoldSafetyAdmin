@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AdminLandingActivity"
+    android:background="@color/dark_blue">
+
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <Button
+            android:id="@+id/btnViewReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/white_container"
+            android:text="View Reports"
+            android:textSize="16sp"
+
+            android:onClick="viewReport"
+
+            />
+
+        <Button
+            android:id="@+id/btnManageCoordinatedBrgys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/white_container"
+            android:text="Coordinated Barangays"
+            android:textSize="16sp"
+
+            android:onClick="manageCoordinatedBrgys"
+            android:layout_below="@id/btnViewReport"
+
+            />
+
+        <Button
+            android:id="@+id/btnValidateUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/white_container"
+            android:text="Validate User Registration"
+            android:textSize="16sp"
+
+            android:onClick="validateUser"
+            android:layout_below="@id/btnManageCoordinatedBrgys"
+
+            />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/logout_button"
+            android:text="Logout"
+            android:textSize="16sp"
+
+            android:textColor="@color/white"
+
+            android:onClick="adminLogout"
+            android:layout_below="@id/btnValidateUser"
+            android:layout_centerHorizontal="true"
+
+            />
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

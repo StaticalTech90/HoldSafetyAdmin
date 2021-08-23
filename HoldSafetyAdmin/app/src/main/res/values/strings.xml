@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">HoldSafety (Admin)</string>
+    <string name="id_link"><u>daniel-tiongco-id</u></string>
+    <string name="reject_hint"><i>Please state the reason for the disapproval.</i></string>
+    <string name="details_link"><i><u>details</u></i></string>
+    <string name="btnRemoveBrgy"><u>Remove Barangay</u></string>
+
+    <string-array name="userID">
+        <item>U001</item>
+        <item>U002</item>
+        <item>U003</item>
+        <item>U004</item>
+        <item>U005</item>
+        <item>U006</item>
+        <item>U007</item>
+        <item>U008</item>
+        <item>U009</item>
+        <item>U010</item>
+    </string-array>
+
+    <string-array name="userFullName">
+        <item>Daniel Tiongco</item>
+        <item>Danielle David</item>
+        <item>Francis Fabul</item>
+        <item>Nhoriza Icaro</item>
+        <item>Joselito Mandigma</item>
+        <item>Name Name</item>
+        <item>Name Name</item>
+        <item>Name Name</item>
+        <item>Name Name</item>
+        <item>Name Name</item>
+    </string-array>
+
+    <string-array name="brgyName">
+        <item>Santo Tomas</item>
+        <item>Maybunga</item>
+        <item>Santa Cruz</item>
+        <item>Santo Tomas</item>
+        <item>Maybunga</item>
+        <item>Santa Cruz</item>
+    </string-array>
+
+    <string-array name="brgyCity">
+        <item>Pasig City</item>
+        <item>Pasig City</item>
+        <item>Pasig City</item>
+        <item>Pasig City</item>
+        <item>Pasig City</item>
+        <item>Pasig City</item>
+    </string-array>
+
+    <string-array name="brgyMobileNum">
+        <item>09123456789</item>
+        <item>09213456789</item>
+        <item>09323456789</item>
+        <item>09423456789</item>
+        <item>09523456789</item>
+        <item>09623456789</item>
+    </string-array>
+</resources>

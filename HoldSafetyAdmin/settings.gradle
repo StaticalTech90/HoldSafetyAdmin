@@ -1,0 +1,2 @@
+rootProject.name = "HoldSafety (Admin)"
+include ':app'

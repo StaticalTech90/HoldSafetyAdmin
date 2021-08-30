@@ -2,11 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
     android:layout_marginBottom="20dp"
-    android:id="@+id/layoutCoordinatedBrgys">
+    android:id="@+id/layoutReports">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -26,11 +27,11 @@
             >
 
             <TextView
-                android:id="@+id/lblBrgyName"
+                android:id="@+id/lblReportID"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="Barangay:"
+                android:text="Report ID:"
                 android:textColor="@color/dark_blue"
 
                 android:textSize="18sp"
@@ -38,15 +39,15 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/txtBrgyName"
+                android:id="@+id/txtReportID"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="Santo Tomas"
+                android:text="001"
                 android:textColor="@color/dark_blue"
                 android:textSize="18sp"
 
-                app:layout_constraintStart_toEndOf= "@+id/lblBrgyName"
+                app:layout_constraintStart_toEndOf= "@+id/lblReportID"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
@@ -62,52 +63,54 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/lblBrgyCity"
+                android:id="@+id/lblReportUsername"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="City:"
+                android:text="Username:"
                 android:textColor="@color/dark_blue"
 
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lblBrgyName" />
+                app:layout_constraintTop_toBottomOf="@+id/lblReportID" />
 
             <TextView
-                android:id="@+id/txtBrgyCity"
+                android:id="@+id/txtReportUsername"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="Pasig City"
+                android:text="Username"
                 android:textColor="@color/dark_blue"
                 android:textSize="18sp"
 
-                app:layout_constraintStart_toEndOf= "@+id/lblBrgyCity"
-                app:layout_constraintTop_toBottomOf="@+id/lblBrgyName" />
+                app:layout_constraintStart_toEndOf= "@+id/lblReportUsername"
+                app:layout_constraintTop_toBottomOf="@+id/lblReportID" />
 
             <TextView
-                android:id="@+id/lblBrgyMobileNum"
+                android:id="@+id/lblReportLocation"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="Mobile #:"
+                android:text="Location:"
                 android:textColor="@color/dark_blue"
 
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lblBrgyCity" />
+                app:layout_constraintTop_toBottomOf="@+id/lblReportUsername" />
 
             <TextView
-                android:id="@+id/txtBrgyMobileNum"
+                android:id="@+id/txtReportLocation"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="09123456689"
+                android:text="Number Village/Bldg. Street Brgy. City"
                 android:textColor="@color/dark_blue"
                 android:textSize="18sp"
 
-                app:layout_constraintStart_toEndOf= "@+id/lblBrgyMobileNum"
-                app:layout_constraintTop_toBottomOf="@+id/lblBrgyCity" />
+                android:paddingEnd="10dp"
+
+                app:layout_constraintStart_toEndOf="@+id/lblReportLocation"
+                app:layout_constraintTop_toBottomOf="@+id/lblReportUsername" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

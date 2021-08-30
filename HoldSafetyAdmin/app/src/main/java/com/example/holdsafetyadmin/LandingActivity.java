@@ -32,7 +32,9 @@ public class LandingActivity extends AppCompatActivity {
     }
 
     public void viewReport(View view){
-        Toast.makeText(getApplicationContext(), "View Report", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "View Report", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent (getApplicationContext(), ViewReportsActivity.class);
+        startActivity(intent);
     }
 
     public void manageCoordinatedBrgys(View view){

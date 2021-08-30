@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.holdsafetyadmin">
 
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.INTERNET"/>
+=======
+    <uses-permission android:name="android.permission.INTERNET" />
+>>>>>>> icaro-branch
 
     <application
         android:allowBackup="true"
@@ -11,7 +15,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HoldSafetyAdmin">
-        <activity android:name=".AddCoordinatedBrgyActivity"></activity>
+        <activity
+            android:name=".GenerateReportActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ReportDetailsActivity"
+            android:exported="true"
+            android:label="ReportDetails"
+            android:parentActivityName=".ViewReportsActivity" />
+        <activity
+            android:name=".ViewReportsActivity"
+            android:exported="true" />
+        <activity android:name=".AddCoordinatedBrgyActivity" />
         <activity
             android:name=".CoordinatedBrgyDetailsActivity"
             android:label="BrgyDetails"

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReportDetailsActivity"
+    android:background="@color/dark_blue">
+
+    <ImageView
+        android:id="@+id/backArrow"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="40dp"
+        android:src="@drawable/left_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lblDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="65dp"
+        android:fontFamily="sans-serif"
+        android:layout_marginLeft="40dp"
+        android:text="The details regarding the report: "
+        android:textColor="@color/gray"
+        android:textSize="18sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backArrow"
+        />
+
+    <TextView
+        android:id="@+id/txtReportID"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+
+
+        android:fontFamily="sans-serif-black"
+        android:text="Report ID: R-001"
+        android:layout_marginLeft="40dp"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblDesc"
+        />
+
+    <RelativeLayout
+        android:id="@+id/containerReportDetails"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtReportID"
+        android:layout_marginTop="25dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:background="@drawable/white_container">
+
+        <RelativeLayout
+            android:id="@+id/containerUserID"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lblUserID"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:text="User ID:"
+
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtUserID"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/lblUserID"
+                android:backgroundTint="@color/dark_blue"
+                android:fontFamily="sans-serif"
+                android:text="U001"
+                android:textColor="@color/dark_blue"
+
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerUsername"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/containerUserID">
+
+            <TextView
+                android:id="@+id/lblUsername"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="Name:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/txtUsername"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/lblUsername"
+                android:backgroundTint="@color/dark_blue"
+                android:fontFamily="sans-serif"
+                android:text="Daniel Tiongco"
+                android:textColor="@color/dark_blue"
+
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerDateAndTime"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/containerUsername">
+
+            <TextView
+                android:id="@+id/lblDateAndTime"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+
+                android:text="Date and Time:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtDateAndTime"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/lblDateAndTime"
+                android:backgroundTint="@color/dark_blue"
+                android:fontFamily="sans-serif"
+                android:text="6/07/2021 - 7:30 PM"
+                android:textColor="@color/dark_blue"
+
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerReportLocation"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/containerDateAndTime">
+
+            <TextView
+                android:id="@+id/lblReportLocation"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="Location:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtReportLocation"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/lblReportLocation"
+                android:backgroundTint="@color/dark_blue"
+                android:fontFamily="sans-serif"
+                android:text="11C Prudence St. Sta. Ana Taguig City"
+                android:textColor="@color/dark_blue"
+
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerBarangay"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/containerReportLocation">
+
+            <TextView
+                android:id="@+id/lblBarangay"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:text="Barangay:"
+
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtBarangay"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/lblBarangay"
+                android:backgroundTint="@color/dark_blue"
+                android:fontFamily="sans-serif"
+                android:text="Sta. Ana"
+                android:textColor="@color/dark_blue"
+
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerCoordinated"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/containerBarangay">
+
+            <TextView
+                android:id="@+id/lblCoordinated"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+
+                android:text="Coordinated:"
+                android:textColor="@color/dark_blue"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtCoordinated"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/lblCoordinated"
+                android:backgroundTint="@color/dark_blue"
+                android:fontFamily="sans-serif"
+                android:text="Yes"
+                android:textColor="@color/dark_blue"
+
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

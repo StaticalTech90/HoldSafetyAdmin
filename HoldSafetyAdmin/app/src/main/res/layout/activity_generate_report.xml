@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GenerateReportActivity"
+    android:background="@color/dark_blue"
+    android:focusable="false">
+
+    <ImageView
+        android:id="@+id/backArrow"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="40dp"
+        android:src="@drawable/left_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="back button" />
+
+    <TextView
+        android:id="@+id/lblSendReport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="76dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Send Report"
+        android:layout_marginLeft="40dp"
+        android:textColor="@color/white"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backArrow" />
+
+    <TextView
+        android:id="@+id/lblSendDesc"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+
+        android:fontFamily="sans-serif"
+        android:layout_marginLeft="40dp"
+        android:text="Input the necessary details to generate and send a report to the respective barangay"
+        android:textColor="@color/gray"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblSendReport" />
+
+    <RelativeLayout
+        android:id="@+id/containerStartDate"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+
+        android:background="@drawable/white_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblSendDesc">
+
+        <EditText
+
+            android:id="@+id/txtStartDate"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
+
+            android:layout_marginEnd="20dp"
+            android:background="@null"
+
+            android:fontFamily="sans-serif"
+            android:hint="Start Date * (mm-dd-yyyy)" />
+
+        <!--
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+        -->
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/containerEndDate"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+
+        android:background="@drawable/white_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/containerStartDate">
+
+        <EditText
+
+            android:id="@+id/txtEndDate"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
+
+            android:layout_marginEnd="20dp"
+            android:background="@null"
+
+            android:fontFamily="sans-serif"
+            android:hint="End Date * (mm-dd-yyyy)" />
+
+        <!--
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+        -->
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/containerBrgys"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+
+        android:background="@drawable/white_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/containerEndDate"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/txtBarangayName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@android:color/transparent"
+            android:spinnerMode="dropdown" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="150dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/blue_button"
+        android:fontFamily="sans-serif-black"
+        android:onClick="generateReport"
+        android:padding="10dp"
+        android:text="SEND"
+        android:textColor="@color/dark_blue"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/containerBrgys" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

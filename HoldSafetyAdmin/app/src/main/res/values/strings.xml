@@ -35,12 +35,18 @@
         <item>Santo Tomas</item>
         <item>Maybunga</item>
         <item>Santa Cruz</item>
-        <item>Santo Tomas</item>
-        <item>Maybunga</item>
-        <item>Santa Cruz</item>
+        <item>Santa Ana</item>
+        <item>Rosario</item>
+        <item>Yakal</item>
+        <item>Ayala</item>
+        <item>Buendia</item>
+        <item>Barangay</item>
     </string-array>
 
     <string-array name="brgyCity">
+        <item>Pasig City</item>
+        <item>Pasig City</item>
+        <item>Pasig City</item>
         <item>Pasig City</item>
         <item>Pasig City</item>
         <item>Pasig City</item>
@@ -56,5 +62,35 @@
         <item>09423456789</item>
         <item>09523456789</item>
         <item>09623456789</item>
+        <item>09423456789</item>
+        <item>09523456789</item>
+        <item>09623456789</item>
+    </string-array>
+
+    <string-array name="reportID">
+        <item>001</item>
+        <item>002</item>
+        <item>003</item>
+        <item>004</item>
+        <item>005</item>
+        <item>006</item>
+    </string-array>
+
+    <string-array name="reportUsername">
+        <item>Daniel Tiongco</item>
+        <item>Danielle David</item>
+        <item>Francis Fabul</item>
+        <item>Nhoriza Icaro</item>
+        <item>Joselito Mandigma</item>
+        <item>Name Name</item>
+    </string-array>
+
+    <string-array name="reportLocation">
+        <item>837 NHA Bldg., Caspo Fiesta Road</item>
+        <item>17/F ACE Building, 101 Rada Street, Legaspi Village</item>
+        <item>40 Canseco Street San Francisco Del Monte</item>
+        <item>11C Prudence St. Sta. Ana Taguig City</item>
+        <item>34th Floor, Don Benito Building, Mayombo District</item>
+        <item>G/F Sct Building 143 Shaw Boulevard Corner Lawson Street</item>
     </string-array>
 </resources>

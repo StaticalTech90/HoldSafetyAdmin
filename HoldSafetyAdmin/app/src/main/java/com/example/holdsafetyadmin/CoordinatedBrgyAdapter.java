@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CoordinatedBrgyAdapter extends RecyclerView.Adapter<CoordinatedBrgyAdapter.CoordinatedBrgyHolder> {
-    String name[], city[], mobileNum[];
+    String[] name, city, mobileNum;
     Context context;
 
     public CoordinatedBrgyAdapter(Context ct, String brgyName[], String brgyCity[], String brgyMobileNum[]){

@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 public class ViewReportsActivity extends AppCompatActivity {
-    String id[], username[], location[];
+    String[] id, username, location;
     RecyclerView recyclerViewReports;
 
     @Override

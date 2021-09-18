@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 public class CoordinatedBrgysActivity extends AppCompatActivity {
-    String name[], city[], mobileNum[];
+    String[] name, city, mobileNum;
     RecyclerView recyclerViewCoordinatedBrgys;
 
     @Override

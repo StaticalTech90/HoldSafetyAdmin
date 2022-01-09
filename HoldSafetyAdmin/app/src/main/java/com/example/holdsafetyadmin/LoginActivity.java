@@ -16,15 +16,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
       EditText txtEmail, txtPassword;
       Button btnLogin;
       FirebaseAuth fAuth;
       TextView txtToggle;
+
+      DocumentReference docRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,12 +126,41 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
+//                    Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+//                    startActivity(new Intent(LoginActivity.this, LandingActivity.class));
+//                    finish();
+                    fAuth = FirebaseAuth.getInstance();
+                    FirebaseUser admin = fAuth.getCurrentUser();
+
+                    //pass admin to check if it exists in admin table
+                    checkUserAccount(admin);
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void checkUserAccount(FirebaseUser admin) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        docRef = db.collection("admin").document(admin.getUid());
+
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()){
                     Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginActivity.this, LandingActivity.class));
                     finish();
                 }
-                else{
-                    Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                else {
+                    //account does not exist in admin table = you are a user not an admin
+                    FirebaseAuth.getInstance().signOut();
+                    Toast.makeText(LoginActivity.this, "You are NOT an admin. Why are you here...", Toast.LENGTH_LONG).show();
+                    finish();
+                    startActivity(getIntent());
                 }
             }
         });

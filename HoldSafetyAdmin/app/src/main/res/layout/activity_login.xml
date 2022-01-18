@@ -91,7 +91,7 @@
         android:paddingBottom="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/containerEmail">
+        app:layout_constraintTop_toBottomOf="@+id/containerEmail"/>
 
         <EditText
             android:id="@+id/txtPassword"
@@ -121,7 +121,7 @@
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/txtPassword"
             app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="15dp"
             android:text="SHOW"

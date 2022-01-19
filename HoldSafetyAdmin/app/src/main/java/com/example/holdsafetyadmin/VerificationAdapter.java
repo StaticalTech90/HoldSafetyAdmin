@@ -1,7 +1,6 @@
 package com.example.holdsafetyadmin;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ValidationAdapter extends RecyclerView.Adapter<ValidationAdapter.ValidationHolder>{
+public class VerificationAdapter extends RecyclerView.Adapter<VerificationAdapter.ValidationHolder>{
     String id[], name[];
     Context context;
 
-    public ValidationAdapter(Context ct, String userID[], String userFullName[]){
+    public VerificationAdapter(Context ct, String userID[], String userFullName[]){
         context = ct;
         id = userID;
         name = userFullName;
@@ -26,12 +25,12 @@ public class ValidationAdapter extends RecyclerView.Adapter<ValidationAdapter.Va
     @Override
     public ValidationHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater validationInflater = LayoutInflater.from(context);
-        View view = validationInflater.inflate(R.layout.validation_row, parent, false);
+        View view = validationInflater.inflate(R.layout.verification_row, parent, false);
         return new ValidationHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ValidationAdapter.ValidationHolder holder, int position) {
+    public void onBindViewHolder(@NonNull VerificationAdapter.ValidationHolder holder, int position) {
         holder.textViewID.setText("User ID: " + id[position]);
         holder.textViewName.setText("Name: " + name[position]);
 

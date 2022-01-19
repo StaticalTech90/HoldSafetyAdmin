@@ -13,9 +13,12 @@ public class RejectUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reject_user);
+
+        sendReasonForDisapproval();
     }
 
-    public void sendReasonForDisapproval(View view){
+    public void sendReasonForDisapproval(){
+        //TODO: Send reason to user's email address
         Toast.makeText(getApplicationContext(), "Reason for Disapproval Sent", Toast.LENGTH_SHORT).show();
     }
 }

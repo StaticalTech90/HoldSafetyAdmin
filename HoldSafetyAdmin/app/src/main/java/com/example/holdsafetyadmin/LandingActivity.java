@@ -45,7 +45,7 @@ public class LandingActivity extends AppCompatActivity {
 
     public void validateUser(View view){
         //Toast.makeText(getApplicationContext(), "Verify Registration", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent (getApplicationContext(), ValidationListActivity.class);
+        Intent intent = new Intent (getApplicationContext(), VerificationListActivity.class);
         startActivity(intent);
     }
 

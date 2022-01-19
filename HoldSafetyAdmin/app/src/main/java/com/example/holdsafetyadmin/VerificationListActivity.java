@@ -1,35 +1,21 @@
 package com.example.holdsafetyadmin;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class ValidationListActivity extends AppCompatActivity {
+public class VerificationListActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
     LinearLayout verificationView;
@@ -53,7 +39,7 @@ public class ValidationListActivity extends AppCompatActivity {
 //
 //        validationListRecyclerView = findViewById(R.id.recyclerviewValidationList);
 //
-//        ValidationAdapter validationAdapter = new ValidationAdapter(this, userID, userFullName);
+//        VerificationAdapter validationAdapter = new VerificationAdapter(this, userID, userFullName);
 //        validationListRecyclerView.setAdapter(validationAdapter);
 //        validationListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -61,9 +47,55 @@ public class ValidationListActivity extends AppCompatActivity {
     }
 
     private void listUsers() {
+        //TODO: Only show unverified users who also have an uploaded id-pic.
+        //Intent selectedUser = new Intent(VerificationListActivity.this, RegistrationDetailsActivity.class);
+
+        //DocumentReference docRef;
+        db.collection("users").get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) { //USERS ARE FETCHED
+                for(QueryDocumentSnapshot userSnap : task.getResult()) {
+                    firstName = userSnap.getString("FirstName");
+                    lastName = userSnap.getString("LastName");
+                    isVerified = userSnap.getBoolean("isVerified");
+
+                    View unverifiedView = getLayoutInflater().inflate(R.layout.verification_row, null, false);
+
+                    if(!isVerified) {
+                        //CHECK IF USER HAS ID PIC UPLOADED
+                        FirebaseStorage.getInstance().getReference("id").child(userSnap.getId()).getDownloadUrl()
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        //DISPLAY USER IN VIEW
+                                        TextView txtUserID = unverifiedView.findViewById(R.id.txtUserID);
+                                        TextView txtUserName = unverifiedView.findViewById(R.id.txtUserName);
+
+                                        txtUserID.setText(userSnap.getId());
+                                        txtUserName.setText(lastName + ", " + firstName);
+
+                                        unverifiedView.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Intent selectedUser = new Intent(VerificationListActivity.this, RegistrationDetailsActivity.class);
+                                                selectedUser.putExtra("userID", txtUserID.getText());
+                                                startActivity(selectedUser);
+                                            }
+                                        });
+                                        verificationView.addView(unverifiedView);
+                                    }
+                                });
+                    }
+                }
+            } else { //DB NOT ACCESSED
+
+            }
+        });
+
+        //TODO: Delete the rest of the code (below) when things start working.
+        /*
         //Get the user from db
         db.collection("users").get().addOnCompleteListener(task -> {
-            Intent thisActivity = new Intent(this, ValidationListActivity.class);
+            Intent thisActivity = new Intent(this, VerificationListActivity.class);
             //Toast.makeText(this, "Users fetched", Toast.LENGTH_SHORT).show();
 
             if(task.isSuccessful()) {
@@ -81,7 +113,7 @@ public class ValidationListActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     if(!isVerified) {
-                                        //Toast.makeText(ValidationListActivity.this, "BOOLEAN: " + isVerified, Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(VerificationListActivity.this, "BOOLEAN: " + isVerified, Toast.LENGTH_SHORT).show();
                                         View unverifiedView = getLayoutInflater().inflate(R.layout.unverified_row, null, false);
 
                                         TextView txtUserName = unverifiedView.findViewById(R.id.txtUserName);
@@ -108,7 +140,7 @@ public class ValidationListActivity extends AppCompatActivity {
                                         btnReject.setOnClickListener(view -> {
                                             //No
                                             AlertDialog.Builder dialogRemoveAccount;
-                                            dialogRemoveAccount = new AlertDialog.Builder(ValidationListActivity.this);
+                                            dialogRemoveAccount = new AlertDialog.Builder(VerificationListActivity.this);
                                             dialogRemoveAccount.setTitle("Confirm Deletion");
                                             dialogRemoveAccount.setMessage("Are you sure you want to reject this user?");
 
@@ -117,10 +149,10 @@ public class ValidationListActivity extends AppCompatActivity {
                                                 FirebaseStorage.getInstance()
                                                         .getReference("id").child(userSnap.getString("ID")).delete()
                                                         .addOnSuccessListener(v -> {
-                                                            Toast.makeText(ValidationListActivity.this, "ID picture rejected. Deleted from storage.", Toast.LENGTH_LONG).show();
+                                                            Toast.makeText(VerificationListActivity.this, "ID picture rejected. Deleted from storage.", Toast.LENGTH_LONG).show();
                                                         })
                                                         .addOnFailureListener(v -> {
-                                                            Toast.makeText(ValidationListActivity.this, "ID picture rejected. FAILED to delete.", Toast.LENGTH_LONG).show();
+                                                            Toast.makeText(VerificationListActivity.this, "ID picture rejected. FAILED to delete.", Toast.LENGTH_LONG).show();
                                                         });
                                             });
                                             dialogRemoveAccount.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
@@ -133,22 +165,25 @@ public class ValidationListActivity extends AppCompatActivity {
                                             //Refresh page to remove rejected user
                                             finish();
                                             startActivity(thisActivity);
+
+                                            //ADD VIEW TO LINEAR LAYOUT
+                                            verificationView.addView(unverifiedView);
                                         });
                                     } else {
-                                        Toast.makeText(ValidationListActivity.this, "All users are verified.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(VerificationListActivity.this, "All users are verified.", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                             //User has not uploaded a pic to be verified
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(ValidationListActivity.this, "No unverified users.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(VerificationListActivity.this, "No unverified users.", Toast.LENGTH_LONG).show();
                                     }
                     });
                 }
             } else {
-                Toast.makeText(ValidationListActivity.this, "Get users task failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(VerificationListActivity.this, "Get users task failed", Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
     }
 }

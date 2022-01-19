@@ -104,8 +104,8 @@
             android:layout_height="wrap_content"
 
 
-            android:layout_toEndOf="@+id/lblFirstName"
             android:layout_below="@+id/txtLastName"
+            android:layout_toEndOf="@+id/lblFirstName"
 
             android:fontFamily="sans-serif"
             android:text="Daniel"
@@ -133,8 +133,8 @@
             android:layout_height="wrap_content"
 
 
-            android:layout_toEndOf="@+id/lblMiddleName"
             android:layout_below="@+id/txtFirstName"
+            android:layout_toEndOf="@+id/lblMiddleName"
 
             android:fontFamily="sans-serif"
             android:text="Lim"
@@ -162,8 +162,8 @@
             android:layout_height="wrap_content"
 
 
-            android:layout_toEndOf="@+id/lblBirthDate"
             android:layout_below="@+id/txtMiddleName"
+            android:layout_toEndOf="@+id/lblBirthDate"
 
             android:fontFamily="sans-serif"
             android:text="09/07/2021"
@@ -191,8 +191,8 @@
             android:layout_height="wrap_content"
 
 
-            android:layout_toEndOf="@+id/lblSex"
             android:layout_below="@+id/txtBirthDate"
+            android:layout_toEndOf="@+id/lblSex"
 
             android:fontFamily="sans-serif"
             android:text="M"
@@ -215,13 +215,13 @@
             />
 
         <TextView
-            android:id="@+id/txtID"
+            android:id="@+id/txtIdPic"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
 
 
-            android:layout_toEndOf="@+id/lblIdentification"
             android:layout_below="@+id/txtSex"
+            android:layout_toEndOf="@+id/lblIdentification"
 
             android:fontFamily="sans-serif"
             android:text="@string/id_link"

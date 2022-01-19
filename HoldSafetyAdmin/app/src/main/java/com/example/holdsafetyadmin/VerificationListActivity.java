@@ -48,9 +48,6 @@ public class VerificationListActivity extends AppCompatActivity {
 
     private void listUsers() {
         //TODO: Only show unverified users who also have an uploaded id-pic.
-        //Intent selectedUser = new Intent(VerificationListActivity.this, RegistrationDetailsActivity.class);
-
-        //DocumentReference docRef;
         db.collection("users").get().addOnCompleteListener(task -> {
             if(task.isSuccessful()) { //USERS ARE FETCHED
                 for(QueryDocumentSnapshot userSnap : task.getResult()) {
@@ -86,8 +83,8 @@ public class VerificationListActivity extends AppCompatActivity {
                                 });
                     }
                 }
-            } else { //DB NOT ACCESSED
-
+            } else {
+                //DB NOT ACCESSED
             }
         });
     }

@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.ReportsHolder> {
 
-    String id[], username[], location[];
+    String[] id, username, location;
     Context context;
 
-    public ReportsAdapter(Context ct, String reportID[], String reportUsername[], String reportLocation[]){
+    public ReportsAdapter(Context ct, String[] reportID, String[] reportUsername, String[] reportLocation){
         context = ct;
         id = reportID;
         username = reportUsername;

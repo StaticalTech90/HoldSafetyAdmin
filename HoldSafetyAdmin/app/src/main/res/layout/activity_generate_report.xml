@@ -73,6 +73,11 @@
             android:layout_marginEnd="20dp"
             android:background="@null"
 
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+
             android:fontFamily="sans-serif"
             android:hint="Start Date * (mm-dd-yyyy)" />
 
@@ -110,6 +115,11 @@
 
             android:layout_marginEnd="20dp"
             android:background="@null"
+
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
 
             android:fontFamily="sans-serif"
             android:hint="End Date * (mm-dd-yyyy)" />

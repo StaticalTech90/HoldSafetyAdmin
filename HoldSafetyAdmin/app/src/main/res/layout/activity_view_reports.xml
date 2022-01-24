@@ -91,12 +91,12 @@
             android:layout_height="25dp"
 
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/add"
+            android:layout_toStartOf="@+id/addBarangay"
             android:layout_marginTop="10dp"
             android:src="@drawable/sort" />
 
         <ImageView
-            android:id="@+id/add"
+            android:id="@+id/addBarangay"
             android:layout_width="30dp"
             android:layout_height="25dp"
 

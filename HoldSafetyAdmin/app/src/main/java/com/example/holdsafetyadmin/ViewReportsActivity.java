@@ -116,6 +116,7 @@ public class ViewReportsActivity extends AppCompatActivity {
                            startActivity(selectedReport);
                        }
                    });
+
                    displayReportView.addView(reportListView);
                }
            }

@@ -93,7 +93,6 @@
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@+id/addBarangay"
             android:layout_marginTop="10dp"
-            android:layout_toStartOf="@+id/add"
             android:onClick="sortReports"
             android:src="@drawable/sort" />
 
@@ -130,5 +129,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header"
-        android:orientation="horizontal"> </LinearLayout>
+        android:orientation="vertical">
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

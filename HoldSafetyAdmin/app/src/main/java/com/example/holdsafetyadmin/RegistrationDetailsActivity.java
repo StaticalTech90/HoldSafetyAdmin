@@ -72,7 +72,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
     //GET USER DATA BASED ON ID
     private void getData(){
-        if(getIntent().hasExtra("userID")){
+        if(getIntent().hasExtra("userID")) {
             id = getIntent().getStringExtra("userID");
 
             docRef = db.collection("users").document(id);
@@ -129,7 +129,6 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
     }
 
     public void validateUser(){
-        //TODO: Change user isVerified to TRUE
         Map<String, Object> docUsers = new HashMap<>();
         docUsers.put("ID", id);
         docUsers.put("LastName", lastName);

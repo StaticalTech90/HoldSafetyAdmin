@@ -1,5 +1,6 @@
 package com.example.holdsafetyadmin;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -30,7 +31,7 @@ public class VerificationAdapter extends RecyclerView.Adapter<VerificationAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull VerificationAdapter.ValidationHolder holder, int position) {
+    public void onBindViewHolder(@NonNull VerificationAdapter.ValidationHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.textViewID.setText("User ID: " + id[position]);
         holder.textViewName.setText("Name: " + name[position]);
 

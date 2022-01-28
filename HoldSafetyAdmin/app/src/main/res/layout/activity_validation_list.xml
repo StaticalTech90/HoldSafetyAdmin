@@ -35,9 +35,10 @@
         android:id="@+id/linearUserList"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblValidate"
-        android:orientation="horizontal"> </LinearLayout>
+        > </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

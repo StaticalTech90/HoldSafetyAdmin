@@ -37,7 +37,7 @@ public class Mail {
     }
 
     public Mail(String fromEmail, String fromPassword,
-                List<String> toEmailList, String emailSubject, String emailBody) {
+                 List<String> toEmailList, String emailSubject, String emailBody) {
         this.fromEmail = fromEmail;
         this.fromPassword = fromPassword;
         this.toEmailList = toEmailList;

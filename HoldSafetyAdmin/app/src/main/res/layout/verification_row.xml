@@ -9,7 +9,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:cardCornerRadius="20dp"
-        android:id="@+id/validationRow"
+        android:layout_margin="10dp"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,11 @@
                 android:text="@string/user_id"
                 android:textColor="@color/dark_blue"
 
-                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:maxEms="12"
+
+                android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,7 +42,11 @@
                 android:text="@string/user_name"
                 android:textColor="@color/dark_blue"
 
-                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:maxEms="12"
+
+                android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtUserID" />
 

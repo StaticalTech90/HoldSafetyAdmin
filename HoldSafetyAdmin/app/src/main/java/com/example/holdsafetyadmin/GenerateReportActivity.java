@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
@@ -74,8 +76,8 @@ public class GenerateReportActivity extends AppCompatActivity {
 
     final Calendar calendar = Calendar.getInstance();
 
-    private static final int STORAGE_READ_REQ_CODE = 1000;
-    private static final int STORAGE_WRITE_CODE = 1001;
+    private static final int WRITE_EXTERNAL_REQ_CODE = 1000;
+    private static final int READ_EXTERNAL_REQ_CODE = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,13 +115,22 @@ public class GenerateReportActivity extends AppCompatActivity {
 
     //checks required permissions
     private void setPermissions(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             //DENIED LOCATION PERMISSION
-            Log.d("external storage", "Please Storage Permission");
+            Log.d("location permission", "Please Grant Location Permission");
             //SHOW PERMISSION
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    STORAGE_WRITE_CODE);
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_REQ_CODE);
+        } else if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            //DENIED LOCATION PERMISSION
+            Log.d("location permission", "Please Grant Location Permission");
+            //SHOW PERMISSION
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    READ_EXTERNAL_REQ_CODE);
         }
     }
 
@@ -127,12 +138,12 @@ public class GenerateReportActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == STORAGE_WRITE_CODE) {
+        if (requestCode == WRITE_EXTERNAL_REQ_CODE) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 //DENIED ONCE
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        STORAGE_WRITE_CODE);
+                        WRITE_EXTERNAL_REQ_CODE);
             } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 setPermissions(); //getcurrent
@@ -142,7 +153,24 @@ public class GenerateReportActivity extends AppCompatActivity {
                 Uri uri = Uri.fromParts("package", getPackageName(), null);
                 settingsIntent.setData(uri);
                 startActivity(settingsIntent);
-                Toast.makeText(this, "Please Grant Storage Permission.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please Grant Storage Permission", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == READ_EXTERNAL_REQ_CODE) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                //DENIED ONCE
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        READ_EXTERNAL_REQ_CODE);
+            } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permissions granted.", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent settingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                settingsIntent.setData(uri);
+                startActivity(settingsIntent);
+                Toast.makeText(this, "Please Grant Access to Storage", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -285,9 +313,9 @@ public class GenerateReportActivity extends AppCompatActivity {
     //TODO PDF REPORT LOGIC HERE
     @SuppressLint("SimpleDateFormat")
     public void generateReport(View view) throws ParseException {
-//        Toast.makeText(getApplicationContext(), etStartDate.getText(), Toast.LENGTH_SHORT).show();
-//        Toast.makeText(getApplicationContext(), etEndDate.getText(), Toast.LENGTH_SHORT).show();
-//        Toast.makeText(getApplicationContext(), selectedBarangay, Toast.LENGTH_SHORT).show();
+//       Toast.makeText(getApplicationContext(), etStartDate.getText(), Toast.LENGTH_SHORT).show();
+//       Toast.makeText(getApplicationContext(), etEndDate.getText(), Toast.LENGTH_SHORT).show();
+//       Toast.makeText(getApplicationContext(), selectedBarangay, Toast.LENGTH_SHORT).show();
         //GET DATES
         String start = etStartDate.getText().toString();
         Date startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
@@ -301,7 +329,7 @@ public class GenerateReportActivity extends AppCompatActivity {
         Map <String, String> reportMap = new HashMap<>();
 
         FirebaseFirestore.getInstance()
-                .collection("reports").document(barangay)
+                .collection("reportAdmin").document(barangay)
                 .collection("reportDetails").get()
                 .addOnCompleteListener(task -> {
                     Intent intent = new Intent(this, CoordinatedBrgyDetailsActivity.class);
@@ -312,45 +340,94 @@ public class GenerateReportActivity extends AppCompatActivity {
                         //startDate occurs before endDate
                             //TODO Match spinner to data
                             //TODO Dates must be between
+                        Document document = new Document();
+                        Font smallNormal=new Font(Font.FontFamily.TIMES_ROMAN,12,Font.NORMAL);
+                        //Create a new file that points to the root directory, with the given name:
+                        File file = new File(getExternalFilesDir(null), "report.pdf");
+                        Uri path = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
+                        this.grantUriPermission("com.example.holdsafetyadmin", path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                        //Checking the availability state of the External Storage.
+                        String state = Environment.getExternalStorageState();
+                        if (!Environment.MEDIA_MOUNTED.equals(state)) {
+                            //If it isn't mounted - we can't write into it.
+                            return;
+                        }
+
+                        //This point and below is responsible for the write operation
+                        FileOutputStream outputStream = null;
+
+                        try {
+                            //INITIALIZE PDF HERE
+                            PdfWriter.getInstance(document, new FileOutputStream(String.valueOf(file)));
+
+                            document.open();
+                            document.addCreationDate();
+
                             for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
+                                Log.i("report snap", reportSnap.getId());
+
                                 try {
-                                    String stringDate = reportSnap.getString("Date");
+
+                                    String stringDate = reportSnap.getString("Report Date");
                                     Date tempDate = new SimpleDateFormat("MM-dd-yyyy").parse(stringDate);
 
                                     //suppress lint warnings
                                     assert startDate != null;
                                     assert tempDate != null;
 
+                                    //TODO DISABLED CONDITION IN THE MEANTIME [WIP]
+                                    //Toast.makeText(this, reportSnap.getId(), Toast.LENGTH_SHORT).show();
                                     //DATE NOTES
                                     //date.after() means date is date1 > date2
                                     //date.before() means date is date1 < date2
                                     //CHECK IF START DATE IS GREATER THAN END DATE
-                                    if(startDate.before(endDate)){
-                                        //BALIKTAD LNG PALA PLS DONT MODIFY IF ARGUMENT
-                                        if(tempDate.compareTo(startDate)>=0 && tempDate.compareTo((endDate))<=0){
+//                                    if(tempDate.after(startDate) && tempDate.before(endDate)){
+//                                        //BALIKTAD LNG PALA PLS DONT MODIFY IF ARGUMENT
+//                                        if(tempDate.compareTo(startDate)>=0
+//                                           && tempDate.compareTo((endDate))<=0){
+//                                    } else {
+//                                            Toast.makeText(this, "No Date Found", Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    } else {
+//                                        Toast.makeText(this, "Start Date greater than End Date", Toast.LENGTH_SHORT).show();
+//                                    }
 
-                                            //Show message
-                                            Toast.makeText(this, reportSnap.getString("Lat"), Toast.LENGTH_SHORT).show();
+                                    document.add(new Paragraph("Barangay: "
+                                            + reportSnap.getString("Barangay")+"\n",smallNormal));
+                                    document.add(new Paragraph("Name: "
+                                            + reportSnap.getString("FirstName")+reportSnap.getString("LastName")+"\n",smallNormal));
+                                    document.add(new Paragraph("Latitude: "
+                                            + reportSnap.getString("Lat")+"\n",smallNormal));
+                                    document.add(new Paragraph("Longitude: "
+                                            + reportSnap.getString("Lon")+"\n",smallNormal));
+                                    document.add(new Paragraph("Report Date: "
+                                            + reportSnap.getString("Report Date")+"\n",smallNormal));
+                                    document.add(new Paragraph("\n",smallNormal));
 
-                                            String dataBarangay = reportMap.put("barangay", reportSnap.getString("Barangay"));
-                                            String dataDate = reportMap.put("date", reportSnap.getString("Date"));
-                                            String dataLatitude = reportMap.put("latitude", reportSnap.getString("Lat"));
-                                            String dataLongitude = reportMap.put("longitude", reportSnap.getString("Lon"));
-
-                                        } else {
-                                            Toast.makeText(this, "No Date Found", Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else {
-                                        Toast.makeText(this, "Start Date greater than End Date", Toast.LENGTH_SHORT).show();
-                                    }
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
                             }
 
-                        //TODO EXECUTE PDF CODE HERE
+                            document.close();
+                            Toast.makeText(this, "PDF Generated", Toast.LENGTH_SHORT).show();
+
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        finally {
+                            try {
+                                document.close();
+                            }
+                            catch (Exception e) {
+                                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        //TODO EXECUTE SEND EMAIL
                         try {
-                            generatePDF(reportMap);
+                            sendReport();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -363,13 +440,13 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     //TODO REFACTOR TO PDF
-    private void generatePDF(Map<String, String> map) throws Exception {
+    @SuppressLint("QueryPermissionsNeeded")
+    private void sendReport() {
         String username = "holdsafety.ph@gmail.com";
         String password = "HoldSafety@4qmag";
         String subject = "REPORT SUMMARY - HoldSafety";
-        String recipient = "201801336@iacademy.edu.ph";
+        String recipient = "201801263@iacademy.edu.ph, 201801336@iacademy.edu.ph";
         List<String> recipients = Collections.singletonList(recipient);
-
 
         ///////////////////////////////////////////////////////////////////
 
@@ -379,70 +456,21 @@ public class GenerateReportActivity extends AppCompatActivity {
 
         ///////////////////////////////////////////////////////////////////
 
-        //BufferedWriter bf = null;
         Document document = new Document();
         Font smallNormal=new Font(Font.FontFamily.TIMES_ROMAN,12,Font.NORMAL);
         //Create a new file that points to the root directory, with the given name:
         File file = new File(getExternalFilesDir(null), "report.pdf");
         Uri path = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
-
-
+        this.grantUriPermission(String.valueOf(this.getPackageManager().queryIntentActivities(
+                emailIntent,
+                PackageManager.MATCH_DEFAULT_ONLY)),
+                path,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
         emailIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        //Checking the availability state of the External Storage.
-        String state = Environment.getExternalStorageState();
-        if (!Environment.MEDIA_MOUNTED.equals(state)) {
-
-            //If it isn't mounted - we can't write into it.
-            return;
-        }
-
-        //This point and below is responsible for the write operation
-        FileOutputStream outputStream = null;
-
-        try {
-            //INITIALIZE PDF HERE
-            PdfWriter.getInstance(document, new FileOutputStream(String.valueOf(file)));
-
-            document.open();
-            document.addAuthor(username);
-            document.addCreationDate();
-            document.add(new Paragraph("hello there, " + recipient, smallNormal));
-
-            // create new BufferedWriter for the output file
-            //bf = new BufferedWriter(new FileWriter(file));
-
-            // iterate map entries
-            for (Map.Entry<String, String> entry :
-                    map.entrySet()) {
-
-                // put key and value separated by a colon
-//                bf.write(entry.getKey() + ":" + entry.getValue());
-                document.add(new Paragraph(entry.getKey() + ":"
-                        + entry.getValue()+"\n",smallNormal));
-                // new line
-                //bf.newLine();
-            }
-
-            //bf.flush();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-
-                // always close the writer
-
-                //bf.close();
-                document.close();
-
-            }
-            catch (Exception e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }
-
+        //KEEP FOR DEBUGGING
+        //emailIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         //FOR EMAIL
 //        new MailTask(this).execute(username, password, recipients, subject, path);
 

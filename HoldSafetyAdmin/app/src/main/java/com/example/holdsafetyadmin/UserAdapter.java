@@ -40,7 +40,7 @@ public class UserAdapter extends FirestoreRecyclerAdapter<Users, UserAdapter.Use
     @NonNull
     @Override
     public UserHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.validation_row, parent
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.verification_row, parent
         , false);
         return new UserHolder(v);
     }

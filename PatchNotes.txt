@@ -1,0 +1,10 @@
+Feb 3, 2022
++ Display Reports now working
+
+- ReportDetailsActivity showing wrong details
+
+----------------------------------------------------
+
+Edit this file when you do something.
++ for fixes, additions, etc.
+- for removals, bugs, etc.

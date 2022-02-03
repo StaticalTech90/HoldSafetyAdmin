@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +26,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
     DocumentReference docRef;
 
-    TextView textViewBrgyName, textViewBrgyCity, textViewBrgyID, btnRemoveBrgy;
+    TextView textViewBrgyName, textViewBrgyCity, textViewBrgyID, btnRemoveBrgy,textViewBrgyAddress;
     EditText textViewBrgyMobileNum, textViewBrgyEmail, textViewBrgyLatitude, textViewBrgyLongitude;
     String brgyName, brgyCity, brgyMobileNum, brgyEmail, brgyLat, brgyLong, brgyID;
     Button btnBrgyUpdate;
@@ -41,13 +42,18 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         textViewBrgyEmail = findViewById(R.id.txtBrgyEmail);
         textViewBrgyLatitude = findViewById(R.id.txtBrgyLatitude);
         textViewBrgyLongitude = findViewById(R.id.txtBrgyLongitude);
+        textViewBrgyAddress = findViewById(R.id.txtBrgyAddress);
         textViewBrgyID = findViewById(R.id.txtBrgyID);
         
         btnBrgyUpdate = findViewById(R.id.btnSaveChanges);
         btnRemoveBrgy = findViewById(R.id.btnRemoveBrgy);
 
         getData();
-        //getGeoLoc();
+        try {
+            getGeoLoc();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setData();
 
         db = FirebaseFirestore.getInstance();
@@ -109,16 +115,18 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
 
 
     public void getData(){
-        if(getIntent().hasExtra("barangay") && getIntent().hasExtra("city") && getIntent().hasExtra("email")
-                && getIntent().hasExtra("latitude") && getIntent().hasExtra("longitude") && getIntent().hasExtra("mobileNumber")
-                && getIntent().hasExtra("barangayID")){
+        if(getIntent().hasExtra("barangay") && getIntent().hasExtra("city") && getIntent().hasExtra("latitude")
+                && getIntent().hasExtra("longitude") && getIntent().hasExtra("mobileNumber") && getIntent().hasExtra("barangayID")){
             brgyName = getIntent().getStringExtra("barangay");
             brgyCity = getIntent().getStringExtra("city");
             brgyMobileNum = getIntent().getStringExtra("mobileNumber");
-            brgyEmail = getIntent().getStringExtra("email");
             brgyLat = getIntent().getStringExtra("latitude");
             brgyLong = getIntent().getStringExtra("longitude");
             brgyID = getIntent().getStringExtra("barangayID");
+
+            if(getIntent().hasExtra("email")){
+                brgyEmail = getIntent().getStringExtra("email");
+            }
         }
 
         else{
@@ -126,19 +134,32 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         }
     }
 
-    public void getGeoLoc(){
+    public void getGeoLoc() throws IOException {
+        String strAdd = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
+        Double doubleLat = Double.parseDouble(brgyLat.trim());
+        Double doubleLong = Double.parseDouble(brgyLong.trim());
         try {
-            List<Address> addresses = geocoder.getFromLocation(
-                    Double.parseDouble(brgyLat), Double.parseDouble(brgyLong), 2);
-            String address = addresses.get(1).getAddressLine(0);
+            List<Address> addresses = geocoder.getFromLocation(doubleLat, doubleLong, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
 
-            Toast.makeText(this, "GeoLoc: " + address, Toast.LENGTH_SHORT).show();
-
-        } catch (IOException e) {
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.w("Barangay Address", strReturnedAddress.toString());
+            } else {
+                Log.w("Barangay Address", "No Address returned!");
+            }
+        } catch (Exception e) {
             e.printStackTrace();
+            Log.w("Barangay Address", "Cannot get Address!");
         }
+
+        textViewBrgyAddress.setText(strAdd);
+        //Toast.makeText(getApplicationContext(), "Address: " + strAdd, Toast.LENGTH_SHORT).show();
 
     }
 

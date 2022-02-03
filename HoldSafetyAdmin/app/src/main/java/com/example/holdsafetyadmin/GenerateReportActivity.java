@@ -114,7 +114,7 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     //checks required permissions
-    private void setPermissions(){
+    private void setPermissions() {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             //DENIED LOCATION PERMISSION
@@ -147,8 +147,7 @@ public class GenerateReportActivity extends AppCompatActivity {
             } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 setPermissions(); //getcurrent
-            }
-            else {
+            } else {
                 Intent settingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 Uri uri = Uri.fromParts("package", getPackageName(), null);
                 settingsIntent.setData(uri);
@@ -180,7 +179,7 @@ public class GenerateReportActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public String dropdownBarangay(){
+    public String dropdownBarangay() {
         final List<String> barangayList = new ArrayList<>();
         barangayList.add("Barangay* ");
 
@@ -204,22 +203,20 @@ public class GenerateReportActivity extends AppCompatActivity {
                     }
                 });
 
-        ArrayAdapter<String> spinnerBrgyAdapter = new ArrayAdapter<String>(this, R.layout.spinner, barangayList){
+        ArrayAdapter<String> spinnerBrgyAdapter = new ArrayAdapter<String>(this, R.layout.spinner, barangayList) {
             @Override
-            public boolean isEnabled(int position){
+            public boolean isEnabled(int position) {
                 return position != 0;
             }
 
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent){
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
 
-                if(position==0){
+                if (position == 0) {
                     tv.setTextColor(getResources().getColor(R.color.hint_color));
-                }
-
-                else{
+                } else {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;
@@ -235,7 +232,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
                 // If user change the default selection
                 // First item is disable and it is used for hint
-                if(position > 0){
+                if (position > 0) {
                     // Notify the selected item text
                     Toast.makeText
                             (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
@@ -253,20 +250,20 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     //update START DATE value
-    private void updateStartDate(){
+    private void updateStartDate() {
         //matched with line 174
-        String myFormat="MM-dd-yyyy";
-        SimpleDateFormat dateFormat=new SimpleDateFormat(myFormat, Locale.US);
+        String myFormat = "MM-dd-yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
         etStartDate.setText(dateFormat.format(calendar.getTime()));
     }
 
-    private void selectStartDate(){
+    private void selectStartDate() {
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int day) {
                 calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH,month);
-                calendar.set(Calendar.DAY_OF_MONTH,day);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
                 updateStartDate();
             }
         };
@@ -282,20 +279,20 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     //update END DATE value
-    private void updateEndDate(){
+    private void updateEndDate() {
         //matched with line 174
-        String myFormat="MM-dd-yyyy";
-        SimpleDateFormat dateFormat=new SimpleDateFormat(myFormat, Locale.US);
+        String myFormat = "MM-dd-yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
         etEndDate.setText(dateFormat.format(calendar.getTime()));
     }
 
-    private void selectEndDate(){
+    private void selectEndDate() {
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int day) {
                 calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH,month);
-                calendar.set(Calendar.DAY_OF_MONTH,day);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
                 updateEndDate();
             }
         };
@@ -320,13 +317,13 @@ public class GenerateReportActivity extends AppCompatActivity {
         String start = etStartDate.getText().toString();
         Date startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
         String end = etEndDate.getText().toString();
-        Date endDate=new SimpleDateFormat("MM-dd-yyyy").parse(end);
+        Date endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
 
         //Spinner variable
         String barangay = selectedBarangay;
 
         //Store query-matched reports
-        Map <String, String> reportMap = new HashMap<>();
+        Map<String, String> reportMap = new HashMap<>();
 
         FirebaseFirestore.getInstance()
                 .collection("reportAdmin").document(barangay)
@@ -338,10 +335,10 @@ public class GenerateReportActivity extends AppCompatActivity {
                         //FOR EACH
                         //GET ALL ID
                         //startDate occurs before endDate
-                            //TODO Match spinner to data
-                            //TODO Dates must be between
+                        //TODO Match spinner to data
+                        //TODO Dates must be between
                         Document document = new Document();
-                        Font smallNormal=new Font(Font.FontFamily.TIMES_ROMAN,12,Font.NORMAL);
+                        Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
                         //Create a new file that points to the root directory, with the given name:
                         File file = new File(getExternalFilesDir(null), "report.pdf");
                         Uri path = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
@@ -394,16 +391,17 @@ public class GenerateReportActivity extends AppCompatActivity {
 //                                    }
 
                                     document.add(new Paragraph("Barangay: "
-                                            + reportSnap.getString("Barangay")+"\n",smallNormal));
+                                            + reportSnap.getString("Barangay") + "\n", smallNormal));
                                     document.add(new Paragraph("Name: "
-                                            + reportSnap.getString("FirstName")+reportSnap.getString("LastName")+"\n",smallNormal));
+                                            + reportSnap.getString("FirstName") + 
+                                            reportSnap.getString("LastName") + "\n", smallNormal));
                                     document.add(new Paragraph("Latitude: "
-                                            + reportSnap.getString("Lat")+"\n",smallNormal));
+                                            + reportSnap.getString("Lat") + "\n", smallNormal));
                                     document.add(new Paragraph("Longitude: "
-                                            + reportSnap.getString("Lon")+"\n",smallNormal));
+                                            + reportSnap.getString("Lon") + "\n", smallNormal));
                                     document.add(new Paragraph("Report Date: "
-                                            + reportSnap.getString("Report Date")+"\n",smallNormal));
-                                    document.add(new Paragraph("\n",smallNormal));
+                                            + reportSnap.getString("Report Date") + "\n", smallNormal));
+                                    document.add(new Paragraph("\n", smallNormal));
 
                                 } catch (ParseException e) {
                                     e.printStackTrace();
@@ -413,15 +411,12 @@ public class GenerateReportActivity extends AppCompatActivity {
                             document.close();
                             Toast.makeText(this, "PDF Generated", Toast.LENGTH_SHORT).show();
 
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
-                        }
-                        finally {
+                        } finally {
                             try {
                                 document.close();
-                            }
-                            catch (Exception e) {
+                            } catch (Exception e) {
                                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -457,7 +452,7 @@ public class GenerateReportActivity extends AppCompatActivity {
         ///////////////////////////////////////////////////////////////////
 
         Document document = new Document();
-        Font smallNormal=new Font(Font.FontFamily.TIMES_ROMAN,12,Font.NORMAL);
+        Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
         //Create a new file that points to the root directory, with the given name:
         File file = new File(getExternalFilesDir(null), "report.pdf");
         Uri path = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);

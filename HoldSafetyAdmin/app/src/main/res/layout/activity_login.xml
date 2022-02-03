@@ -91,11 +91,11 @@
         android:paddingBottom="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/containerEmail"/>
+        app:layout_constraintTop_toBottomOf="@+id/containerEmail">
 
         <EditText
             android:id="@+id/txtPassword"
-            android:layout_width="180dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
 
             android:layout_marginStart="20dp"
@@ -113,21 +113,14 @@
             android:id="@+id/txtToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:layout_marginStart="82dp"
-            android:layout_marginTop="4dp"
-            android:text="SHOW"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/txtPassword"
-            app:layout_constraintTop_toTopOf="parent" />
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>
-            android:layout_alignParentEnd="true"
             android:layout_marginEnd="15dp"
             android:text="SHOW"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:layout_centerVertical="true"/> -->
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
+
 
     <Button
         android:id="@+id/btnLogin"

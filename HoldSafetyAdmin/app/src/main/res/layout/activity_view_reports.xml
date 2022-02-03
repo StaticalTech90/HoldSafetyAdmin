@@ -110,25 +110,34 @@
             android:onClick="generateReport"
             android:src="@drawable/send" />
 
+        <ScrollView
+            android:id="@+id/scrollViewReports"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_blue"
+            android:fillViewport="true"
+            android:layout_below="@+id/lblViewReports">
+
+            <LinearLayout
+                android:id="@+id/linearReportList"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"/>
+        </ScrollView>
+
 
     </RelativeLayout>
 
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/recyclerviewReports"-->
-<!--        android:layout_width="320dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="15dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/header"/>-->
-    <LinearLayout
-        android:id="@+id/linearReportList"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header"
-        android:orientation="vertical">
-    </LinearLayout>
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/recyclerviewReports"-->
+    <!--        android:layout_width="320dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="15dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/header"/>-->
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

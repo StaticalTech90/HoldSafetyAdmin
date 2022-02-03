@@ -2,19 +2,33 @@ package com.example.holdsafetyadmin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
-    TextView textViewBrgyName, textViewBrgyCity, textViewBrgyMobileNum, textViewBrgyEmail, textViewBrgyLatitude, textViewBrgyLongitude, textViewBrgyID;
+    FirebaseFirestore db;
+    DocumentReference docRef;
+
+    TextView textViewBrgyName, textViewBrgyCity, textViewBrgyID, btnRemoveBrgy;
+    EditText textViewBrgyMobileNum, textViewBrgyEmail, textViewBrgyLatitude, textViewBrgyLongitude;
     String brgyName, brgyCity, brgyMobileNum, brgyEmail, brgyLat, brgyLong, brgyID;
+    Button btnBrgyUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +42,70 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         textViewBrgyLatitude = findViewById(R.id.txtBrgyLatitude);
         textViewBrgyLongitude = findViewById(R.id.txtBrgyLongitude);
         textViewBrgyID = findViewById(R.id.txtBrgyID);
+        
+        btnBrgyUpdate = findViewById(R.id.btnSaveChanges);
+        btnRemoveBrgy = findViewById(R.id.btnRemoveBrgy);
 
         getData();
         //getGeoLoc();
         setData();
+
+        db = FirebaseFirestore.getInstance();
+        docRef = db.collection("barangay").document(brgyID);
+
+        btnBrgyUpdate.setOnClickListener(this::updateBarangay);
+        btnRemoveBrgy.setOnClickListener(this::removeBarangay);
     }
+
+    private void removeBarangay(View view) {
+        AlertDialog.Builder dialogRemoveAccount;
+        dialogRemoveAccount = new AlertDialog.Builder(CoordinatedBrgyDetailsActivity.this);
+        dialogRemoveAccount.setTitle("Confirm Deletion");
+        dialogRemoveAccount.setMessage("Are you sure you want to delete this barangay?");
+
+        dialogRemoveAccount.setPositiveButton("Delete", (dialog, which) -> {
+            docRef.delete();
+            //Reload Activity After deleting contact
+            Intent intent = new Intent(this, CoordinatedBrgyDetailsActivity.class);
+            finish();
+            startActivity(intent);
+        });
+
+        dialogRemoveAccount.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = dialogRemoveAccount.create();
+        alertDialog.show();
+    }
+
+    private void updateBarangay(View view) {
+        String changedMobileNumber = textViewBrgyMobileNum.getText().toString().trim();
+        String changedEmail = textViewBrgyEmail.getText().toString().trim();
+        String changedLat = textViewBrgyLatitude.getText().toString().trim();
+        String changedLong = textViewBrgyLongitude.getText().toString().trim();
+
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            if(documentSnapshot.exists()){
+                docRef.update("MobileNumber", changedMobileNumber);
+                docRef.update("Email", changedEmail);
+                docRef.update("Latitude", changedLat);
+                docRef.update("Longitude", changedLong);
+
+                Toast.makeText(this, "Successfully updated", Toast.LENGTH_SHORT).show();
+
+                startActivity(new Intent(this, CoordinatedBrgyDetailsActivity.class));
+                finish();
+            }
+            else {
+                Toast.makeText(CoordinatedBrgyDetailsActivity.this, "Failed to update", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 
     public void getData(){
@@ -78,4 +151,5 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         textViewBrgyLongitude.setText(brgyLong);
         textViewBrgyID.setText(brgyID);
     }
+
 }

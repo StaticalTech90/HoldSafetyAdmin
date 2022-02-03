@@ -14,7 +14,6 @@ public class MailTask extends AsyncTask {
 
     public MailTask(Activity activity) {
         sendMailActivity = activity;
-
     }
 
     //LIBRARY LINK
@@ -55,12 +54,10 @@ public class MailTask extends AsyncTask {
     @Override
     public void onProgressUpdate(Object... values) {
 //        statusDialog.setMessage(values[0].toString());
-
     }
 
     @Override
     public void onPostExecute(Object result) {
         statusDialog.dismiss();
     }
-
 }

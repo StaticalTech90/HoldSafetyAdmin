@@ -95,7 +95,6 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
     }
 }

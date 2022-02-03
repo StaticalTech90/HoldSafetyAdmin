@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-
+    android:layout_height="match_parent"
     android:layout_marginBottom="20dp"
     android:id="@+id/layoutReports">
 
@@ -20,35 +19,10 @@
 
         >
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="20dp"
-            >
-
-            <TextView
-                android:id="@+id/lblReportID"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="Report ID:"
-                android:textColor="@color/dark_blue"
-
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/txtReportID"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="001"
-                android:textColor="@color/dark_blue"
-                android:textSize="18sp"
-
-                app:layout_constraintStart_toEndOf= "@+id/lblReportID"
-                app:layout_constraintTop_toTopOf="parent"/>
+            android:padding="20dp">
 
             <TextView
                 android:id="@+id/btnDetails"
@@ -59,60 +33,99 @@
                 android:textColor="@color/dark_blue"
                 android:textSize="18sp"
 
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentEnd="true"/>
 
-            <TextView
-                android:id="@+id/lblReportUsername"
-                android:layout_width="100dp"
+            <RelativeLayout
+                android:id="@+id/reportIDLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="Username:"
-                android:textColor="@color/dark_blue"
+                android:layout_below="@+id/btnDetails">
 
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lblReportID" />
+                <TextView
+                    android:id="@+id/lblReportID"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/report_id"
+                    android:textColor="@color/dark_blue"
 
-            <TextView
-                android:id="@+id/txtReportUsername"
-                android:layout_width="200dp"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtReportID"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/_001"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="18sp"
+
+                    android:layout_toEndOf="@+id/lblReportID"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/reportUserNameLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="Username"
-                android:textColor="@color/dark_blue"
-                android:textSize="18sp"
+                android:layout_below="@+id/reportIDLayout">
 
-                app:layout_constraintStart_toEndOf= "@+id/lblReportUsername"
-                app:layout_constraintTop_toBottomOf="@+id/lblReportID" />
+                <TextView
+                    android:id="@+id/lblReportUsername"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/username"
+                    android:textColor="@color/dark_blue"
 
-            <TextView
-                android:id="@+id/lblReportLocation"
-                android:layout_width="100dp"
+                    android:textSize="18sp"
+                    />
+
+                <TextView
+                    android:id="@+id/txtReportUsername"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/username"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="18sp"
+
+                    android:layout_toEndOf="@+id/lblReportUsername"/>
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="Location:"
-                android:textColor="@color/dark_blue"
+                android:layout_below="@+id/reportUserNameLayout">
 
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lblReportUsername" />
+                <TextView
+                    android:id="@+id/lblReportLocation"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/location"
+                    android:textColor="@color/dark_blue"
 
-            <TextView
-                android:id="@+id/txtReportLocation"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="Number Village/Bldg. Street Brgy. City"
-                android:textColor="@color/dark_blue"
-                android:textSize="18sp"
+                    android:textSize="18sp"/>
 
-                android:paddingEnd="10dp"
+                <TextView
+                    android:id="@+id/txtReportLocation"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/number_village_bldg_street_brgy_city"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="18sp"
 
-                app:layout_constraintStart_toEndOf="@+id/lblReportLocation"
-                app:layout_constraintTop_toBottomOf="@+id/lblReportUsername" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_toEndOf="@+id/lblReportLocation"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

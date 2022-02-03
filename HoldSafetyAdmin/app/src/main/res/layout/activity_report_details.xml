@@ -131,8 +131,8 @@
             android:id="@+id/containerDateAndTime"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/containerUsername">
+            android:layout_below="@+id/containerUsername"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/lblDateAndTime"

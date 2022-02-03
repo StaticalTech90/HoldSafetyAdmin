@@ -100,12 +100,12 @@
                 android:id="@+id/txtBrgyID"
                 android:layout_width="170dp"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
                 android:layout_toEndOf="@+id/lblBrgyID"
                 android:fontFamily="sans-serif"
+                android:maxLines="1"
                 android:text="B001"
                 android:textColor="@color/dark_blue"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -130,19 +130,19 @@
 
                 android:layout_centerVertical="true"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/txtBrgyCity"
                 android:layout_width="190dp"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:backgroundTint="@color/dark_blue"
+                android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/lblBrgyCity"
-                android:text="Pasig City"
+                android:backgroundTint="@color/dark_blue"
                 android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:text="Pasig City"
                 android:textColor="@color/dark_blue"
-                android:textSize="18sp"
 
-                android:layout_centerVertical="true"/>
+                android:textSize="18sp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -307,9 +307,8 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/lblBrgyAddress"
                 android:fontFamily="sans-serif"
-                android:text="Santo Tomas, Pasig City"
                 android:textColor="@color/dark_blue"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -320,7 +319,6 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/blue_button"
         android:fontFamily="sans-serif-black"
-        android:onClick="saveChanges"
         android:padding="10dp"
         android:text="SAVE CHANGES"
         android:gravity="center"

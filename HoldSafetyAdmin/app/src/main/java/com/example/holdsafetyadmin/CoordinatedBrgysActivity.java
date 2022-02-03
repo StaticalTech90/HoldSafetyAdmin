@@ -45,7 +45,6 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
         mobileNum = getResources().getStringArray(R.array.brgyMobileNum);
 
         CoordinatedBrgyAdapter coordinatedBrgyAdapter = new CoordinatedBrgyAdapter(this, name, city, mobileNum);
-
         btnAdd.setOnClickListener(this::addBrgy);
 
         getBarangay();
@@ -98,7 +97,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                                 intent.putExtra("latitude", latitude);
                                 intent.putExtra("longitude", longitude);
                                 intent.putExtra("mobileNumber", mobileNumber);
-                                intent.putExtra("documentId", documentId);
+                                intent.putExtra("barangayID", documentId);
 
                                 startActivity(intent);
 //                                //SHOW DETAILS DIALOG

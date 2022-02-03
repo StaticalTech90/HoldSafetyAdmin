@@ -31,7 +31,7 @@ public class VerificationListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_validation_list);
+        setContentView(R.layout.activity_verification_list);
 
         db = FirebaseFirestore.getInstance();
 

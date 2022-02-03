@@ -20,9 +20,6 @@ public class ViewReportsActivity extends AppCompatActivity {
     EditText search;
     LinearLayout displayReportView;
 
-    String reportID, userID;
-    String displayName, barangay, location;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +53,7 @@ public class ViewReportsActivity extends AppCompatActivity {
         reportDB.get().addOnCompleteListener(taskReport -> {
            if(taskReport.isSuccessful()) { //USER ID FOR REPORTS ARE FETCHED
                for(QueryDocumentSnapshot reportSnap : taskReport.getResult()) {
-                    userID = reportSnap.getId();
+                    String userID = reportSnap.getId();
 
                     reportDB.document(userID).collection("reportDetails").get()
                             .addOnCompleteListener(taskDetails -> {
@@ -64,11 +61,10 @@ public class ViewReportsActivity extends AppCompatActivity {
                                     for(QueryDocumentSnapshot detailsSnap : taskDetails.getResult()) {
                                         View reportListView = getLayoutInflater().inflate(R.layout.reports_row, null, false);
 
-                                        userID = reportSnap.getId();
-                                        reportID = detailsSnap.getId();
-                                        displayName = detailsSnap.getString("LastName") + ", " + detailsSnap.getString("FirstName");
-                                        barangay = detailsSnap.getString("Barangay");
-                                        location = detailsSnap.getString("Lat") + ", " + detailsSnap.getString("Lon");
+                                        String reportID = detailsSnap.getId();
+                                        String displayName = detailsSnap.getString("LastName") + ", " + detailsSnap.getString("FirstName");
+                                        String barangay = detailsSnap.getString("Barangay");
+                                        String location = detailsSnap.getString("Lat") + ", " + detailsSnap.getString("Lon");
 
                                         //ASSIGN TO UI
                                         TextView txtReportID = reportListView.findViewById(R.id.txtReportID);

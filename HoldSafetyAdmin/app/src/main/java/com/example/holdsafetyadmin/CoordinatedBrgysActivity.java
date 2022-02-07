@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import androidx.appcompat.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,11 +19,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.Locale;
+
 public class CoordinatedBrgysActivity extends AppCompatActivity {
     String[] name, city, mobileNum;
     LinearLayout linearCoordinatedBrgys;
 
-    ImageView btnAdd;
+    ImageView btnAdd, btnSort;
+    SearchView searchBrgy;
 
     private FirebaseAuth mAuth;
     FirebaseUser user;
@@ -39,6 +43,8 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
 
         linearCoordinatedBrgys = findViewById(R.id.linearViewCoordinatedBrgys);
         btnAdd = findViewById(R.id.addBarangay);
+        searchBrgy = findViewById(R.id.brgySearch);
+        btnSort = findViewById(R.id.sort);
 
         name = getResources().getStringArray(R.array.brgyName);
         city = getResources().getStringArray(R.array.brgyCity);
@@ -139,12 +145,55 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                             linearCoordinatedBrgys.addView(detailsView);
                         }
 
+                        searchBarangay();
+
                     } else {
                         //NO DATA AVAILABLE
                         Toast.makeText(this, "No Contacts Available", Toast.LENGTH_SHORT).show();
                     }
 
                 });
+    }
+
+    public void searchBarangay(){
+        searchBrgy.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                for(int i=0; i < linearCoordinatedBrgys.getChildCount(); i++){
+                    View barangayView = linearCoordinatedBrgys.getChildAt(i);
+
+                    //DECLARE TEXTS AND BUTTONS
+                    TextView txtBarangayName = barangayView.findViewById(R.id.txtBrgyName);
+                    TextView txtCityName = barangayView.findViewById(R.id.txtBrgyCity);
+                    TextView txtMobileNumber = barangayView.findViewById(R.id.txtBrgyMobileNum);
+
+                    //CHECK IF INPUT IS PRESENT IN EVERY TEXT VIEWS
+                    String name = txtBarangayName.getText().toString().toLowerCase();
+                    String city = txtCityName.getText().toString().toLowerCase();
+                    String number = txtMobileNumber.getText().toString().toLowerCase();
+
+                    newText = newText.toLowerCase();
+
+                    //CHECK IF INPUT IS PRESENT IN EVERY TET VIEWS
+                    if(name.contains(newText)|| city.contains(newText) || number.contains(newText)){
+                        //CONTAINS
+                        barangayView.setVisibility(View.VISIBLE);
+
+                    } else{
+                        //HIDE THE VIEW IF SEARCH DOESNT MATCH ANY DATA ON DB
+                        barangayView.setVisibility(View.GONE);
+                    }
+
+                }
+
+                return false;
+            }
+        });
     }
 
     public void addBrgy(View view){

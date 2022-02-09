@@ -18,9 +18,6 @@ public class VerificationListActivity extends AppCompatActivity {
 
     LinearLayout verificationView;
 
-    String displayName;
-    Boolean isVerified;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +34,8 @@ public class VerificationListActivity extends AppCompatActivity {
         db.collection("users").get().addOnCompleteListener(task -> {
             if(task.isSuccessful()) { //USERS ARE FETCHED
                 for(QueryDocumentSnapshot userSnap : task.getResult()) {
-                    displayName = userSnap.getString("FirstName") + " " + userSnap.getString("LastName");
-                    isVerified = userSnap.getBoolean("isVerified");
+                    String displayName = userSnap.getString("FirstName") + " " + userSnap.getString("LastName");
+                    Boolean isVerified = userSnap.getBoolean("isVerified");
                     Toast.makeText(getApplicationContext(), "Query: " + displayName, Toast.LENGTH_LONG).show();
 
                     View unverifiedView = getLayoutInflater().inflate(R.layout.verification_row, null, false);

@@ -94,7 +94,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
                                 Glide.with(RegistrationDetailsActivity.this)
                                         .load(downloadUri)
                                         .into(imgIdPic);
-                                
+
                                 Log.d("imgURI", "Image download link: " + downloadUri);
                             })
                             .addOnFailureListener(e -> Log.d("imgURI", "No download link fetched"));

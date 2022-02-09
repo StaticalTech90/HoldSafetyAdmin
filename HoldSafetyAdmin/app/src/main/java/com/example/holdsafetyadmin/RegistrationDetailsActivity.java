@@ -9,9 +9,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,12 +31,14 @@ import java.util.Map;
 
 public class RegistrationDetailsActivity extends AppCompatActivity {
     TextView userID, txtLastName, txtFirstName, txtMiddleName, txtBirthDate, txtSex, txtIdPic;
+    ImageView imgIdPic;
     Button btnValidate, btnReject;
 
     String id, lastName, firstName, middleName, birthDate, sex, idPic; // USER DATA FOR DISPLAY
     String mobileNo, email; // USER DATA FOR PROFILE UPDATE
 
     FirebaseFirestore db;
+    StorageReference storageReference;
     DocumentReference docRef;
 
     @Override
@@ -42,6 +47,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration_details);
 
         db = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         userID = findViewById(R.id.lblUserID);
         txtLastName = findViewById(R.id.txtLastName);
@@ -50,6 +56,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
         txtBirthDate = findViewById(R.id.txtBirthDate);
         txtSex = findViewById(R.id.txtSex);
         txtIdPic = findViewById(R.id.txtIdPic);
+        imgIdPic = findViewById(R.id.imgIdPic);
         btnValidate = findViewById(R.id.btnValidate);
         btnReject = findViewById(R.id.btnReject);
 
@@ -78,17 +85,19 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
             docRef = db.collection("users").document(id);
             docRef.get().addOnSuccessListener(documentSnapshot -> {
                 if(documentSnapshot.exists()) {
-                    FirebaseStorage.getInstance().getReference("id").child(id).getDownloadUrl()
-                            .addOnSuccessListener(uri -> {
-                                //TODO: Fetch the image uri and display it
-                                idPic = uri.toString();
+                    FirebaseStorage.getInstance().getReference("id").child("/" + id).getDownloadUrl()
+                            .addOnSuccessListener(downloadUri -> {
+                                idPic = downloadUri.toString();
+                                txtIdPic.setText(idPic); //THIS HAS TO BE HERE COZ FUCK ASYNC METHODS
+
+                                //SHOW THE ID PIC IN IMAGEVIEW
+                                Glide.with(RegistrationDetailsActivity.this)
+                                        .load(downloadUri)
+                                        .into(imgIdPic);
+                                
+                                Log.d("imgURI", "Image download link: " + downloadUri);
                             })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getApplicationContext(), "No link fetched", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            .addOnFailureListener(e -> Log.d("imgURI", "No download link fetched"));
 
                     lastName = documentSnapshot.getString("LastName");
                     firstName = documentSnapshot.getString("FirstName");

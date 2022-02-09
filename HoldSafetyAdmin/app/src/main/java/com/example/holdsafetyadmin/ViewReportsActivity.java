@@ -1,6 +1,7 @@
 package com.example.holdsafetyadmin;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +18,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 public class ViewReportsActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
-    EditText search;
+    SearchView searchReport;
     LinearLayout displayReportView;
 
     @Override
@@ -28,12 +29,12 @@ public class ViewReportsActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         displayReportView = findViewById(R.id.linearReportList);
-        search = findViewById(R.id.txtSearch);
+        searchReport = findViewById(R.id.reportSearch);
 
         displayReports();
 
         //USER PRESSES ENTER AFTER/WHILE TYPING IN SEARCH
-        search.setOnKeyListener((v, keyCode, event) -> {
+        searchReport.setOnKeyListener((v, keyCode, event) -> {
             boolean enter = false;
             if(keyCode == KeyEvent.KEYCODE_ENTER ){
                 searchReports();
@@ -85,6 +86,8 @@ public class ViewReportsActivity extends AppCompatActivity {
                                         //ADD TO VIEW
                                         displayReportView.addView(reportListView);
                                     }
+
+                                    searchReports();
                                 }
                             });
                }
@@ -94,6 +97,43 @@ public class ViewReportsActivity extends AppCompatActivity {
 
     public void searchReports() {
         //TODO: Search function for reports
+        searchReport.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                for(int i=0; i < displayReportView.getChildCount(); i++){
+                    View reportView = displayReportView.getChildAt(i);
+
+                    //DECLARE TEXTS AND BUTTONS
+                    TextView txtReportID = reportView.findViewById(R.id.txtReportID);
+                    TextView txtReportUser = reportView.findViewById(R.id.txtReportUsername);
+                    TextView txtReportLoc = reportView.findViewById(R.id.txtReportLocation);
+
+                    //CHECK IF INPUT IS PRESENT IN EVERY TEXT VIEWS
+                    String id = txtReportID.getText().toString().toLowerCase();
+                    String user = txtReportUser.getText().toString().toLowerCase();
+                    String loc = txtReportLoc.getText().toString().toLowerCase();
+
+                    newText = newText.toLowerCase();
+
+                    //CHECK IF INPUT IS PRESENT IN EVERY TET VIEWS
+                    if(id.contains(newText)|| user.contains(newText) || loc.contains(newText)){
+                        //CONTAINS
+                        reportView.setVisibility(View.VISIBLE);
+
+                    } else{
+                        //HIDE THE VIEW IF SEARCH DOESNT MATCH ANY DATA ON DB
+                        reportView.setVisibility(View.GONE);
+                    }
+
+                }
+                return false;
+            }
+        });
     }
 
     public void sortReports() {

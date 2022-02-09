@@ -13,6 +13,16 @@
     <string name="user_name">User Name</string>
     <string name="validate_user">Validate User</string>
 
+<!--    Database collections    -->
+    <string name="adminDB">admin</string>
+    <string name="barangay">barangay</string>
+    <string name="emergencyContacts">emergencyContacts</string>
+    <string name="reportsDB">reports</string>
+    <string name="reportAdmin">reportAdmin</string>
+    <string name="reportUser">reportUser</string>
+    <string name="reportDetails">reportDetails</string>
+    <string name="userDB">users</string>
+
     <string-array name="userID">
         <item>U001</item>
         <item>U002</item>

@@ -228,33 +228,33 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/containerCoordinated"
+            android:id="@+id/containerEvidence"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_below="@+id/containerBarangay">
 
             <TextView
-                android:id="@+id/lblCoordinated"
+                android:id="@+id/lblEvidenceLink"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="10dp"
                 android:fontFamily="sans-serif"
-                android:textStyle="bold"
+                android:text="Evidence:"
 
-                android:text="Coordinated:"
                 android:textColor="@color/dark_blue"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/txtCoordinated"
+                android:id="@+id/txtEvidenceLink"
                 android:layout_width="190dp"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/lblCoordinated"
+                android:layout_toEndOf="@+id/lblEvidenceLink"
                 android:backgroundTint="@color/dark_blue"
                 android:fontFamily="sans-serif"
-                android:text="Yes"
+                android:text="/ev001.mp4"
                 android:textColor="@color/dark_blue"
 
                 android:textSize="18sp" />

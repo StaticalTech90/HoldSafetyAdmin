@@ -76,40 +76,34 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
             id = getIntent().getStringExtra("userID");
 
             docRef = db.collection("users").document(id);
-            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if(documentSnapshot.exists()) {
-                        FirebaseStorage.getInstance().getReference("id").child(id).getDownloadUrl()
-                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        //TODO: Fetch the image uri and display it
-                                        idPic = uri.toString();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getApplicationContext(), "No link fetched", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+            docRef.get().addOnSuccessListener(documentSnapshot -> {
+                if(documentSnapshot.exists()) {
+                    FirebaseStorage.getInstance().getReference("id").child(id).getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                //TODO: Fetch the image uri and display it
+                                idPic = uri.toString();
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), "No link fetched", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
-                        lastName = documentSnapshot.getString("LastName");
-                        firstName = documentSnapshot.getString("FirstName");
-                        middleName = documentSnapshot.getString("MiddleName");
-                        birthDate = documentSnapshot.getString("BirthDate");
-                        sex = documentSnapshot.getString("Sex");
-                        Log.d("VERIFY", lastName + ", " + firstName + " " + middleName + " Born on " + birthDate + " " + sex);
+                    lastName = documentSnapshot.getString("LastName");
+                    firstName = documentSnapshot.getString("FirstName");
+                    middleName = documentSnapshot.getString("MiddleName");
+                    birthDate = documentSnapshot.getString("BirthDate");
+                    sex = documentSnapshot.getString("Sex");
+                    Log.d("VERIFY", lastName + ", " + firstName + " " + middleName + " Born on " + birthDate + " " + sex);
 
-                        //FOR PROFILE UPDATE
-                        mobileNo = documentSnapshot.getString("MobileNumber");
-                        email = documentSnapshot.getString("Email");
+                    //FOR PROFILE UPDATE
+                    mobileNo = documentSnapshot.getString("MobileNumber");
+                    email = documentSnapshot.getString("Email");
 
-                        setData();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "No User Data from DB", Toast.LENGTH_SHORT).show();
-                    }
+                    setData();
+                } else {
+                    Toast.makeText(getApplicationContext(), "No User Data from DB", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -130,31 +124,22 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
     public void validateUser(){
         Map<String, Object> docUsers = new HashMap<>();
-        docUsers.put("ID", id);
-        docUsers.put("LastName", lastName);
-        docUsers.put("FirstName", firstName);
-        docUsers.put("MiddleName", middleName);
-        docUsers.put("Sex", sex);
-        docUsers.put("BirthDate", birthDate);
-
-        docUsers.put("MobileNumber", mobileNo);
-        docUsers.put("Email", email);
-        docUsers.put("profileComplete", true);
+//        docUsers.put("ID", id);
+//        docUsers.put("LastName", lastName);
+//        docUsers.put("FirstName", firstName);
+//        docUsers.put("MiddleName", middleName);
+//        docUsers.put("Sex", sex);
+//        docUsers.put("BirthDate", birthDate);
+//
+//        docUsers.put("MobileNumber", mobileNo);
+//        docUsers.put("Email", email);
+//        docUsers.put("profileComplete", true);
         docUsers.put("isVerified", true);
 
-        db.collection("users").document(id).set(docUsers)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(getApplicationContext(), "User " + firstName + " " + lastName + " has been validated.", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "User NOT validated.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//        db.collection("users").document(id).set(docUsers)
+        db.collection("users").document(id).update(docUsers)
+                .addOnSuccessListener(unused -> Toast.makeText(getApplicationContext(), "User " + firstName + " " + lastName + " has been validated.", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "User NOT validated.", Toast.LENGTH_SHORT).show());
 
         //TODO: Remove user from list of unverified
         finish();

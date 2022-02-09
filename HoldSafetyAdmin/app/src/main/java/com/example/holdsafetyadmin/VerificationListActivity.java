@@ -34,7 +34,6 @@ public class VerificationListActivity extends AppCompatActivity {
     }
 
     private void listUsers() {
-        //TODO: Only show unverified users who also have an uploaded id-pic.
         db.collection("users").get().addOnCompleteListener(task -> {
             if(task.isSuccessful()) { //USERS ARE FETCHED
                 for(QueryDocumentSnapshot userSnap : task.getResult()) {

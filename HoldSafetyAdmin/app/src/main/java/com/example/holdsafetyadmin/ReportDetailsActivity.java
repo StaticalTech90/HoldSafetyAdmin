@@ -1,23 +1,18 @@
 package com.example.holdsafetyadmin;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class ReportDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
-    TextView txtReportID, txtUserID, txtUsername, txtLocation, txtDateAndTime, txtBarangay;
-    String reportID, reportUsername, reportLocation, reportDateAndTime, reportBarangay;
+    TextView txtReportID, txtUserID, txtUsername, txtLocation, txtDateAndTime, txtBarangay, txtEvidenceLink;
+    String reportID, reportUsername, reportLocation, reportDateAndTime, reportBarangay, reportEvidenceLink;
     String userID;
 
     @Override
@@ -33,6 +28,7 @@ public class ReportDetailsActivity extends AppCompatActivity {
         txtDateAndTime = findViewById(R.id.txtDateAndTime);
         txtLocation = findViewById(R.id.txtReportLocation);
         txtBarangay = findViewById(R.id.txtBarangay);
+        txtEvidenceLink = findViewById(R.id.txtEvidenceLink);
 
         getData();
     }
@@ -48,6 +44,7 @@ public class ReportDetailsActivity extends AppCompatActivity {
                         reportLocation = documentSnapshot.getString("Lat") + ", " + documentSnapshot.getString("Lon");
                         reportDateAndTime = documentSnapshot.getString("Report Date");
                         reportBarangay = documentSnapshot.getString("Barangay");
+                        reportEvidenceLink = documentSnapshot.getString("Evidence");
 
                         setData();
                     }
@@ -62,5 +59,6 @@ public class ReportDetailsActivity extends AppCompatActivity {
         txtDateAndTime.setText(reportDateAndTime);
         txtLocation.setText(reportLocation);
         txtBarangay.setText(reportBarangay);
+        txtEvidenceLink.setText(reportEvidenceLink);
     }
 }

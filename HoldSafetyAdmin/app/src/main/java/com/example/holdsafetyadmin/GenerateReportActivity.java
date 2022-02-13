@@ -137,7 +137,6 @@ public class GenerateReportActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == WRITE_EXTERNAL_REQ_CODE) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 //DENIED ONCE
@@ -326,8 +325,7 @@ public class GenerateReportActivity extends AppCompatActivity {
         Map<String, String> reportMap = new HashMap<>();
 
         FirebaseFirestore.getInstance()
-                .collection("reportAdmin").document(barangay)
-                .collection("reportDetails").get()
+                .collection("reports").whereEqualTo("Barangay", selectedBarangay).get()
                 .addOnCompleteListener(task -> {
                     Intent intent = new Intent(this, CoordinatedBrgyDetailsActivity.class);
                     //Toast.makeText(this, user.getUid(), Toast.LENGTH_SHORT).show();
@@ -337,6 +335,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                         //startDate occurs before endDate
                         //TODO Match spinner to data
                         //TODO Dates must be between
+                        //TODO Handle if theres no report
                         Document document = new Document();
                         Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
                         //Create a new file that points to the root directory, with the given name:
@@ -393,7 +392,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     document.add(new Paragraph("Barangay: "
                                             + reportSnap.getString("Barangay") + "\n", smallNormal));
                                     document.add(new Paragraph("Name: "
-                                            + reportSnap.getString("FirstName") + 
+                                            + reportSnap.getString("FirstName") +
                                             reportSnap.getString("LastName") + "\n", smallNormal));
                                     document.add(new Paragraph("Latitude: "
                                             + reportSnap.getString("Lat") + "\n", smallNormal));

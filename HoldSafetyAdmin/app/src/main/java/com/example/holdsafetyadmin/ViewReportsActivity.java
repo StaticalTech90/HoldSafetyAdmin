@@ -48,6 +48,43 @@ public class ViewReportsActivity extends AppCompatActivity {
     }
 
     public void displayReports() {
+        db.collection("reports").get()
+                .addOnCompleteListener(taskDetails -> {
+                    if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
+                        for(QueryDocumentSnapshot detailsSnap : taskDetails.getResult()) {
+                            View reportListView = getLayoutInflater().inflate(R.layout.reports_row, null, false);
+
+                            String reportID = detailsSnap.getId();
+                            String userID = detailsSnap.getString("User ID");
+                            String displayName = detailsSnap.getString("LastName") + ", " + detailsSnap.getString("FirstName");
+                            String barangay = detailsSnap.getString("Barangay");
+                            String location = detailsSnap.getString("Lat") + ", " + detailsSnap.getString("Lon");
+
+                            //ASSIGN TO UI
+                            TextView txtReportID = reportListView.findViewById(R.id.txtReportID);
+                            TextView txtReportUsername = reportListView.findViewById(R.id.txtReportUsername);
+                            TextView txtReportLocation = reportListView.findViewById(R.id.txtReportLocation);
+
+                            txtReportID.setText(detailsSnap.getId());
+                            txtReportUsername.setText(displayName);
+                            txtReportLocation.setText(location);
+
+                            //SET ONCLICK PER ROW
+                            reportListView.setOnClickListener(v -> {
+                                Intent selectedReport = new Intent(ViewReportsActivity.this, ReportDetailsActivity.class);
+                                selectedReport.putExtra("userID", userID);
+                                selectedReport.putExtra("reportID", reportID);
+                                startActivity(selectedReport);
+                            });
+                            //ADD TO VIEW
+                            displayReportView.addView(reportListView);
+                        }
+
+                        searchReports();
+                    }
+                });
+
+        /*
         CollectionReference reportDB = db.collection("reportUser");
 
         //GET REPORT BASED ON USER ID
@@ -93,6 +130,7 @@ public class ViewReportsActivity extends AppCompatActivity {
                }
            }
         });
+         */
     }
 
     public void searchReports() {

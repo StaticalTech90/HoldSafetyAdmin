@@ -31,14 +31,25 @@
         app:layout_constraintTop_toTopOf="@+id/backArrow"
         android:layout_marginEnd="40dp"/>
 
-    <LinearLayout
-        android:id="@+id/linearUserList"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+    <ScrollView
+        android:id="@+id/scrollViewUsers"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:background="@color/dark_blue"
+        android:fillViewport="true"
         android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblValidate"
-        > </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/lblValidate">
+
+        <LinearLayout
+            android:id="@+id/linearUserList"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"/>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

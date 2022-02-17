@@ -162,15 +162,15 @@
         android:id="@+id/btnSend"
         android:layout_width="150dp"
         android:layout_height="55dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="48dp"
         android:background="@drawable/blue_button"
         android:fontFamily="sans-serif-black"
-        android:onClick="generateReport"
         android:padding="10dp"
         android:text="SEND"
         android:textColor="@color/dark_blue"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/containerBrgys" />
 

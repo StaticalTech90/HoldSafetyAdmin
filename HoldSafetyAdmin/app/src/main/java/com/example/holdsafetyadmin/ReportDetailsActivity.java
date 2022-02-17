@@ -78,13 +78,13 @@ public class ReportDetailsActivity extends AppCompatActivity {
     public String getGeoLoc(String latitude, String longitude) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        Double doubleLat = Double.parseDouble(latitude.trim());
-        Double doubleLong = Double.parseDouble(longitude.trim());
+        double doubleLat = Double.parseDouble(latitude.trim());
+        double doubleLong = Double.parseDouble(longitude.trim());
         try {
             List<Address> addresses = geocoder.getFromLocation(doubleLat, doubleLong, 1);
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
+                StringBuilder strReturnedAddress = new StringBuilder();
 
                 for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");

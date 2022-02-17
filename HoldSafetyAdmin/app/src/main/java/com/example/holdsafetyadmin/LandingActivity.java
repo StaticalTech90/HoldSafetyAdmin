@@ -1,10 +1,5 @@
 package com.example.holdsafetyadmin;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,14 +7,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LandingActivity extends AppCompatActivity {
-    Button btnLogout;
+    Button btnLogout, btnViewReport, btnManageCoordinatedBrgys, btnVerifyUser;
 
     private static final int WRITE_EXTERNAL_REQ_CODE = 1000;
     private static final int READ_EXTERNAL_REQ_CODE = 1001;
@@ -30,17 +29,15 @@ public class LandingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
 
+        btnViewReport = findViewById(R.id.btnViewReport);
+        btnManageCoordinatedBrgys = findViewById(R.id.btnManageCoordinatedBrgys);
+        btnVerifyUser = findViewById(R.id.btnVerifyUser);
         btnLogout = findViewById(R.id.btnLogout);
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Toast.makeText(LandingActivity.this, "Logged Out", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LandingActivity.this, LoginActivity.class));
-                finish();
-            }
-        });
+        btnViewReport.setOnClickListener(view -> viewReport());
+        btnManageCoordinatedBrgys.setOnClickListener(view -> manageCoordinatedBrgys());
+        btnVerifyUser.setOnClickListener(view -> verifyUser());
+        btnLogout.setOnClickListener(view -> adminLogout());
     }
 
     //checks required permissions
@@ -117,25 +114,29 @@ public class LandingActivity extends AppCompatActivity {
         setPermissions();
     }
 
-    public void viewReport(View view){
+    public void viewReport(){
         //Toast.makeText(getApplicationContext(), "View Report", Toast.LENGTH_LONG).show();
         Intent intent = new Intent (getApplicationContext(), ViewReportsActivity.class);
         startActivity(intent);
     }
 
-    public void manageCoordinatedBrgys(View view){
+    public void manageCoordinatedBrgys(){
         //Toast.makeText(getApplicationContext(), "Coordinated Barangays", Toast.LENGTH_LONG).show();
         Intent intent = new Intent (getApplicationContext(), CoordinatedBrgysActivity.class);
         startActivity(intent);
     }
 
-    public void validateUser(View view){
+    public void verifyUser(){
         //Toast.makeText(getApplicationContext(), "Verify Registration", Toast.LENGTH_LONG).show();
         Intent intent = new Intent (getApplicationContext(), VerificationListActivity.class);
         startActivity(intent);
     }
 
-    public void adminLogout(View view){
-        Toast.makeText(getApplicationContext(), "Logout", Toast.LENGTH_LONG).show();
+    public void adminLogout(){
+        Toast.makeText(getApplicationContext(), "Logout method", Toast.LENGTH_LONG).show();
+        FirebaseAuth.getInstance().signOut();
+        Toast.makeText(LandingActivity.this, "Logged Out", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(LandingActivity.this, LoginActivity.class));
+        finish();
     }
 }

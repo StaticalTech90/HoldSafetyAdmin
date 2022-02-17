@@ -31,6 +31,7 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.BuildConfig;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -99,17 +100,13 @@ public class GenerateReportActivity extends AppCompatActivity {
         selectStartDate();
         selectEndDate();
 
-        btnSendReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    generateReport(v);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+        btnSendReport.setOnClickListener(v -> {
+            try {
+                generateReport();
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         });
-
         setPermissions();
     }
 
@@ -236,7 +233,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                     Toast.makeText
                             (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
                             .show();
-                    selectedBarangay = (String) spinnerBarangay.getSelectedItem().toString().trim();
+                    selectedBarangay = spinnerBarangay.getSelectedItem().toString().trim();
                 }
             }
 
@@ -257,14 +254,11 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     private void selectStartDate() {
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int day) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                updateStartDate();
-            }
+        DatePickerDialog.OnDateSetListener date = (view, year, month, day) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            updateStartDate();
         };
 
         //show DatePickerDialog using this listener
@@ -286,14 +280,11 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     private void selectEndDate() {
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int day) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                updateEndDate();
-            }
+        DatePickerDialog.OnDateSetListener date = (view, year, month, day) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            updateEndDate();
         };
 
         //show DatePickerDialog using this listener
@@ -308,7 +299,7 @@ public class GenerateReportActivity extends AppCompatActivity {
 
     //TODO PDF REPORT LOGIC HERE
     @SuppressLint("SimpleDateFormat")
-    public void generateReport(View view) throws ParseException {
+    public void generateReport() throws ParseException {
 //       Toast.makeText(getApplicationContext(), etStartDate.getText(), Toast.LENGTH_SHORT).show();
 //       Toast.makeText(getApplicationContext(), etEndDate.getText(), Toast.LENGTH_SHORT).show();
 //       Toast.makeText(getApplicationContext(), selectedBarangay, Toast.LENGTH_SHORT).show();

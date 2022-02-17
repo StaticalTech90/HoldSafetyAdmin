@@ -1,20 +1,16 @@
 package com.example.holdsafetyadmin;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,13 +20,8 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private EditText etBarangay;
-    private EditText etCity;
-    private EditText etMobileNumber;
-    private EditText etEmail;
-    private EditText etLatitude;
-    private EditText etLongitude;
-
+    private EditText etBarangay, etCity, etMobileNumber, etEmail, etLatitude, etLongitude;
+    Button btnAddBrgy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +36,12 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.txtBrgyEmail);
         etLatitude = findViewById(R.id.txtBrgyLatitude);
         etLongitude = findViewById(R.id.txtBrgyLongitude);
+        btnAddBrgy = findViewById(R.id.btnAddBrgy);
 
+        btnAddBrgy.setOnClickListener(view -> saveBrgy());
     }
 
-    public void saveBrgy(View view){
+    public void saveBrgy(){
         Toast.makeText(getApplicationContext(), "Saved New Coordinated Barangay", Toast.LENGTH_LONG).show();
 
         Map<String, Object> docBrgys = new HashMap<>();

@@ -63,13 +63,13 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
-            android:id="@+id/sort"
+            android:id="@+id/btnSort"
             android:layout_width="30dp"
             android:layout_height="25dp"
 
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/addBarangay"
             android:layout_marginTop="10dp"
+            android:layout_toStartOf="@+id/addBarangay"
             android:src="@drawable/sort" />
 
         <ImageView

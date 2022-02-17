@@ -1,17 +1,16 @@
 package com.example.holdsafetyadmin;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.firebase.firestore.CollectionReference;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -20,6 +19,7 @@ public class ViewReportsActivity extends AppCompatActivity {
 
     SearchView searchReport;
     LinearLayout displayReportView;
+    ImageView btnSort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +30,11 @@ public class ViewReportsActivity extends AppCompatActivity {
 
         displayReportView = findViewById(R.id.linearReportList);
         searchReport = findViewById(R.id.reportSearch);
+        btnSort = findViewById(R.id.btnSort);
 
         displayReports();
+
+        btnSort.setOnClickListener(view -> sortReports());
 
         //USER PRESSES ENTER AFTER/WHILE TYPING IN SEARCH
         searchReport.setOnKeyListener((v, keyCode, event) -> {
@@ -57,7 +60,6 @@ public class ViewReportsActivity extends AppCompatActivity {
                             String reportID = detailsSnap.getId();
                             String userID = detailsSnap.getString("User ID");
                             String displayName = detailsSnap.getString("LastName") + ", " + detailsSnap.getString("FirstName");
-                            String barangay = detailsSnap.getString("Barangay");
                             String location = detailsSnap.getString("Lat") + ", " + detailsSnap.getString("Lon");
 
                             //ASSIGN TO UI
@@ -79,58 +81,9 @@ public class ViewReportsActivity extends AppCompatActivity {
                             //ADD TO VIEW
                             displayReportView.addView(reportListView);
                         }
-
                         searchReports();
                     }
                 });
-
-        /*
-        CollectionReference reportDB = db.collection("reportUser");
-
-        //GET REPORT BASED ON USER ID
-        reportDB.get().addOnCompleteListener(taskReport -> {
-           if(taskReport.isSuccessful()) { //USER ID FOR REPORTS ARE FETCHED
-               for(QueryDocumentSnapshot reportSnap : taskReport.getResult()) {
-                    String userID = reportSnap.getId();
-
-                    reportDB.document(userID).collection("reportDetails").get()
-                            .addOnCompleteListener(taskDetails -> {
-                                if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
-                                    for(QueryDocumentSnapshot detailsSnap : taskDetails.getResult()) {
-                                        View reportListView = getLayoutInflater().inflate(R.layout.reports_row, null, false);
-
-                                        String reportID = detailsSnap.getId();
-                                        String displayName = detailsSnap.getString("LastName") + ", " + detailsSnap.getString("FirstName");
-                                        String barangay = detailsSnap.getString("Barangay");
-                                        String location = detailsSnap.getString("Lat") + ", " + detailsSnap.getString("Lon");
-
-                                        //ASSIGN TO UI
-                                        TextView txtReportID = reportListView.findViewById(R.id.txtReportID);
-                                        TextView txtReportUsername = reportListView.findViewById(R.id.txtReportUsername);
-                                        TextView txtReportLocation = reportListView.findViewById(R.id.txtReportLocation);
-
-                                        txtReportID.setText(detailsSnap.getId());
-                                        txtReportUsername.setText(displayName);
-                                        txtReportLocation.setText(location);
-
-                                        //SET ONCLICK PER ROW
-                                        reportListView.setOnClickListener(v -> {
-                                            Intent selectedReport = new Intent(ViewReportsActivity.this, ReportDetailsActivity.class);
-                                            selectedReport.putExtra("userID", userID);
-                                            selectedReport.putExtra("reportID", reportID);
-                                            startActivity(selectedReport);
-                                        });
-                                        //ADD TO VIEW
-                                        displayReportView.addView(reportListView);
-                                    }
-
-                                    searchReports();
-                                }
-                            });
-               }
-           }
-        });
-         */
     }
 
     public void searchReports() {
@@ -162,12 +115,10 @@ public class ViewReportsActivity extends AppCompatActivity {
                     if(id.contains(newText)|| user.contains(newText) || loc.contains(newText)){
                         //CONTAINS
                         reportView.setVisibility(View.VISIBLE);
-
                     } else{
                         //HIDE THE VIEW IF SEARCH DOESNT MATCH ANY DATA ON DB
                         reportView.setVisibility(View.GONE);
                     }
-
                 }
                 return false;
             }

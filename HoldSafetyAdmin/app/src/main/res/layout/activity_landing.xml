@@ -23,9 +23,8 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/white_container"
             android:text="View Reports"
-            android:textSize="16sp"
 
-            android:onClick="viewReport"
+            android:textSize="16sp"
 
             />
 
@@ -33,27 +32,23 @@
             android:id="@+id/btnManageCoordinatedBrgys"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/btnViewReport"
             android:layout_marginTop="20dp"
             android:background="@drawable/white_container"
             android:text="Coordinated Barangays"
             android:textSize="16sp"
 
-            android:onClick="manageCoordinatedBrgys"
-            android:layout_below="@id/btnViewReport"
-
             />
 
         <Button
-            android:id="@+id/btnValidateUser"
+            android:id="@+id/btnVerifyUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/btnManageCoordinatedBrgys"
             android:layout_marginTop="20dp"
             android:background="@drawable/white_container"
             android:text="Validate User Registration"
             android:textSize="16sp"
-
-            android:onClick="validateUser"
-            android:layout_below="@id/btnManageCoordinatedBrgys"
 
             />
 
@@ -69,7 +64,7 @@
             android:textColor="@color/white"
 
             android:onClick="adminLogout"
-            android:layout_below="@id/btnValidateUser"
+            android:layout_below="@id/btnVerifyUser"
             android:layout_centerHorizontal="true"
 
             />

@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -19,12 +22,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class ViewReportsActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
     SearchView searchReport;
     RadioGroup sortReport;
     LinearLayout displayLatestReportView, displayOldestReportView, displayByNameReportView, displayByBarangayReportView;
+
+    String reportLat, reportLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,22 +75,38 @@ public class ViewReportsActivity extends AppCompatActivity {
         db.collection("reports").orderBy("Report Date").get()
                 .addOnCompleteListener(taskDetails -> {
                     if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
-                        setDataDisplay(displayLatestReportView, taskDetails);
-                        setDataDisplay(displayOldestReportView, taskDetails);
+                        try {
+                            setDataDisplay(displayLatestReportView, taskDetails);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            setDataDisplay(displayOldestReportView, taskDetails);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
         db.collection("reports").orderBy("User ID").get()
                 .addOnCompleteListener(taskDetails -> {
                     if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
-                        setDataDisplay(displayByNameReportView, taskDetails);
+                        try {
+                            setDataDisplay(displayByNameReportView, taskDetails);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
         db.collection("reports").orderBy("Barangay").get()
                 .addOnCompleteListener(taskDetails -> {
                     if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
-                        setDataDisplay(displayByBarangayReportView, taskDetails);
+                        try {
+                            setDataDisplay(displayByBarangayReportView, taskDetails);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
@@ -134,7 +159,7 @@ public class ViewReportsActivity extends AppCompatActivity {
          */
     }
 
-    private void setDataDisplay(LinearLayout linearLayout, Task<QuerySnapshot> taskDetails) {
+    private void setDataDisplay(LinearLayout linearLayout, Task<QuerySnapshot> taskDetails) throws IOException {
         for(QueryDocumentSnapshot detailsSnap : taskDetails.getResult()) {
             //View reportListView = getLayoutInflater().inflate(R.layout.reports_row, null, false);
 
@@ -142,7 +167,10 @@ public class ViewReportsActivity extends AppCompatActivity {
             String userID = detailsSnap.getString("User ID");
             String displayName = detailsSnap.getString("LastName") + ", " + detailsSnap.getString("FirstName");
             String barangay = detailsSnap.getString("Barangay");
-            String location = detailsSnap.getString("Lat") + ", " + detailsSnap.getString("Lon");
+
+            reportLat = detailsSnap.getString("Lat");
+            reportLong =  detailsSnap.getString("Lon");
+            //String location = detailsSnap.getString("Lat") + ", " + detailsSnap.getString("Lon");
             Timestamp date = detailsSnap.getTimestamp("Report Date");
 
             View reportListView = getLayoutInflater().inflate(R.layout.reports_row, null, false);
@@ -154,7 +182,7 @@ public class ViewReportsActivity extends AppCompatActivity {
 
             txtReportID.setText(detailsSnap.getId());
             txtReportUsername.setText(displayName);
-            txtReportLocation.setText(location);
+            txtReportLocation.setText(getGeoLoc());
             txtReportDate.setText(date.toDate().toString());
 
             //SET ONCLICK PER ROW
@@ -189,23 +217,26 @@ public class ViewReportsActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                for(int i=0; i < displayLatestReportView.getChildCount(); i++){
-                    View reportView = displayLatestReportView.getChildAt(i);
+                LinearLayout linearLayout = getShowingLinear();
+                for(int i=0; i < linearLayout.getChildCount(); i++){
+                    View reportView = linearLayout.getChildAt(i);
 
                     //DECLARE TEXTS AND BUTTONS
                     TextView txtReportID = reportView.findViewById(R.id.txtReportID);
                     TextView txtReportUser = reportView.findViewById(R.id.txtReportUsername);
                     TextView txtReportLoc = reportView.findViewById(R.id.txtReportLocation);
+                    TextView txtReportDate = reportView.findViewById(R.id.txtReportDate);
 
                     //CHECK IF INPUT IS PRESENT IN EVERY TEXT VIEWS
                     String id = txtReportID.getText().toString().toLowerCase();
                     String user = txtReportUser.getText().toString().toLowerCase();
                     String loc = txtReportLoc.getText().toString().toLowerCase();
+                    String date = txtReportDate.getText().toString().toLowerCase();
 
                     newText = newText.toLowerCase();
 
                     //CHECK IF INPUT IS PRESENT IN EVERY TET VIEWS
-                    if(id.contains(newText)|| user.contains(newText) || loc.contains(newText)){
+                    if(id.contains(newText)|| user.contains(newText) || loc.contains(newText) || date.contains(newText)){
                         //CONTAINS
                         reportView.setVisibility(View.VISIBLE);
 
@@ -226,7 +257,6 @@ public class ViewReportsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 LinearLayout  linearShowing = getShowingLinear();
-
                 switch (checkedId) {
                     case R.id.radioLatestReport:
                         //SORT ITEMS FROM NEWEST
@@ -271,4 +301,36 @@ public class ViewReportsActivity extends AppCompatActivity {
             return displayByBarangayReportView;
         }
     }
+
+
+    public String getGeoLoc() throws IOException {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        Double doubleLat = Double.parseDouble(reportLat.trim());
+        Double doubleLong = Double.parseDouble(reportLong.trim());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(doubleLat, doubleLong, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.w("Barangay Address", strReturnedAddress.toString());
+            } else {
+                Log.w("Barangay Address", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("Barangay Address", "Cannot get Address!");
+        }
+
+        return strAdd;
+        //textViewBrgyAddress.setText(strAdd);
+        //Toast.makeText(getApplicationContext(), "Address: " + strAdd, Toast.LENGTH_SHORT).show();
+
+    }
+
 }

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -18,7 +19,8 @@ public class ReportDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
     TextView txtReportID, txtUserID, txtUsername, txtLocation, txtDateAndTime, txtBarangay, txtEvidenceLink;
-    String reportID, reportUsername, reportLocation, reportDateAndTime, reportBarangay, reportEvidenceLink;
+    String reportID, reportUsername, reportLocation, reportBarangay, reportEvidenceLink;
+    Timestamp reportDateAndTime;
     String userID, latitude, longitude;
 
     @Override
@@ -50,7 +52,7 @@ public class ReportDetailsActivity extends AppCompatActivity {
                         latitude = documentSnapshot.getString("Lat");
                         longitude = documentSnapshot.getString("Lon");
                         reportLocation = getGeoLoc(latitude, longitude);
-                        reportDateAndTime = documentSnapshot.getString("Report Date");
+                        reportDateAndTime = documentSnapshot.getTimestamp("Report Date");
                         reportBarangay = documentSnapshot.getString("Barangay");
                         reportEvidenceLink = documentSnapshot.getString("Evidence");
 
@@ -108,7 +110,7 @@ public class ReportDetailsActivity extends AppCompatActivity {
         txtReportID.setText("Report ID: " + reportID);
         txtUserID.setText(userID);
         txtUsername.setText(reportUsername);
-        txtDateAndTime.setText(reportDateAndTime);
+        txtDateAndTime.setText(reportDateAndTime.toDate().toString());
         txtLocation.setText(reportLocation);
         txtBarangay.setText(reportBarangay);
         txtEvidenceLink.setText(reportEvidenceLink);

@@ -86,6 +86,59 @@
             android:onClick="generateReport"
             android:src="@drawable/send" />
 
+        <RadioGroup
+            android:id="@+id/reportSort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lblViewReports"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <RadioButton
+                android:id="@+id/radioLatestReport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@android:color/transparent"
+                android:checked="true"
+                android:padding="15dp"
+                android:text="Latest"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/radioOldestReport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@android:color/transparent"
+                android:padding="15dp"
+                android:text="Oldest"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/radioByNameReport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@android:color/transparent"
+                android:padding="15dp"
+                android:text="By Barangay"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/radioByBarangayReport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@android:color/transparent"
+                android:padding="15dp"
+                android:text="By Users"
+                android:textColor="@color/white" />
+
+
+        </RadioGroup>
+
     </RelativeLayout>
 
     <ScrollView
@@ -100,13 +153,46 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
-
+        
         <LinearLayout
-            android:id="@+id/linearReportList"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal">
+
+            <LinearLayout
+                android:id="@+id/linearReportListLatest"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"/>
+
+            <LinearLayout
+                android:id="@+id/linearReportListOldest"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/linearReportListByName"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/linearReportListByBarangay"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+
     </ScrollView>
 
     <!--    <androidx.recyclerview.widget.RecyclerView-->

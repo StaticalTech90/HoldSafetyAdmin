@@ -17,7 +17,6 @@ public class VerificationListActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
     LinearLayout verificationView;
-
     //String displayName;
     //Boolean isVerified;
 

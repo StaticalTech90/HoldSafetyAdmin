@@ -1,7 +1,5 @@
 package com.example.holdsafetyadmin;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,11 +7,12 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -59,11 +58,12 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         docRef = db.collection("barangay").document(brgyID);
 
-        btnBrgyUpdate.setOnClickListener(this::updateBarangay);
-        btnRemoveBrgy.setOnClickListener(this::removeBarangay);
+        btnBrgyUpdate.setOnClickListener(view -> updateBarangay());
+        btnRemoveBrgy.setOnClickListener(view -> removeBarangay());
+
     }
 
-    private void removeBarangay(View view) {
+    private void removeBarangay() {
         AlertDialog.Builder dialogRemoveAccount;
         dialogRemoveAccount = new AlertDialog.Builder(CoordinatedBrgyDetailsActivity.this);
         dialogRemoveAccount.setTitle("Confirm Deletion");
@@ -77,18 +77,12 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        dialogRemoveAccount.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-
+        dialogRemoveAccount.setNegativeButton("Dismiss", (dialogInterface, i) -> dialogInterface.dismiss());
         AlertDialog alertDialog = dialogRemoveAccount.create();
         alertDialog.show();
     }
 
-    private void updateBarangay(View view) {
+    private void updateBarangay() {
         String changedMobileNumber = textViewBrgyMobileNum.getText().toString().trim();
         String changedEmail = textViewBrgyEmail.getText().toString().trim();
         String changedLat = textViewBrgyLatitude.getText().toString().trim();
@@ -112,8 +106,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         });
     }
 
-
-
     public void getData(){
         if(getIntent().hasExtra("barangay") && getIntent().hasExtra("city") && getIntent().hasExtra("latitude")
                 && getIntent().hasExtra("longitude") && getIntent().hasExtra("mobileNumber") && getIntent().hasExtra("barangayID")){
@@ -127,9 +119,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
             if(getIntent().hasExtra("email")){
                 brgyEmail = getIntent().getStringExtra("email");
             }
-        }
-
-        else{
+        } else{
             Toast.makeText(getApplicationContext(), "No Intent Data", Toast.LENGTH_SHORT).show();
         }
     }
@@ -137,13 +127,13 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
     public void getGeoLoc() throws IOException {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        Double doubleLat = Double.parseDouble(brgyLat.trim());
-        Double doubleLong = Double.parseDouble(brgyLong.trim());
+        double doubleLat = Double.parseDouble(brgyLat.trim());
+        double doubleLong = Double.parseDouble(brgyLong.trim());
         try {
             List<Address> addresses = geocoder.getFromLocation(doubleLat, doubleLong, 1);
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
+                StringBuilder strReturnedAddress = new StringBuilder();
 
                 for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
@@ -157,10 +147,8 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.w("Barangay Address", "Cannot get Address!");
         }
-
         textViewBrgyAddress.setText(strAdd);
         //Toast.makeText(getApplicationContext(), "Address: " + strAdd, Toast.LENGTH_SHORT).show();
-
     }
 
     public void setData(){

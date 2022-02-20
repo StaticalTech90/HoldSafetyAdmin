@@ -7,17 +7,419 @@
     tools:context=".ReportDetailsActivity"
     android:background="@color/dark_blue">
 
-    <ImageView
-        android:id="@+id/backArrow"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/backContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:0.15"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintTop_toTopOf="@+id/mainGuidelineH1">
 
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="40dp"
-        android:src="@drawable/left_arrow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
 
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="1:0.8"
+
+            android:src="@drawable/left_arrow"
+            android:onClick="goBack"
+            android:contentDescription="back button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headingContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintTop_toBottomOf="@+id/backContainer">
+
+        <TextView
+            android:id="@+id/lblDesc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="sans-serif"
+            android:text="The details regarding the report:"
+            android:textColor="@color/gray"
+
+            android:textSize="18sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtReportID"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="sans-serif-black"
+            android:text="Report ID: "
+            android:textColor="@color/white"
+
+            android:textSize="34sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lblDesc" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+
+        app:layout_constraintTop_toBottomOf="@id/headingContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/inputContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                android:paddingVertical="25dp"
+                android:paddingHorizontal="20dp"
+
+                android:background="@drawable/white_container">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerUserID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/lblUserID"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="User ID:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/reportIDGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtUserID"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtUserID"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblUserID"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/reportIDGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="10dp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerUserID">
+
+                    <TextView
+                        android:id="@+id/lblUsername"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Name:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/usernameGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtUsername"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtUsername"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblUsername"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/usernameGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerDateAndTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="10dp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerUsername">
+
+                    <TextView
+                        android:id="@+id/lblDateAndTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Date and Time:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/dateAndTimeGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtDateAndTime"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtDateAndTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblDateAndTime"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/dateAndTimeGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerReportLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="10dp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerDateAndTime">
+
+                    <TextView
+                        android:id="@+id/lblReportLocation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Location:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/locationGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtReportLocation"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtReportLocation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblReportLocation"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/locationGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerBarangay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="10dp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerReportLocation">
+
+                    <TextView
+                        android:id="@+id/lblBarangay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Barangay:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/barangayGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtBarangay"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtBarangay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblBarangay"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/barangayGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerEvidenceLink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="10dp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerBarangay">
+
+                    <TextView
+                        android:id="@+id/lblEvidenceLink"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Evidence:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/evidenceGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtEvidenceLink"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtEvidenceLink"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblEvidenceLink"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/evidenceGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!--
     <TextView
         android:id="@+id/lblDesc"
         android:layout_width="wrap_content"
@@ -260,6 +662,34 @@
                 android:textSize="18sp" />
         </RelativeLayout>
 
-    </RelativeLayout>
+    </RelativeLayout> -->
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineV1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineV2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineH1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

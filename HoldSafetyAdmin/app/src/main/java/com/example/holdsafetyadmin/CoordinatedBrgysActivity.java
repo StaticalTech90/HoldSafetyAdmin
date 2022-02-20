@@ -1,10 +1,8 @@
 package com.example.holdsafetyadmin;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,10 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.Locale;
-
 public class CoordinatedBrgysActivity extends AppCompatActivity {
-    String[] name, city, mobileNum;
     LinearLayout linearCoordinatedBrgys;
 
     ImageView btnAdd, btnSort;
@@ -44,16 +39,12 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
         linearCoordinatedBrgys = findViewById(R.id.linearViewCoordinatedBrgys);
         btnAdd = findViewById(R.id.addBarangay);
         searchBrgy = findViewById(R.id.brgySearch);
-        btnSort = findViewById(R.id.sort);
+        btnSort = findViewById(R.id.btnSort);
 
-        name = getResources().getStringArray(R.array.brgyName);
-        city = getResources().getStringArray(R.array.brgyCity);
-        mobileNum = getResources().getStringArray(R.array.brgyMobileNum);
-
-        CoordinatedBrgyAdapter coordinatedBrgyAdapter = new CoordinatedBrgyAdapter(this, name, city, mobileNum);
         btnAdd.setOnClickListener(this::addBrgy);
 
         getBarangay();
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -92,11 +83,11 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                             txtMobileNumber.setText(mobileNumber);
 
                             //SET DETAILS ONCLICK LISTENER
-                            details.setOnClickListener(view -> {
-
+                            detailsView.setOnClickListener(view -> {
                                 Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
 
                                 //PREPARE DATA TO PASS
+                                //TODO: THIS CAN BE TURNED INTO A HASHMAP FOR SHORTER CODE
                                 intent.putExtra("barangay", barangay);
                                 intent.putExtra("city", city);
                                 intent.putExtra("email", email);
@@ -106,52 +97,15 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                                 intent.putExtra("barangayID", documentId);
 
                                 startActivity(intent);
-//                                //SHOW DETAILS DIALOG
-//                                Dialog dialog = new Dialog(SelectContactActivity.this);
-//                                View dialogView = getLayoutInflater().inflate(R.layout.activity_update_contact, null, false);
-//                                dialog.setContentView(dialogView);
-//                                dialog.setCancelable(false);
-//
-//                                //DECLARE DIALOG VIEWS
-//                                TextView txtEmail = dialogView.findViewById(R.id.lblEmail);
-//                                TextView txtFirstName = dialogView.findViewById(R.id.lblFirstName);
-//                                TextView txtLastName = dialogView.findViewById(R.id.lblLastName);
-//                                TextView txtMobileNumber = dialogView.findViewById(R.id.lblMobileNumber);
-//                                TextView txtRelation = dialogView.findViewById(R.id.lblRelation);
-//
-//                                Button btnApplyUpdate = dialogView.findViewById(R.id.btnUpdateContact);
-//
-//
-//                                //SET TEXT AND ON CLICK LISTENER
-//                                txtEmail.setText(email);
-//                                txtFirstName.setText(firstName);
-//                                txtLastName.setText(lastName);
-//                                txtMobileNumber.setText(mobileNumber);
-//                                txtRelation.setText(relation);
-//
-//                                btnApplyUpdate.setOnClickListener(view1 -> {
-//                                    //GET DATA I GUESS
-//
-//                                    //DISMISS DIALOG
-//                                    dialog.dismiss();
-//
-//                                    startActivity(new Intent(this, UpdateContactActivity.class));
-//                                });
-//
-//                                dialog.show();
                             });
-
                             //ADD TO LINEAR
                             linearCoordinatedBrgys.addView(detailsView);
                         }
-
                         searchBarangay();
-
                     } else {
                         //NO DATA AVAILABLE
                         Toast.makeText(this, "No Contacts Available", Toast.LENGTH_SHORT).show();
                     }
-
                 });
     }
 
@@ -188,9 +142,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                         //HIDE THE VIEW IF SEARCH DOESNT MATCH ANY DATA ON DB
                         barangayView.setVisibility(View.GONE);
                     }
-
                 }
-
                 return false;
             }
         });

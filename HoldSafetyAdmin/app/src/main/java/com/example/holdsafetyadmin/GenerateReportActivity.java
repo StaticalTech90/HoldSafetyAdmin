@@ -31,6 +31,7 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.BuildConfig;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,9 +41,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Header;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.BufferedWriter;
@@ -99,18 +104,15 @@ public class GenerateReportActivity extends AppCompatActivity {
         selectStartDate();
         selectEndDate();
 
-        btnSendReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    generateReport(v);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+        btnSendReport.setOnClickListener(v -> {
+            try {
+                generateReport();
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         });
-
         setPermissions();
+
     }
 
     //checks required permissions
@@ -236,7 +238,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                     Toast.makeText
                             (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
                             .show();
-                    selectedBarangay = (String) spinnerBarangay.getSelectedItem().toString().trim();
+                    selectedBarangay = spinnerBarangay.getSelectedItem().toString().trim();
                 }
             }
 
@@ -257,14 +259,11 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     private void selectStartDate() {
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int day) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                updateStartDate();
-            }
+        DatePickerDialog.OnDateSetListener date = (view, year, month, day) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            updateStartDate();
         };
 
         //show DatePickerDialog using this listener
@@ -286,14 +285,11 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     private void selectEndDate() {
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int day) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                updateEndDate();
-            }
+        DatePickerDialog.OnDateSetListener date = (view, year, month, day) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            updateEndDate();
         };
 
         //show DatePickerDialog using this listener
@@ -308,7 +304,7 @@ public class GenerateReportActivity extends AppCompatActivity {
 
     //TODO PDF REPORT LOGIC HERE
     @SuppressLint("SimpleDateFormat")
-    public void generateReport(View view) throws ParseException {
+    public void generateReport() throws ParseException {
 //       Toast.makeText(getApplicationContext(), etStartDate.getText(), Toast.LENGTH_SHORT).show();
 //       Toast.makeText(getApplicationContext(), etEndDate.getText(), Toast.LENGTH_SHORT).show();
 //       Toast.makeText(getApplicationContext(), selectedBarangay, Toast.LENGTH_SHORT).show();
@@ -342,7 +338,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                         File file = new File(getExternalFilesDir(null), "report.pdf");
                         Uri path = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
                         this.grantUriPermission("com.example.holdsafetyadmin", path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
+                        int count = 0;
                         //Checking the availability state of the External Storage.
                         String state = Environment.getExternalStorageState();
                         if (!Environment.MEDIA_MOUNTED.equals(state)) {
@@ -355,10 +351,13 @@ public class GenerateReportActivity extends AppCompatActivity {
 
                         try {
                             //INITIALIZE PDF HERE
+                            PdfPCell cell = new PdfPCell();
+                            PdfPTable table = new PdfPTable(2);
                             PdfWriter.getInstance(document, new FileOutputStream(String.valueOf(file)));
 
                             document.open();
                             document.addCreationDate();
+
 
                             for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
                                 Log.i("report snap", reportSnap.getId());
@@ -371,6 +370,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     //suppress lint warnings
                                     assert startDate != null;
                                     assert tempDate != null;
+                                    count++;
 
                                     //TODO DISABLED CONDITION IN THE MEANTIME [WIP]
                                     //Toast.makeText(this, reportSnap.getId(), Toast.LENGTH_SHORT).show();
@@ -388,28 +388,29 @@ public class GenerateReportActivity extends AppCompatActivity {
 //                                    } else {
 //                                        Toast.makeText(this, "Start Date greater than End Date", Toast.LENGTH_SHORT).show();
 //                                    }
+                                    //Column 2
 
-                                    document.add(new Paragraph("Barangay: "
-                                            + reportSnap.getString("Barangay") + "\n", smallNormal));
-                                    document.add(new Paragraph("Name: "
-                                            + reportSnap.getString("FirstName") +
-                                            reportSnap.getString("LastName") + "\n", smallNormal));
-                                    document.add(new Paragraph("Latitude: "
-                                            + reportSnap.getString("Lat") + "\n", smallNormal));
-                                    document.add(new Paragraph("Longitude: "
-                                            + reportSnap.getString("Lon") + "\n", smallNormal));
-                                    document.add(new Paragraph("Report Date: "
-                                            + reportSnap.getString("Report Date") + "\n", smallNormal));
-                                    document.add(new Paragraph("\n", smallNormal));
+//                                    document.add(new Paragraph("Name: "
+//                                            + reportSnap.getString("FirstName") +
+//                                            reportSnap.getString("LastName") + "\n", smallNormal));
+//                                    document.add(new Paragraph("Latitude: "
+//                                            + reportSnap.getString("Lat") + "\n", smallNormal));
+//                                    document.add(new Paragraph("Longitude: "
+//                                            + reportSnap.getString("Lon") + "\n", smallNormal));
+//                                    document.add(new Paragraph("Report Date: "
+//                                            + reportSnap.getString("Report Date") + "\n", smallNormal));
+//                                    document.add(new Paragraph("\n", smallNormal));
 
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
                             }
 
+                            document.add(new Paragraph(selectedBarangay, smallNormal));
+                            document.add(new Paragraph(String.valueOf(count), smallNormal));
+
                             document.close();
                             Toast.makeText(this, "PDF Generated", Toast.LENGTH_SHORT).show();
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
@@ -439,7 +440,7 @@ public class GenerateReportActivity extends AppCompatActivity {
         String username = "holdsafety.ph@gmail.com";
         String password = "HoldSafety@4qmag";
         String subject = "REPORT SUMMARY - HoldSafety";
-        String recipient = "201801263@iacademy.edu.ph, 201801336@iacademy.edu.ph";
+        String recipient = "201801263@iacademy.edu.ph"; //, 201801336@iacademy.edu.ph
         List<String> recipients = Collections.singletonList(recipient);
 
         ///////////////////////////////////////////////////////////////////

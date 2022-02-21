@@ -7,6 +7,540 @@
     tools:context=".CoordinatedBrgyDetailsActivity"
     android:background="@color/dark_blue">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/backContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:0.10"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintTop_toTopOf="@+id/mainGuidelineH1">
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="1:0.8"
+
+            android:src="@drawable/left_arrow"
+            android:onClick="goBack"
+            android:contentDescription="back button" />
+
+        <TextView
+            android:id="@+id/btnRemoveBrgy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="sans-serif-black"
+            android:textColor="@color/red"
+
+            android:text="@string/btnRemoveBrgy"
+            android:clickable="true"
+            android:focusable="true"
+
+            app:autoSizeMaxTextSize="15sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headingContainer"
+        android:layout_width="0dp"
+        android:layout_marginTop="35dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintTop_toBottomOf="@+id/backContainer">
+
+        <TextView
+            android:id="@+id/lblDesc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="sans-serif"
+            android:text="The details regarding the barangay:"
+            android:textColor="@color/gray"
+
+            android:textSize="18sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtBrgyName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="sans-serif-black"
+            android:text="Barangay:"
+            android:textColor="@color/white"
+
+            android:textSize="34sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lblDesc" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+
+        app:layout_constraintTop_toBottomOf="@id/headingContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/inputContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerBrgyDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                android:paddingVertical="25dp"
+                android:paddingHorizontal="20dp"
+
+                android:background="@drawable/white_container">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerBrgyID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/lblBrgyID"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Barangay ID:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/brgyIDGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtBrgyID"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtBrgyID"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblBrgyID"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/brgyIDGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerBrgyCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerBrgyID">
+
+                    <TextView
+                        android:id="@+id/lblBrgyCity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="City:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/brgyCityGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtBrgyCity"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtBrgyCity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblBrgyCity"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/brgyCityGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerBrgyMobileNum"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerBrgyCity">
+
+                    <TextView
+                        android:id="@+id/lblBrgyMobileNum"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Mobile #:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/brgyMobileNumGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/txtBrgyMobileNum"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/txtBrgyMobileNum"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+
+                        android:inputType="number"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblBrgyMobileNum"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/brgyMobileNumGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerBrgyEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerBrgyMobileNum">
+
+                    <TextView
+                        android:id="@+id/lblBrgyEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Email:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/brgyEmailGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/txtBrgyEmail"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/txtBrgyEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+
+                        android:inputType="textEmailAddress"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblBrgyEmail"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/brgyEmailGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerBrgyLatitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerBrgyEmail">
+
+                    <TextView
+                        android:id="@+id/lblBrgyLatitude"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Latitude:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/brgyLatitudeGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/txtBrgyLatitude"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/txtBrgyLatitude"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+
+                        android:inputType="numberDecimal"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblBrgyLatitude"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/brgyLatitudeGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerBrgyLongitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerBrgyLatitude">
+
+                    <TextView
+                        android:id="@+id/lblBrgyLongitude"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Latitude:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/brgyLongitudeGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/txtBrgyLongitude"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/txtBrgyLongitude"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+
+                        android:inputType="numberDecimal"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblBrgyLongitude"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/brgyLongitudeGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerBrgyAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="15dp"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerBrgyLongitude">
+
+                    <TextView
+                        android:id="@+id/lblBrgyAddress"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:fontFamily="sans-serif"
+                        android:text="Address:"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/brgyAddressGuidelineV1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtBrgyAddress"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txtBrgyAddress"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/dark_blue"
+                        android:fontFamily="sans-serif"
+
+                        android:textColor="@color/dark_blue"
+                        android:textSize="18sp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/lblBrgyAddress"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/brgyAddressGuidelineV1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/btnSaveChanges"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="35dp"
+
+                app:layout_constraintTop_toBottomOf="@id/containerBrgyDetails"
+                app:layout_constraintStart_toStartOf="@+id/sendBtnGuidelineV1"
+                app:layout_constraintEnd_toEndOf="@id/sendBtnGuidelineV2"
+
+                android:background="@drawable/blue_button"
+                android:fontFamily="sans-serif-black"
+                android:text="SAVE CHANGES"
+                android:textColor="@color/dark_blue"
+
+                app:autoSizeMaxTextSize="22sp"
+                app:autoSizeMinTextSize="15sp"
+                app:autoSizeStepGranularity="3sp"
+
+                app:autoSizeTextType="uniform" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/sendBtnGuidelineV1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.20" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/sendBtnGuidelineV2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.80" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!--
+
     <ImageView
         android:id="@+id/backArrow"
         android:layout_width="30dp"
@@ -326,6 +860,34 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/containerBrgyDetails" />
+        app:layout_constraintTop_toBottomOf="@+id/containerBrgyDetails" /> -->
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineV1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineV2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineH1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

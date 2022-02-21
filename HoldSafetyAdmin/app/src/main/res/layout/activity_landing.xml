@@ -7,6 +7,135 @@
     tools:context=".LandingActivity"
     android:background="@color/dark_blue">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="-50dp"
+        android:layout_marginBottom="50dp"
+        android:alpha=".1"
+        android:fontFamily="sans-serif-black"
+        android:text="HOLD SAFETY"
+        android:textColor="@color/hint_color"
+        android:textSize="130sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/loginGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/loginGuidelineV2"
+        app:layout_constraintTop_toTopOf="@id/loginGuidelineH1"
+        app:layout_constraintBottom_toTopOf="@id/loginGuidelineH2">
+
+        <Button
+            android:id="@+id/btnViewReport"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:layout_marginTop="15dp"
+            android:paddingVertical="5dp"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:textColor="@color/dark_blue"
+            android:textSize="17sp"
+
+            android:text="VIEW REPORTS"
+
+            android:background="@drawable/white_container"/>
+
+        <Button
+            android:id="@+id/btnVerifyUser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnManageCoordinatedBrgys"
+
+            android:layout_marginTop="15dp"
+            android:paddingVertical="5dp"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:textColor="@color/dark_blue"
+            android:textSize="17sp"
+
+            android:text="VERIFY USER REGISTRATION"
+
+            android:background="@drawable/white_container"/>
+
+        <Button
+            android:id="@+id/btnManageCoordinatedBrgys"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnViewReport"
+
+            android:layout_marginTop="15dp"
+            android:paddingVertical="5dp"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:textColor="@color/dark_blue"
+            android:textSize="17sp"
+
+            android:text="COORDINATED BARANGAYS"
+
+            android:background="@drawable/white_container"/>
+
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintStart_toStartOf="@id/logoutGuidelineV1"
+            app:layout_constraintEnd_toEndOf="@id/logoutGuidelineV2"
+            app:layout_constraintTop_toBottomOf="@id/btnVerifyUser"
+
+            android:layout_marginTop="50dp"
+            android:paddingVertical="5dp"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:textColor="@color/white"
+            android:textSize="17sp"
+
+            android:text="Logout"
+
+            android:background="@drawable/logout_button"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/logoutGuidelineV1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.15" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/logoutGuidelineV2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.85" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--
     <RelativeLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content"
@@ -69,6 +198,36 @@
 
             />
 
-    </RelativeLayout>
+    </RelativeLayout> -->
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/loginGuidelineV1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/loginGuidelineV2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/loginGuidelineH1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/loginGuidelineH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

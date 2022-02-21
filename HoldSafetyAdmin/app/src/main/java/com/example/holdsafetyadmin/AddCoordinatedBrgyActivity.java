@@ -28,6 +28,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_coordinated_brgy);
 
+
         mAuth = FirebaseAuth.getInstance();
 
         etBarangay = findViewById(R.id.txtBarangayName);

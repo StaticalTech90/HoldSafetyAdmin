@@ -112,6 +112,7 @@ public class GenerateReportActivity extends AppCompatActivity {
             }
         });
         setPermissions();
+
     }
 
     //checks required permissions

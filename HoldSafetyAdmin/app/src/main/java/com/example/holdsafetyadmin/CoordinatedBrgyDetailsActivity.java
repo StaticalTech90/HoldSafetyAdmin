@@ -60,6 +60,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
 
         btnBrgyUpdate.setOnClickListener(view -> updateBarangay());
         btnRemoveBrgy.setOnClickListener(view -> removeBarangay());
+
     }
 
     private void removeBarangay() {

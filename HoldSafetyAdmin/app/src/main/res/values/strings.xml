@@ -5,6 +5,7 @@
     <string name="details_link"><i><u>details</u></i></string>
     <string name="btnRemoveBrgy"><u>Remove Barangay</u></string>
     <string name="location">Location:</string>
+    <string name="date">Date:</string>
     <string name="username">Username</string>
     <string name="_001">001</string>
     <string name="report_id">Report ID:</string>
@@ -22,93 +23,4 @@
     <string name="reportUser">reportUser</string>
     <string name="reportDetails">reportDetails</string>
     <string name="userDB">users</string>
-
-    <string-array name="userID">
-        <item>U001</item>
-        <item>U002</item>
-        <item>U003</item>
-        <item>U004</item>
-        <item>U005</item>
-        <item>U006</item>
-        <item>U007</item>
-        <item>U008</item>
-        <item>U009</item>
-        <item>U010</item>
-    </string-array>
-
-    <string-array name="userFullName">
-        <item>Daniel Tiongco</item>
-        <item>Danielle David</item>
-        <item>Francis Fabul</item>
-        <item>Nhoriza Icaro</item>
-        <item>Joselito Mandigma</item>
-        <item>Name Name</item>
-        <item>Name Name</item>
-        <item>Name Name</item>
-        <item>Name Name</item>
-        <item>Name Name</item>
-    </string-array>
-
-    <string-array name="brgyName">
-        <item>Santo Tomas</item>
-        <item>Maybunga</item>
-        <item>Santa Cruz</item>
-        <item>Santa Ana</item>
-        <item>Rosario</item>
-        <item>Yakal</item>
-        <item>Ayala</item>
-        <item>Buendia</item>
-        <item>Barangay</item>
-    </string-array>
-
-    <string-array name="brgyCity">
-        <item>Pasig City</item>
-        <item>Pasig City</item>
-        <item>Pasig City</item>
-        <item>Pasig City</item>
-        <item>Pasig City</item>
-        <item>Pasig City</item>
-        <item>Pasig City</item>
-        <item>Pasig City</item>
-        <item>Pasig City</item>
-    </string-array>
-
-    <string-array name="brgyMobileNum">
-        <item>09123456789</item>
-        <item>09213456789</item>
-        <item>09323456789</item>
-        <item>09423456789</item>
-        <item>09523456789</item>
-        <item>09623456789</item>
-        <item>09423456789</item>
-        <item>09523456789</item>
-        <item>09623456789</item>
-    </string-array>
-
-    <string-array name="reportID">
-        <item>001</item>
-        <item>002</item>
-        <item>003</item>
-        <item>004</item>
-        <item>005</item>
-        <item>006</item>
-    </string-array>
-
-    <string-array name="reportUsername">
-        <item>Daniel Tiongco</item>
-        <item>Danielle David</item>
-        <item>Francis Fabul</item>
-        <item>Nhoriza Icaro</item>
-        <item>Joselito Mandigma</item>
-        <item>Name Name</item>
-    </string-array>
-
-    <string-array name="reportLocation">
-        <item>837 NHA Bldg., Caspo Fiesta Road</item>
-        <item>17/F ACE Building, 101 Rada Street, Legaspi Village</item>
-        <item>40 Canseco Street San Francisco Del Monte</item>
-        <item>11C Prudence St. Sta. Ana Taguig City</item>
-        <item>34th Floor, Don Benito Building, Mayombo District</item>
-        <item>G/F Sct Building 143 Shaw Boulevard Corner Lawson Street</item>
-    </string-array>
 </resources>

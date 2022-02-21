@@ -7,39 +7,241 @@
     tools:context=".ViewReportsActivity"
     android:background="@color/dark_blue">
 
-    <ImageView
-        android:id="@+id/backArrow"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/backContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintTop_toTopOf="@+id/mainGuidelineH1">
 
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="40dp"
-        android:src="@drawable/left_arrow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:id="@+id/layoutSearch"
-        android:layout_width="220dp"
-        android:layout_height="30dp"
-        android:background="@drawable/white_container"
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
 
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="1:0.8"
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            android:src="@drawable/left_arrow"
+            android:contentDescription="back button" />
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/reportSearch"
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/white_container"
+
+            app:layout_constraintStart_toStartOf="@+id/searchGuidelineV1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/reportSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:queryHint="Search Report"
+                app:iconifiedByDefault="false"
+                android:layoutDirection="rtl"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/searchGuidelineV1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.35" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headingContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:layout_marginTop="25dp"
+        app:layout_constraintDimensionRatio="1:0.15"
+
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintTop_toBottomOf="@+id/backContainer">
+
+        <TextView
+            android:id="@+id/lblViewReports"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="sans-serif-black"
+            android:text="View Reports"
+            android:textColor="@color/white"
+
+            android:textSize="34sp"
+            app:autoSizeTextType="uniform"
+
+            app:layout_constraintEnd_toEndOf="@id/sortIconGuidelineV1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btnSort"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:src="@drawable/sort"
+            app:layout_constraintEnd_toEndOf="@id/addIconGuidelineV1"
+            app:layout_constraintStart_toStartOf="@id/sortIconGuidelineV1"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:padding="12dp"/>
+
+        <ImageView
+            android:id="@+id/sendReport"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="generateReport"
+
+            android:src="@drawable/send"
+            app:layout_constraintStart_toEndOf="@+id/btnSort"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:padding="12dp"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/sortIconGuidelineV1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.7" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/addIconGuidelineV1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.85" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RadioGroup
+        android:id="@+id/reportSort"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:visibility="gone"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
+
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintTop_toBottomOf="@id/headingContainer"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radioLatestReport"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            app:queryHint="Search Report"
-            app:iconifiedByDefault="false"
-            android:layoutDirection="rtl"/>
+            android:layout_weight="1"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:padding="5dp"
+            android:text="Latest"
+            android:textColor="@color/light_blue" />
 
-    </RelativeLayout>
+        <RadioButton
+            android:id="@+id/radioOldestReport"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@android:color/transparent"
+            android:padding="5dp"
+            android:text="Oldest"
+            android:textColor="@color/white" />
 
+        <RadioButton
+            android:id="@+id/radiobyUserReport"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@android:color/transparent"
+            android:padding="5dp"
+            android:text="By Barangay"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/radioByBarangayReport"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@android:color/transparent"
+            android:padding="5dp"
+            android:text="By Users"
+            android:textColor="@color/white" />
+
+    </RadioGroup>
+
+    <ScrollView
+        android:id="@+id/scrollViewReports"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/dark_blue"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintTop_toBottomOf="@+id/reportSort"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearViewCoordinatedBrgys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
+
+            <LinearLayout
+                android:id="@+id/linearReportListLatest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"/>
+
+            <LinearLayout
+                android:id="@+id/linearReportListOldest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/linearReportListbyUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/linearReportListByBarangay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!--
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="320dp"
@@ -193,16 +395,35 @@
         </LinearLayout>
 
 
-    </ScrollView>
+    </ScrollView> -->
 
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/recyclerviewReports"-->
-    <!--        android:layout_width="320dp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="15dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/header"/>-->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineV1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineV2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineH1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
 
 
 

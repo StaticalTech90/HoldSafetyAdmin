@@ -7,6 +7,177 @@
     tools:context=".CoordinatedBrgysActivity"
     android:background="@color/dark_blue">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/backContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintTop_toTopOf="@+id/mainGuidelineH1">
+
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="1:0.8"
+
+            android:src="@drawable/left_arrow"
+            android:contentDescription="back button" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/white_container"
+
+            app:layout_constraintStart_toStartOf="@+id/searchGuidelineV1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/brgySearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:queryHint="Search Barangay"
+                app:iconifiedByDefault="false"
+                android:layoutDirection="rtl"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/searchGuidelineV1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.35" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headingContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:layout_marginTop="25dp"
+        app:layout_constraintDimensionRatio="1:0.3"
+
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintTop_toBottomOf="@+id/backContainer">
+
+        <TextView
+            android:id="@+id/lblCoordinatedBrgys"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="sans-serif-black"
+            android:text="Coordinated Barangays"
+            android:textColor="@color/white"
+
+            android:textSize="34sp"
+            app:autoSizeTextType="uniform"
+
+            app:layout_constraintEnd_toEndOf="@id/sortIconGuidelineV1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btnSort"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:src="@drawable/sort"
+            app:layout_constraintEnd_toEndOf="@id/addIconGuidelineV1"
+            app:layout_constraintStart_toStartOf="@id/sortIconGuidelineV1"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:padding="12dp"/>
+
+        <ImageView
+            android:id="@+id/addBarangay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:src="@drawable/add"
+            app:layout_constraintStart_toEndOf="@+id/btnSort"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:padding="12dp"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/sortIconGuidelineV1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.7" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/addIconGuidelineV1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.85" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:id="@+id/scrollViewCoordinatedBrgys"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/dark_blue"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintTop_toBottomOf="@+id/headingContainer"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearViewCoordinatedBrgys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"/>
+    </ScrollView>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineV1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineV2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineH1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <!--
+
     <ImageView
         android:id="@+id/backArrow"
         android:layout_width="30dp"
@@ -87,7 +258,7 @@
 
     </RelativeLayout>
 
-    <!-- LIST VIEW -->
+    LIST VIEW
     <ScrollView
         android:id="@+id/scrollViewCoordinatedBrgys"
         android:layout_width="0dp"
@@ -105,6 +276,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"/>
-    </ScrollView>
+    </ScrollView> -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

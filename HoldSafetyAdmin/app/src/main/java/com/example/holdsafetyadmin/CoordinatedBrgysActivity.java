@@ -18,7 +18,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class CoordinatedBrgysActivity extends AppCompatActivity {
-    String[] name, city, mobileNum;
     LinearLayout linearCoordinatedBrgys;
 
     ImageView btnAdd, btnSort;
@@ -42,14 +41,10 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
         searchBrgy = findViewById(R.id.brgySearch);
         btnSort = findViewById(R.id.btnSort);
 
-        name = getResources().getStringArray(R.array.brgyName);
-        city = getResources().getStringArray(R.array.brgyCity);
-        mobileNum = getResources().getStringArray(R.array.brgyMobileNum);
-
-        CoordinatedBrgyAdapter coordinatedBrgyAdapter = new CoordinatedBrgyAdapter(this, name, city, mobileNum);
         btnAdd.setOnClickListener(this::addBrgy);
 
         getBarangay();
+
     }
 
     @SuppressLint("SetTextI18n")

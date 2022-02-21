@@ -39,7 +39,6 @@ public class LandingActivity extends AppCompatActivity {
         btnManageCoordinatedBrgys.setOnClickListener(view -> manageCoordinatedBrgys());
         btnVerifyUser.setOnClickListener(view -> verifyUser());
         btnLogout.setOnClickListener(view -> adminLogout());
-
     }
 
     //checks required permissions

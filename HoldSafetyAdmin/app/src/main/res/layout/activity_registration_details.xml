@@ -404,6 +404,10 @@
 
                         android:textColor="@color/dark_blue"
                         android:textSize="18sp"
+                        android:autoLink="web"
+
+                        android:clickable="true"
+                        android:focusable="true"
 
                         android:singleLine="true"
                         android:ellipsize="end"

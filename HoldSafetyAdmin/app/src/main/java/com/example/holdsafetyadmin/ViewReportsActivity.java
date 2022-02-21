@@ -70,6 +70,8 @@ public class ViewReportsActivity extends AppCompatActivity {
 
         btnSort.setOnClickListener(view -> sortReports());
 
+        btnSort.setOnClickListener(view -> sortReports());
+
         //USER PRESSES ENTER AFTER/WHILE TYPING IN SEARCH
         searchReport.setOnKeyListener((v, keyCode, event) -> {
             boolean enter = false;

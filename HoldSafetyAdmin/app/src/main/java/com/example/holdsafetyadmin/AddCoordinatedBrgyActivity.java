@@ -40,7 +40,6 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         btnAddBrgy = findViewById(R.id.btnAddBrgy);
 
         btnAddBrgy.setOnClickListener(view -> saveBrgy());
-
     }
 
     public void saveBrgy(){

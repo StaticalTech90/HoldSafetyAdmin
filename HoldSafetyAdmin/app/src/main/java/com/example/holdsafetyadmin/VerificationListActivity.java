@@ -38,7 +38,7 @@ public class VerificationListActivity extends AppCompatActivity {
                 for(QueryDocumentSnapshot userSnap : task.getResult()) {
                     String displayName = userSnap.getString("FirstName") + " " + userSnap.getString("LastName");
                     Boolean isVerified = userSnap.getBoolean("isVerified");
-                    Toast.makeText(getApplicationContext(), "Query: " + displayName, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Query: " + displayName, Toast.LENGTH_LONG).show();
 
                     View unverifiedView = getLayoutInflater().inflate(R.layout.verification_row, null, false);
                     if(!isVerified) {
@@ -52,7 +52,7 @@ public class VerificationListActivity extends AppCompatActivity {
                                     txtUserID.setText(userSnap.getId());
                                     txtUserName.setText(displayName);
 
-                                    Toast.makeText(getApplicationContext(), "onSuccess: " + displayName, Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getApplicationContext(), "onSuccess: " + displayName, Toast.LENGTH_LONG).show();
 
                                     //SET ONCLICK PER ROW
                                     unverifiedView.setOnClickListener(v -> {

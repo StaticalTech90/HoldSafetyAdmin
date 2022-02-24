@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.work.Data;
+import androidx.work.WorkInfo;
 
+import com.google.android.gms.common.internal.Constants;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -69,6 +73,7 @@ public class GenerateReportActivity extends AppCompatActivity {
     FirebaseUser user;
     FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private SendReportViewModel srViewModel;
 
     Spinner spinnerBarangay;
     String selectedBarangay;
@@ -88,6 +93,9 @@ public class GenerateReportActivity extends AppCompatActivity {
         //Get data from db and auto-input in the form
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
+        //get viewmodel
+        srViewModel = new SendReportViewModel(getApplication());
 
         //TODO DECLARE BOTH DATEPICKER
         //TODO DECLARE ONLICKLISTENER
@@ -109,6 +117,22 @@ public class GenerateReportActivity extends AppCompatActivity {
         });
         setPermissions();
 
+        srViewModel.sendReport();
+        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
+
+            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
+                return;
+            }
+
+            WorkInfo workInfo = listOfWorkInfo.get(0);
+
+            boolean finished = workInfo.getState().isFinished();
+            if (!finished) {
+                Log.i("FINISHED", "NOT Done");
+            } else {
+                Log.i("FINISHED", "Done");
+            }
+        });
     }
 
     //checks required permissions

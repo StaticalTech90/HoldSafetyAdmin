@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +50,13 @@ import java.util.Objects;
 
 public class SendReportWorker extends Worker {
     Context applicationContext = getApplicationContext();
+    private static final String DEFAULT_START_TIME = "00:01";
+    private static final String DEFAULT_END_TIME = "03:00";
+
+    String reportLat;
+    String reportLong;
+    String reportAdd;
+    String message;
 
     public SendReportWorker(
             @NonNull Context context,
@@ -60,79 +68,77 @@ public class SendReportWorker extends Worker {
     @Override
     public Result doWork() {
 
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        Date date = c.getTime();
+        String formattedDate = dateFormat.format(date);
+
         try {
-            FirebaseFirestore.getInstance()
-                    .collection("reports").orderBy("Report Date", Query.Direction.ASCENDING)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            int count = 0;
+            Date currentDate = dateFormat.parse(formattedDate);
+            Date startDate = dateFormat.parse(DEFAULT_START_TIME);
+            Date endDate = dateFormat.parse(DEFAULT_END_TIME);
 
-                            try {
-                                for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
-                                    Log.i("report snap", reportSnap.getId());
+            if (day == 1 && currentDate.after(startDate) && currentDate.before(endDate)) {
+                try {
+                    FirebaseFirestore.getInstance()
+                            .collection("reports").orderBy("Report Date", Query.Direction.ASCENDING)
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    int count = 0;
 
-                                    Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
+                                    try {
+                                        for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
+                                            Log.i("report snap", reportSnap.getId());
 
-                                    //suppress lint warnings
+                                            Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
 
-                                    //TODO DISABLED CONDITION IN THE MEANTIME [WIP]
-                                    //Toast.makeText(this, reportSnap.getId(), Toast.LENGTH_SHORT).show();
-                                    //DATE NOTES
-                                    //date.after(); // means date is date1 > date2
-                                    //date.before(); // means date is date1 < date2
+                                            //CHECK IF START DATE IS GREATER THAN END DATE
+                                            //declare long and lat of the report, for geoloc functionality
+                                            reportLat = reportSnap.getString("Lat");
+                                            reportLong = reportSnap.getString("Lon");
+                                            reportAdd = getGeoLoc(reportLat, reportLong);
+                                            count++;
 
-                                    //CHECK IF START DATE IS GREATER THAN END DATE
-                                        //declare long and lat of the report, for geoloc functionality
-                                        String reportLat = reportSnap.getString("Lat");
-                                        String reportLong = reportSnap.getString("Lon");
-                                        String reportAdd = getGeoLoc(reportLat, reportLong);
+                                        }
 
-                                        count++;
+                                        message = getGeoLoc(reportLat, reportLong) +" "+ count;
 
-                                    /*
-                                    document.add(new Paragraph("Name: "
-                                            + reportSnap.getString("FirstName") + " " +
-                                            reportSnap.getString("LastName") + "\n", smallNormal));
-                                    document.add(new Paragraph("Address: " + reportAdd + "\n", smallNormal));
-                                    document.add(new Paragraph("Report Date: "
-                                            + tempDate.toString() + "\n", smallNormal));
-                                    document.add(new Paragraph("\n", smallNormal));
-                                     */
-
-                                        //BALIKTAD LNG PALA PLS DONT MODIFY IF ARGUMENT
-                                    /*
-                                    if(tempDate.compareTo(startDate)>=0 && tempDate.compareTo((endDate))<=0){
-                                        Toast.makeText(this, "Hello Reports", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(this, "No Date Found", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                     */
+                                    //TODO EXECUTE SEND EMAIL
+                                    try {
+                                        String email = "201801263@iacademy.edu.ph";
+                                        String username = "holdsafety.ph@gmail.com";
+                                        String password = "HoldSafety@4qmag";
+                                        String subject = "AUTOMATED Alert Message - HoldSafety";
+
+                                        List<String> recipients = Collections.singletonList(email);
+                                        //email of sender, password of sender, list of recipients, email subject, email body
+                                        new MailTask(SendReportWorker.class).execute(username, password, recipients, subject, message);
+
+                                        //Toast.makeText(LandingActivity.this, "Email Sent", Toast.LENGTH_LONG).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    //NO DATA AVAILABLE
+                                    Log.e("Task Error", "No Barangays Available");
                                 }
+                            });
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            //TODO EXECUTE SEND EMAIL
-                            try {
-                                
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            //NO DATA AVAILABLE
-                            Log.e("Task Error", "No Barangays Available");
-                        }
-                    });
-            return Result.success();
-        } catch (Throwable throwable) {
-
-            // Technically WorkManager will return Result.failure()
-            // but it's best to be explicit about it.
-            // Thus if there were errors, we're return FAILURE
-            Log.e(TAG, "Error", throwable);
-            return Result.failure();
+                } catch (Throwable throwable) {
+                    Log.e(TAG, "Error", throwable);
+                    return Result.failure();
+                }
+            }
+        } catch (Exception ignored) {
+            Log.e("ParseException", ignored.getMessage());
         }
+
+        return Result.success();
 
     }
 

@@ -11,9 +11,14 @@ public class MailTask extends AsyncTask {
 
     private ProgressDialog statusDialog;
     private Activity sendMailActivity;
+    private Class sendMailClass;
 
     public MailTask(Activity activity) {
         sendMailActivity = activity;
+    }
+
+    public MailTask(Class c) {
+        sendMailClass = c;
     }
 
     //LIBRARY LINK
@@ -23,10 +28,10 @@ public class MailTask extends AsyncTask {
     //https://myaccount.google.com/lesssecureapps?pli=1&rapt=AEjHL4OjA8svjuyhOsu93E_Ucur6JnTV2LPZSOEwxEOQ-OzOL6Koqe8eSBC_-_4XjRz9rlTkKnqfT04IwRnNdsIYra8GfIkmow
 
     protected void onPreExecute() {
-        statusDialog = new ProgressDialog(sendMailActivity);
-        statusDialog.setMessage("Getting ready...");
-        statusDialog.setIndeterminate(false);
-        statusDialog.setCancelable(false);
+//        statusDialog = new ProgressDialog(sendMailActivity);
+//        statusDialog.setMessage("Getting ready...");
+//        statusDialog.setIndeterminate(false);
+//        statusDialog.setCancelable(false);
         //statusDialog.show();
     }
 

@@ -5,7 +5,11 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,19 +31,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -292,9 +304,11 @@ public class GenerateReportActivity extends AppCompatActivity {
 //       Toast.makeText(getApplicationContext(), etStartDate.getText(), Toast.LENGTH_SHORT).show();
 //       Toast.makeText(getApplicationContext(), etEndDate.getText(), Toast.LENGTH_SHORT).show();
 //       Toast.makeText(getApplicationContext(), selectedBarangay, Toast.LENGTH_SHORT).show();
+
         //GET DATES
         String start = etStartDate.getText().toString();
         Date startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
+
         String end = etEndDate.getText().toString();
         Date endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
 
@@ -305,24 +319,27 @@ public class GenerateReportActivity extends AppCompatActivity {
         Map<String, String> reportMap = new HashMap<>();
 
         FirebaseFirestore.getInstance()
-                .collection("reports").whereEqualTo("Barangay", selectedBarangay).get()
+                .collection("reports")
+                .whereEqualTo("Barangay", selectedBarangay).orderBy("Report Date", Query.Direction.ASCENDING)
+                .get()
                 .addOnCompleteListener(task -> {
                     Intent intent = new Intent(this, CoordinatedBrgyDetailsActivity.class);
-                    //Toast.makeText(this, user.getUid(), Toast.LENGTH_SHORT).show();
                     if (task.isSuccessful()) {
-                        //FOR EACH
-                        //GET ALL ID
                         //startDate occurs before endDate
                         //TODO Match spinner to data
                         //TODO Dates must be between
                         //TODO Handle if theres no report
                         Document document = new Document();
                         Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
+                        Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+
                         //Create a new file that points to the root directory, with the given name:
                         File file = new File(getExternalFilesDir(null), "report.pdf");
                         Uri path = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()), BuildConfig.APPLICATION_ID + ".provider", file);
                         this.grantUriPermission("com.example.holdsafetyadmin", path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
                         int count = 0;
+
                         //Checking the availability state of the External Storage.
                         String state = Environment.getExternalStorageState();
                         if (!Environment.MEDIA_MOUNTED.equals(state)) {
@@ -336,71 +353,97 @@ public class GenerateReportActivity extends AppCompatActivity {
                         try {
                             //INITIALIZE PDF HERE
                             PdfPCell cell = new PdfPCell();
-                            PdfPTable table = new PdfPTable(2);
+                            PdfPTable table = new PdfPTable(3);
                             PdfWriter.getInstance(document, new FileOutputStream(String.valueOf(file)));
 
                             document.open();
                             document.addCreationDate();
 
+                            try {
+                                //InputStream ims = getAssets().open("holdsafety_login_admin.png");
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.holdsafety_login_admin);
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                Image image = Image.getInstance(stream.toByteArray());
+                                image.scalePercent(10);
+                                image.setAlignment(Element.ALIGN_CENTER);
+                                document.add(image);
+                            } catch (IOException e) {
+                                Toast.makeText(this, "Img Catch: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+
+                            table.addCell(new Paragraph("Name", smallBold));
+                            table.addCell(new Paragraph("Address", smallBold));
+                            table.addCell(new Paragraph("Report Date", smallBold));
 
                             for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
                                 Log.i("report snap", reportSnap.getId());
 
-                                try {
+                                Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
 
-                                    String stringDate = reportSnap.getString("Report Date");
-                                    Date tempDate = new SimpleDateFormat("MM-dd-yyyy").parse(stringDate);
+                                //suppress lint warnings
+                                assert startDate != null;
+                                assert tempDate != null;
 
-                                    //suppress lint warnings
-                                    assert startDate != null;
-                                    assert tempDate != null;
-                                    count++;
+                                //TODO DISABLED CONDITION IN THE MEANTIME [WIP]
+                                //Toast.makeText(this, reportSnap.getId(), Toast.LENGTH_SHORT).show();
+                                //DATE NOTES
+                                //date.after(); // means date is date1 > date2
+                                //date.before(); // means date is date1 < date2
 
-                                    //TODO DISABLED CONDITION IN THE MEANTIME [WIP]
-                                    //Toast.makeText(this, reportSnap.getId(), Toast.LENGTH_SHORT).show();
-                                    //DATE NOTES
-                                    //date.after() means date is date1 > date2
-                                    //date.before() means date is date1 < date2
-                                    //CHECK IF START DATE IS GREATER THAN END DATE
-//                                    if(tempDate.after(startDate) && tempDate.before(endDate)){
-//                                        //BALIKTAD LNG PALA PLS DONT MODIFY IF ARGUMENT
-//                                        if(tempDate.compareTo(startDate)>=0
-//                                           && tempDate.compareTo((endDate))<=0){
-//                                    } else {
-//                                            Toast.makeText(this, "No Date Found", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    } else {
-//                                        Toast.makeText(this, "Start Date greater than End Date", Toast.LENGTH_SHORT).show();
-//                                    }
+                                //CHECK IF START DATE IS GREATER THAN END DATE
+                                if(tempDate.after(startDate) && tempDate.before(endDate)){
+                                    //declare long and lat of the report, for geoloc functionality
+                                    String reportLat = reportSnap.getString("Lat");
+                                    String reportLong = reportSnap.getString("Lon");
+                                    String reportAdd = getGeoLoc(reportLat, reportLong);
+
                                     //Column 2
+                                    count++;
+                                    table.addCell(new Paragraph(reportSnap.getString("FirstName") + " " +
+                                            reportSnap.getString("LastName"), smallNormal));
+                                    table.addCell(new Paragraph(reportAdd, smallNormal));
+                                    table.addCell(new Paragraph(tempDate.toString(), smallNormal));
 
-//                                    document.add(new Paragraph("Name: "
-//                                            + reportSnap.getString("FirstName") +
-//                                            reportSnap.getString("LastName") + "\n", smallNormal));
-//                                    document.add(new Paragraph("Latitude: "
-//                                            + reportSnap.getString("Lat") + "\n", smallNormal));
-//                                    document.add(new Paragraph("Longitude: "
-//                                            + reportSnap.getString("Lon") + "\n", smallNormal));
-//                                    document.add(new Paragraph("Report Date: "
-//                                            + reportSnap.getString("Report Date") + "\n", smallNormal));
-//                                    document.add(new Paragraph("\n", smallNormal));
+                                    /*
+                                    document.add(new Paragraph("Name: "
+                                            + reportSnap.getString("FirstName") + " " +
+                                            reportSnap.getString("LastName") + "\n", smallNormal));
+                                    document.add(new Paragraph("Address: " + reportAdd + "\n", smallNormal));
+                                    document.add(new Paragraph("Report Date: "
+                                            + tempDate.toString() + "\n", smallNormal));
+                                    document.add(new Paragraph("\n", smallNormal));
+                                     */
 
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
+                                    //BALIKTAD LNG PALA PLS DONT MODIFY IF ARGUMENT
+                                    /*
+                                    if(tempDate.compareTo(startDate)>=0 && tempDate.compareTo((endDate))<=0){
+                                        Toast.makeText(this, "Hello Reports", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(this, "No Date Found", Toast.LENGTH_SHORT).show();
+                                    }
+                                     */
+                                } else {
+                                    //Toast.makeText(this, "Report Date is not within the range of selected dates", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
-                            document.add(new Paragraph(selectedBarangay, smallNormal));
-                            document.add(new Paragraph(String.valueOf(count), smallNormal));
+                            document.add(new Paragraph("Barangay: " + selectedBarangay, smallNormal));
+                            document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
+                            document.add(new Paragraph("Number of Reports: " + String.valueOf(count) + "\n\n", smallNormal));
+                            document.add(table);
 
                             document.close();
                             Log.i("PDF", "PDF Generated");
                         } catch (Exception e) {
+                            Toast.makeText(this, "Error Catch: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         } finally {
                             try {
                                 document.close();
                             } catch (Exception e) {
+                                Toast.makeText(this, "Error Finally Catch: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 Log.e("Error", e.getMessage());
                             }
                         }
@@ -424,7 +467,7 @@ public class GenerateReportActivity extends AppCompatActivity {
         String username = "holdsafety.ph@gmail.com";
         String password = "HoldSafety@4qmag";
         String subject = "REPORT SUMMARY - HoldSafety";
-        String recipient = "201801263@iacademy.edu.ph"; //, 201801336@iacademy.edu.ph
+        String recipient = "201801336@iacademy.edu.ph"; // 201801263@iacademy.edu.ph
         List<String> recipients = Collections.singletonList(recipient);
 
         ///////////////////////////////////////////////////////////////////
@@ -434,7 +477,6 @@ public class GenerateReportActivity extends AppCompatActivity {
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient});
 
         ///////////////////////////////////////////////////////////////////
-
         Document document = new Document();
         Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
         //Create a new file that points to the root directory, with the given name:
@@ -445,13 +487,13 @@ public class GenerateReportActivity extends AppCompatActivity {
                 PackageManager.MATCH_DEFAULT_ONLY)),
                 path,
                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
+
         emailIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         //KEEP FOR DEBUGGING
         //emailIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         //FOR EMAIL
-//        new MailTask(this).execute(username, password, recipients, subject, path);
+        //new MailTask(this).execute(username, password, recipients, subject, path);
 
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
         if (path != null) {
@@ -459,6 +501,35 @@ public class GenerateReportActivity extends AppCompatActivity {
         }
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Summary Report");
         this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+    }
+
+    public String getGeoLoc(String reportLat, String reportLong) throws IOException {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        double doubleLat = Double.parseDouble(reportLat.trim());
+        double doubleLong = Double.parseDouble(reportLong.trim());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(doubleLat, doubleLong, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder();
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.w("Barangay Address", strReturnedAddress.toString());
+            } else {
+                Log.w("Barangay Address", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("Barangay Address", "Cannot get Address!");
+        }
+
+        return strAdd.trim();
+        //textViewBrgyAddress.setText(strAdd);
+        //Toast.makeText(getApplicationContext(), "Address: " + strAdd, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -63,6 +63,6 @@ public class MailTask extends AsyncTask {
 
     @Override
     public void onPostExecute(Object result) {
-        statusDialog.dismiss();
+        //statusDialog.dismiss();
     }
 }

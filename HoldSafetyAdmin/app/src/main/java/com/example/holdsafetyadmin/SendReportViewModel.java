@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -23,8 +25,6 @@ public class SendReportViewModel extends ViewModel {
     private WorkManager mWorkManager;
     private LiveData<List<WorkInfo>> mSavedWorkInfo;
 
-
-
     public SendReportViewModel(@NonNull Application application) {
         super();
         mWorkManager = WorkManager.getInstance(application);
@@ -39,13 +39,15 @@ public class SendReportViewModel extends ViewModel {
     void sendReport() {
         Log.v("INVOKED", "send invoked");
         PeriodicWorkRequest periodicWork = new PeriodicWorkRequest.Builder(SendReportWorker.class,
-                2, TimeUnit.HOURS)
+                900000, TimeUnit.MILLISECONDS) //15 mins
                 .addTag("send_report_work")
                 .build();
 
-        WorkManager.getInstance()
-                .enqueueUniquePeriodicWork("send_report_work",
-                        ExistingPeriodicWorkPolicy.REPLACE, periodicWork);
+//        WorkManager.getInstance()
+//                .enqueueUniquePeriodicWork("send_report_work",
+//                        ExistingPeriodicWorkPolicy.KEEP, periodicWork);
+
+        WorkManager.getInstance(appContext).enqueue(periodicWork);
     }
 
     void cancelWork() {

@@ -3,49 +3,26 @@ package com.example.holdsafetyadmin;
 import static com.google.firebase.inappmessaging.internal.Logging.TAG;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.util.Date;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 public class SendReportWorker extends Worker {
@@ -79,7 +56,7 @@ public class SendReportWorker extends Worker {
             Date startDate = dateFormat.parse(DEFAULT_START_TIME);
             Date endDate = dateFormat.parse(DEFAULT_END_TIME);
 
-            if (day == 1 && currentDate.after(startDate) && currentDate.before(endDate)) {
+            //if (day == 1 && currentDate.after(startDate) && currentDate.before(endDate)) {
                 try {
                     FirebaseFirestore.getInstance()
                             .collection("reports").orderBy("Report Date", Query.Direction.ASCENDING)
@@ -103,14 +80,15 @@ public class SendReportWorker extends Worker {
 
                                         }
 
-                                        message = getGeoLoc(reportLat, reportLong) +" "+ count;
+                                        //message here
+                                        message = "Address: " + reportAdd +"\n Count: "+ count;
 
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
                                     //TODO EXECUTE SEND EMAIL
                                     try {
-                                        String email = "201801263@iacademy.edu.ph";
+                                        String email = "201801336@iacademy.edu.ph";
                                         String username = "holdsafety.ph@gmail.com";
                                         String password = "HoldSafety@4qmag";
                                         String subject = "AUTOMATED Alert Message - HoldSafety";
@@ -126,20 +104,20 @@ public class SendReportWorker extends Worker {
                                 } else {
                                     //NO DATA AVAILABLE
                                     Log.e("Task Error", "No Barangays Available");
+
                                 }
                             });
-
                 } catch (Throwable throwable) {
                     Log.e(TAG, "Error", throwable);
                     return Result.failure();
                 }
-            }
+           // }
         } catch (Exception ignored) {
             Log.e("ParseException", ignored.getMessage());
+            return Result.failure();
         }
 
         return Result.success();
-
     }
 
     public String getGeoLoc(String reportLat, String reportLong) throws IOException {

@@ -43,11 +43,12 @@ public class SendReportViewModel extends ViewModel {
                 .addTag("send_report_work")
                 .build();
 
-//        WorkManager.getInstance()
-//                .enqueueUniquePeriodicWork("send_report_work",
-//                        ExistingPeriodicWorkPolicy.KEEP, periodicWork);
+        WorkManager.getInstance()
+                .enqueueUniquePeriodicWork("send_report_work",
+                        ExistingPeriodicWorkPolicy.KEEP, periodicWork);
 
         WorkManager.getInstance(appContext).enqueue(periodicWork);
+
     }
 
     void cancelWork() {

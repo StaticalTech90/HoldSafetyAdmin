@@ -242,8 +242,7 @@ public class ViewReportsActivity extends AppCompatActivity {
                         latest.setTextColor(getResources().getColor(R.color.light_blue));
                         oldest.setTextColor(getResources().getColor(R.color.white));
                         byBrgy.setTextColor(getResources().getColor(R.color.white));
-                        byUser
-.setTextColor(getResources().getColor(R.color.white));
+                        byUser.setTextColor(getResources().getColor(R.color.white));
                         break;
                     case R.id.radioOldestReport:
                         //SORT ITEMS FROM OLDEST
@@ -313,7 +312,7 @@ public class ViewReportsActivity extends AppCompatActivity {
                 for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
-                strAdd = strReturnedAddress.toString();
+                strAdd = strReturnedAddress.toString().trim();
                 Log.w("Barangay Address", strReturnedAddress.toString());
             } else {
                 Log.w("Barangay Address", "No Address returned!");

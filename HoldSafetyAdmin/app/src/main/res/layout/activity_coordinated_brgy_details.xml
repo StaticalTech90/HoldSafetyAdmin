@@ -409,7 +409,7 @@
                         android:layout_height="wrap_content"
 
                         android:fontFamily="sans-serif"
-                        android:text="Latitude:"
+                        android:text="Longitude:"
 
                         android:textColor="@color/dark_blue"
                         android:textSize="18sp"

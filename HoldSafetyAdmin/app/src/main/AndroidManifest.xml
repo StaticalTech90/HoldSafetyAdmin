@@ -16,32 +16,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HoldSafetyAdmin"
+        android:screenOrientation="portrait"
         android:allowBackup="true">
         <activity
             android:name=".GenerateReportActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".ReportDetailsActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:label="ReportDetails"
             android:parentActivityName=".ViewReportsActivity" />
         <activity
             android:name=".ViewReportsActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity android:name=".AddCoordinatedBrgyActivity" />
         <activity
             android:name=".CoordinatedBrgyDetailsActivity"
+            android:screenOrientation="portrait"
             android:label="BrgyDetails"
             android:parentActivityName=".CoordinatedBrgysActivity" />
-        <activity android:name=".CoordinatedBrgysActivity" />
-        <activity android:name=".RejectUserActivity" />
+        <activity android:name=".CoordinatedBrgysActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RejectUserActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".RegistrationDetailsActivity"
+            android:screenOrientation="portrait"
             android:label="Details"
             android:parentActivityName=".VerificationListActivity" />
-        <activity android:name=".VerificationListActivity" />
-        <activity android:name=".LandingActivity" />
+        <activity android:name=".VerificationListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".LandingActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

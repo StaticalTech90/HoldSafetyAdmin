@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
@@ -29,6 +34,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
     EditText textViewBrgyMobileNum, textViewBrgyEmail, textViewBrgyLatitude, textViewBrgyLongitude;
     String brgyName, brgyCity, brgyMobileNum, brgyEmail, brgyLat, brgyLong, brgyID;
     Button btnBrgyUpdate;
+    Boolean isNumberChanged, isEmailChanged, isLatChanged, isLongChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +53,13 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         btnBrgyUpdate = findViewById(R.id.btnSaveChanges);
         btnRemoveBrgy = findViewById(R.id.btnRemoveBrgy);
 
+        isNumberChanged = false;
+        isEmailChanged = false;
+        isLatChanged = false;
+        isLongChanged = false;
+
         getData();
+
         try {
             getGeoLoc();
         } catch (IOException e) {
@@ -57,10 +69,104 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         docRef = db.collection("barangay").document(brgyID);
+        
+        checkUpdates();
 
         btnBrgyUpdate.setOnClickListener(view -> updateBarangay());
         btnRemoveBrgy.setOnClickListener(view -> removeBarangay());
 
+    }
+
+    private void checkUpdates() {
+        //check if there are changes for each edit texts
+        textViewBrgyMobileNum.addTextChangedListener(new TextWatcher() {
+            String newMobileNum;
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                newMobileNum = textViewBrgyMobileNum.getText().toString().trim();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(brgyMobileNum.equals(newMobileNum)){
+                    isNumberChanged = false;
+                    Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No Changes", Toast.LENGTH_SHORT).show();
+                } else{
+                    isNumberChanged = true;
+                    //Toast.makeText(CoordinatedBrgyDetailsActivity.this, "New Barangay Number", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        textViewBrgyEmail.addTextChangedListener(new TextWatcher() {
+            String newEmail;
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                newEmail = textViewBrgyEmail.getText().toString().trim();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(brgyEmail.equals(newEmail)){
+                    isEmailChanged = false;
+                    Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No Changes", Toast.LENGTH_SHORT).show();
+                } else{
+                    isEmailChanged = true;
+                    //Toast.makeText(CoordinatedBrgyDetailsActivity.this, "New Barangay Email", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        textViewBrgyLatitude.addTextChangedListener(new TextWatcher() {
+            String newLat;
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                newLat = textViewBrgyLatitude.getText().toString().trim();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(brgyLat.equals(newLat)){
+                    isLatChanged = false;
+                    Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No Changes", Toast.LENGTH_SHORT).show();
+                } else{
+                    isLatChanged = true;
+                    //Toast.makeText(CoordinatedBrgyDetailsActivity.this, "New Barangay Lat", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        textViewBrgyLongitude.addTextChangedListener(new TextWatcher() {
+            String newLong;
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                newLong = textViewBrgyLongitude.getText().toString().trim();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(brgyLong.equals(newLong)){
+                    isLongChanged = false;
+                    Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No Changes", Toast.LENGTH_SHORT).show();
+                } else{
+                    isLongChanged = true;
+                    //Toast.makeText(CoordinatedBrgyDetailsActivity.this, "New Barangay Longitude", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void removeBarangay() {
@@ -88,22 +194,49 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         String changedLat = textViewBrgyLatitude.getText().toString().trim();
         String changedLong = textViewBrgyLongitude.getText().toString().trim();
 
-        docRef.get().addOnSuccessListener(documentSnapshot -> {
-            if(documentSnapshot.exists()){
-                docRef.update("MobileNumber", changedMobileNumber);
-                docRef.update("Email", changedEmail);
-                docRef.update("Latitude", changedLat);
-                docRef.update("Longitude", changedLong);
+        String emailRegex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+        String mobileNumberRegex = "^(09|\\+639)\\d{9}$";
+        Pattern emailPattern = Pattern.compile(emailRegex);
+        Pattern mobileNumberPattern = Pattern.compile(mobileNumberRegex);
+        Matcher emailMatcher = emailPattern.matcher(changedEmail);
+        Matcher mobileNumberMatcher = mobileNumberPattern.matcher(changedMobileNumber);
 
-                Toast.makeText(this, "Successfully updated", Toast.LENGTH_SHORT).show();
+        if(isNumberChanged || isLatChanged || isLongChanged || isEmailChanged){
+            if(TextUtils.isEmpty(changedMobileNumber)){
+                textViewBrgyMobileNum.setError("Please enter mobile number");
+            } else if (!mobileNumberMatcher.matches()) {
+                textViewBrgyMobileNum.setError("Please enter a valid mobile number");
+            } else if(TextUtils.isEmpty(changedEmail)){
+                textViewBrgyEmail.setError("Please enter email");
+            } else if (!emailMatcher.matches()) {
+                textViewBrgyEmail.setError("Please enter a valid email");
+            } else if (TextUtils.isEmpty(changedLat)){
+                textViewBrgyLatitude.setError("Please enter a latitude");
+            } else if (TextUtils.isEmpty(changedLong)){
+                textViewBrgyLongitude.setError("Please enter a longitude");
+            } else {
+                docRef.get().addOnSuccessListener(documentSnapshot -> {
+                    if(documentSnapshot.exists()){
+                        docRef.update("MobileNumber", changedMobileNumber);
+                        docRef.update("Email", changedEmail);
+                        docRef.update("Latitude", changedLat);
+                        docRef.update("Longitude", changedLong);
 
-                startActivity(new Intent(this, CoordinatedBrgyDetailsActivity.class));
-                finish();
+                        Toast.makeText(this, "Successfully updated", Toast.LENGTH_SHORT).show();
+
+                        startActivity(new Intent(this, CoordinatedBrgyDetailsActivity.class));
+                        finish();
+                    }
+                    else {
+                        Toast.makeText(CoordinatedBrgyDetailsActivity.this, "Failed to update", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-            else {
-                Toast.makeText(CoordinatedBrgyDetailsActivity.this, "Failed to update", Toast.LENGTH_SHORT).show();
-            }
-        });
+        } else {
+            Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No changes made", Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
     public void getData(){

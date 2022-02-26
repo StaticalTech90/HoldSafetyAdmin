@@ -110,7 +110,7 @@ public class SendReportWorker extends Worker {
                                     }
                                     //TODO EXECUTE SEND EMAIL
                                     try {
-                                        String email = "201801263@iacademy.edu.ph";
+                                        String email = "201801336@iacademy.edu.ph";
                                         String username = "holdsafety.ph@gmail.com";
                                         String password = "HoldSafety@4qmag";
                                         String subject = "AUTOMATED Alert Message - HoldSafety";

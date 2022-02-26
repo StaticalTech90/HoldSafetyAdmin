@@ -15,6 +15,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddCoordinatedBrgyActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -54,6 +56,13 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         String latitude = etLatitude.getText().toString().trim();
         String longitude = etLongitude.getText().toString().trim();
 
+        String emailRegex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+        String mobileNumberRegex = "^(09|\\+639)\\d{9}$";
+        Pattern emailPattern = Pattern.compile(emailRegex);
+        Pattern mobileNumberPattern = Pattern.compile(mobileNumberRegex);
+        Matcher emailMatcher = emailPattern.matcher(email);
+        Matcher mobileNumberMatcher = mobileNumberPattern.matcher(mobileNumber);
+
         docBrgys.put("Barangay", barangay);
         docBrgys.put("City", city);
         docBrgys.put("MobileNumber", mobileNumber);
@@ -62,27 +71,34 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         docBrgys.put("Longitude", longitude);
 
 
-        if(TextUtils.isEmpty(etBarangay.getText())){
-            etBarangay.setHint("please enter barangay");
-            etBarangay.setError("please enter barangay");
-        } else if(TextUtils.isEmpty(etCity.getText())){
-            etCity.setHint("please enter city");
-            etCity.setError("please enter city");
-        } else if(TextUtils.isEmpty(etMobileNumber.getText())){
-            etMobileNumber.setHint("please enter mobile number");
-            etMobileNumber.setError("please enter mobile number");
-        } else if(TextUtils.isEmpty(etLatitude.getText())){
-            etLatitude.setHint("please enter latitude");
-            etLatitude.setError("please enter latitude");
-        } else if(TextUtils.isEmpty(etLongitude.getText())){
-            etLongitude.setHint("please enter longitude");
-            etLongitude.setError("please enter longitude");
+        if(TextUtils.isEmpty(barangay)){
+            etBarangay.setError("Please enter barangay");
+        } else if(TextUtils.isEmpty(city)){
+            etCity.setError("Please enter city");
+        } else if(TextUtils.isEmpty(mobileNumber)){
+            etMobileNumber.setError("Please enter mobile number");
+        } else if (!mobileNumberMatcher.matches()) {
+            etMobileNumber.setError("Please enter a valid mobile number");
+        } else if(TextUtils.isEmpty(email)){
+            etEmail.setError("Please enter email");
+        } else if (!emailMatcher.matches()) {
+            etEmail.setError("Please enter a valid email");
+        } else if(TextUtils.isEmpty(latitude)){
+            etLatitude.setError("Please enter latitude");
+        } else if(TextUtils.isEmpty(longitude)){
+            etLongitude.setError("Please enter longitude");
         } else {
             db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(),
                             "Successfully Added Barangay",
                             Toast.LENGTH_SHORT).show();
+
+                    finish();
+                    overridePendingTransition(0, 0);
+                    startActivity(getIntent());
+                    overridePendingTransition(0, 0);
+
                 } else {
                     Toast.makeText(getApplicationContext(),
                             Objects.requireNonNull(task.getException()).toString(),

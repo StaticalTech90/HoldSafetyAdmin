@@ -45,7 +45,7 @@ public class SendReportViewModel extends ViewModel {
 
         WorkManager.getInstance()
                 .enqueueUniquePeriodicWork("send_report_work",
-                        ExistingPeriodicWorkPolicy.REPLACE, periodicWork);
+                        ExistingPeriodicWorkPolicy.KEEP, periodicWork);
     }
 
     void cancelWork() {

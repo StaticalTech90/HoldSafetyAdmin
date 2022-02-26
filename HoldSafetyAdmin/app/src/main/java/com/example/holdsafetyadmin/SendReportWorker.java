@@ -15,7 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,7 +55,7 @@ public class SendReportWorker extends Worker {
             Date startDate = dateFormat.parse(DEFAULT_START_TIME);
             Date endDate = dateFormat.parse(DEFAULT_END_TIME);
 
-            //if (day == 1 && currentDate.after(startDate) && currentDate.before(endDate)) {
+            if (day == 1 && currentDate.after(startDate) && currentDate.before(endDate)) {
                 try {
                     FirebaseFirestore.getInstance()
                             .collection("reports").orderBy("Report Date", Query.Direction.ASCENDING)
@@ -80,13 +79,13 @@ public class SendReportWorker extends Worker {
 
                                         }
 
-                                        //message here
+                                        //This will become link
                                         message = "Address: " + reportAdd +"\n Count: "+ count;
 
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                    //TODO EXECUTE SEND EMAIL
+                                    //TODO SAVE TO FIREBASE STORAGE AS PDF THEN SEND
                                     try {
                                         String email = "201801336@iacademy.edu.ph";
                                         String username = "holdsafety.ph@gmail.com";
@@ -111,7 +110,9 @@ public class SendReportWorker extends Worker {
                     Log.e(TAG, "Error", throwable);
                     return Result.failure();
                 }
-           // }
+            } else {
+                return Result.retry();
+            }
         } catch (Exception ignored) {
             Log.e("ParseException", ignored.getMessage());
             return Result.failure();
@@ -120,7 +121,7 @@ public class SendReportWorker extends Worker {
         return Result.success();
     }
 
-    public String getGeoLoc(String reportLat, String reportLong) throws IOException {
+    public String getGeoLoc(String reportLat, String reportLong) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(applicationContext, Locale.getDefault());
         double doubleLat = Double.parseDouble(reportLat.trim());

@@ -39,7 +39,7 @@ public class SendReportViewModel extends ViewModel {
     void sendReport() {
         Log.v("INVOKED", "send invoked");
         PeriodicWorkRequest periodicWork = new PeriodicWorkRequest.Builder(SendReportWorker.class,
-                900000, TimeUnit.MILLISECONDS) //15 mins
+                2, TimeUnit.HOURS)
                 .addTag("send_report_work")
                 .build();
 

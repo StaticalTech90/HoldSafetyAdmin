@@ -20,7 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 public class CoordinatedBrgysActivity extends AppCompatActivity {
     LinearLayout linearCoordinatedBrgys;
 
-    ImageView btnAdd, btnSort;
+    ImageView btnBack, btnAdd;
     SearchView searchBrgy;
 
     private FirebaseAuth mAuth;
@@ -37,14 +37,14 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         linearCoordinatedBrgys = findViewById(R.id.linearViewCoordinatedBrgys);
-        btnAdd = findViewById(R.id.addBarangay);
         searchBrgy = findViewById(R.id.brgySearch);
-        btnSort = findViewById(R.id.btnSort);
+        btnBack = findViewById(R.id.backArrow);
+        btnAdd = findViewById(R.id.addBarangay);
 
-        btnAdd.setOnClickListener(this::addBrgy);
+        btnBack.setOnClickListener(view -> goBack());
+        btnAdd.setOnClickListener(view -> addBrgy());
 
         getBarangay();
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -58,7 +58,6 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                         //FOR EACH
                         //GET ALL ID
                         for (QueryDocumentSnapshot contactSnap : task.getResult()) {
-
                             //GET CONTACT DETAILS
                             String barangay = contactSnap.getString("Barangay");
                             String city = contactSnap.getString("City");
@@ -88,6 +87,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
 
                                 //PREPARE DATA TO PASS
                                 //TODO: THIS CAN BE TURNED INTO A HASHMAP FOR SHORTER CODE
+                                //TODO: LMAO YOU DO IT
                                 intent.putExtra("barangay", barangay);
                                 intent.putExtra("city", city);
                                 intent.putExtra("email", email);
@@ -109,7 +109,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                 });
     }
 
-    public void searchBarangay(){
+    public void searchBarangay() {
         searchBrgy.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -134,11 +134,10 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                     newText = newText.toLowerCase();
 
                     //CHECK IF INPUT IS PRESENT IN EVERY TET VIEWS
-                    if(name.contains(newText)|| city.contains(newText) || number.contains(newText)){
+                    if(name.contains(newText)|| city.contains(newText) || number.contains(newText)) {
                         //CONTAINS
                         barangayView.setVisibility(View.VISIBLE);
-
-                    } else{
+                    } else {
                         //HIDE THE VIEW IF SEARCH DOESNT MATCH ANY DATA ON DB
                         barangayView.setVisibility(View.GONE);
                     }
@@ -148,7 +147,11 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
         });
     }
 
-    public void addBrgy(View view){
+    public void addBrgy() {
         startActivity(new Intent (getApplicationContext(), AddCoordinatedBrgyActivity.class));
+    }
+
+    private void goBack() {
+        finish();
     }
 }

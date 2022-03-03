@@ -33,7 +33,7 @@ public class ViewReportsActivity extends AppCompatActivity {
 
     SearchView searchReport;
 
-    ImageView btnSort;
+    ImageView btnBack, btnSort, btnSendReport;
     RadioGroup sortReport;
     RadioButton latest, oldest, byBrgy, byUser;
     LinearLayout displayLatestReportView, displayOldestReportView, displaybyUserReportView, displayByBarangayReportView;
@@ -48,14 +48,15 @@ public class ViewReportsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-
         displayLatestReportView = findViewById(R.id.linearReportListLatest);
         displayOldestReportView = findViewById(R.id.linearReportListOldest);
         displaybyUserReportView = findViewById(R.id.linearReportListbyUser);
         displayByBarangayReportView = findViewById(R.id.linearReportListByBarangay);
         searchReport = findViewById(R.id.reportSearch);
-        btnSort = findViewById(R.id.btnSort);
         sortReport = findViewById(R.id.reportSort);
+        btnBack = findViewById(R.id.backArrow);
+        btnSort = findViewById(R.id.btnSort);
+        btnSendReport = findViewById(R.id.btnSendReport);
 
         latest = findViewById(R.id.radioLatestReport);
         oldest = findViewById(R.id.radioOldestReport);
@@ -68,9 +69,9 @@ public class ViewReportsActivity extends AppCompatActivity {
         sortReports();
         searchReports();
 
+        btnBack.setOnClickListener(view -> goBack());
         btnSort.setOnClickListener(view -> sortReports());
-
-        btnSort.setOnClickListener(view -> sortReports());
+        btnSendReport.setOnClickListener(view -> generateReport());
 
         //USER PRESSES ENTER AFTER/WHILE TYPING IN SEARCH
         searchReport.setOnKeyListener((v, keyCode, event) -> {
@@ -84,7 +85,6 @@ public class ViewReportsActivity extends AppCompatActivity {
             }
             return enter;
         });
-
     }
 
     public void getReportData() {
@@ -171,7 +171,6 @@ public class ViewReportsActivity extends AppCompatActivity {
             } else if (displayByBarangayReportView.equals(linearLayout)){
                 linearLayout.addView(reportListView);
             }
-
         }
     }
 
@@ -218,71 +217,63 @@ public class ViewReportsActivity extends AppCompatActivity {
     }
 
     public void sortReports() {
-        if(isRadioVisible){
+        if(isRadioVisible) {
             sortReport.setVisibility(View.VISIBLE);
-        }
-
-        else{
+        } else {
             sortReport.setVisibility(View.GONE);
         }
 
         isRadioVisible = !isRadioVisible;
         //TODO: Sort function for reports
-        sortReport.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                LinearLayout  linearShowing = getShowingLinear();
-                switch (checkedId) {
-                    case R.id.radioLatestReport:
-                        //SORT ITEMS FROM NEWEST
-                        //CONCATENATE  LINEAR LAYOUT
-                        linearShowing.setVisibility(View.GONE);
-                        displayLatestReportView.setVisibility(View.VISIBLE);
+        sortReport.setOnCheckedChangeListener((group, checkedId) -> {
+            LinearLayout  linearShowing = getShowingLinear();
+            switch (checkedId) {
+                case R.id.radioLatestReport:
+                    //SORT ITEMS FROM NEWEST
+                    //CONCATENATE  LINEAR LAYOUT
+                    linearShowing.setVisibility(View.GONE);
+                    displayLatestReportView.setVisibility(View.VISIBLE);
 
-                        latest.setTextColor(getResources().getColor(R.color.light_blue));
-                        oldest.setTextColor(getResources().getColor(R.color.white));
-                        byBrgy.setTextColor(getResources().getColor(R.color.white));
-                        byUser.setTextColor(getResources().getColor(R.color.white));
-                        break;
-                    case R.id.radioOldestReport:
-                        //SORT ITEMS FROM OLDEST
-                        linearShowing.setVisibility(View.GONE);
-                        displayOldestReportView.setVisibility(View.VISIBLE);
+                    latest.setTextColor(getResources().getColor(R.color.light_blue));
+                    oldest.setTextColor(getResources().getColor(R.color.white));
+                    byBrgy.setTextColor(getResources().getColor(R.color.white));
+                    byUser.setTextColor(getResources().getColor(R.color.white));
+                    break;
+                case R.id.radioOldestReport:
+                    //SORT ITEMS FROM OLDEST
+                    linearShowing.setVisibility(View.GONE);
+                    displayOldestReportView.setVisibility(View.VISIBLE);
 
-                        latest.setTextColor(getResources().getColor(R.color.white));
-                        oldest.setTextColor(getResources().getColor(R.color.light_blue));
-                        byBrgy.setTextColor(getResources().getColor(R.color.white));
-                        byUser.setTextColor(getResources().getColor(R.color.white));
-                        break;
-                    case R.id.radiobyUserReport:
-                        //SET LINEARSHOWING TO ASCENDING
-                        linearShowing.setVisibility(View.GONE);
-                        displaybyUserReportView.setVisibility(View.VISIBLE);
-
-                        latest.setTextColor(getResources().getColor(R.color.white));
-                        oldest.setTextColor(getResources().getColor(R.color.white));
-                        byBrgy.setTextColor(getResources().getColor(R.color.white));
-                        byUser.setTextColor(getResources().getColor(R.color.light_blue));
-                        break;
-                    case R.id.radioByBarangayReport:
-                        //SET LINEARSHOWING TO DESCENDING
-                        linearShowing.setVisibility(View.GONE);
-                        displayByBarangayReportView.setVisibility(View.VISIBLE);
-
-                        latest.setTextColor(getResources().getColor(R.color.white));
-                        oldest.setTextColor(getResources().getColor(R.color.white));
-                        byBrgy.setTextColor(getResources().getColor(R.color.light_blue));
-                        byUser.setTextColor(getResources().getColor(R.color.white));
-                        break;
-                }
+                    latest.setTextColor(getResources().getColor(R.color.white));
+                    oldest.setTextColor(getResources().getColor(R.color.light_blue));
+                    byBrgy.setTextColor(getResources().getColor(R.color.white));
+                    byUser.setTextColor(getResources().getColor(R.color.white));
+                    break;
+                case R.id.radiobyUserReport:
+                    //SET LINEARSHOWING TO ASCENDING
+                    linearShowing.setVisibility(View.GONE);
+                    displaybyUserReportView.setVisibility(View.VISIBLE);
+                    latest.setTextColor(getResources().getColor(R.color.white));
+                    oldest.setTextColor(getResources().getColor(R.color.white));
+                    byBrgy.setTextColor(getResources().getColor(R.color.white));
+                    byUser.setTextColor(getResources().getColor(R.color.light_blue));
+                    break;
+                case R.id.radioByBarangayReport:
+                    //SET LINEARSHOWING TO DESCENDING
+                    linearShowing.setVisibility(View.GONE);
+                    displayByBarangayReportView.setVisibility(View.VISIBLE);
+                    latest.setTextColor(getResources().getColor(R.color.white));
+                    oldest.setTextColor(getResources().getColor(R.color.white));
+                    byBrgy.setTextColor(getResources().getColor(R.color.light_blue));
+                    byUser.setTextColor(getResources().getColor(R.color.white));
+                    break;
             }
         });
     }
 
-    public void generateReport(View view){
-        //Toast.makeText(getApplicationContext(), "Generate Report", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent (getApplicationContext(), GenerateReportActivity.class);
-        startActivity(intent);
+    public void generateReport(){
+        Intent generateReport = new Intent (getApplicationContext(), GenerateReportActivity.class);
+        startActivity(generateReport);
     }
 
     private LinearLayout getShowingLinear() {
@@ -296,7 +287,6 @@ public class ViewReportsActivity extends AppCompatActivity {
             return displayByBarangayReportView;
         }
     }
-
 
     public String getGeoLoc() throws IOException {
         String strAdd = "";
@@ -321,11 +311,10 @@ public class ViewReportsActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.w("Barangay Address", "Cannot get Address!");
         }
-
         return strAdd;
-        //textViewBrgyAddress.setText(strAdd);
-        //Toast.makeText(getApplicationContext(), "Address: " + strAdd, Toast.LENGTH_SHORT).show();
-
     }
 
+    private void goBack() {
+        finish();
+    }
 }

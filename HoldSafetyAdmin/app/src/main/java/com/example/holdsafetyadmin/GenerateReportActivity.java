@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +77,7 @@ public class GenerateReportActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private SendReportViewModel srViewModel;
 
+    ImageView btnBack;
     Spinner spinnerBarangay;
     String selectedBarangay;
     Button btnSendReport;
@@ -105,11 +107,13 @@ public class GenerateReportActivity extends AppCompatActivity {
         etStartDate = findViewById(R.id.txtStartDate);
         etEndDate = findViewById(R.id.txtEndDate);
         btnSendReport = findViewById(R.id.btnSend);
+        btnBack = findViewById(R.id.backArrow);
 
         dropdownBarangay();
         selectStartDate();
         selectEndDate();
 
+        btnBack.setOnClickListener(view -> goBack());
         btnSendReport.setOnClickListener(v -> {
             try {
                 validateInput();
@@ -122,7 +126,6 @@ public class GenerateReportActivity extends AppCompatActivity {
         //srViewModel.cancelWork();
         srViewModel.sendReport();
         srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
-
             if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
                 return;
             }
@@ -210,8 +213,6 @@ public class GenerateReportActivity extends AppCompatActivity {
         FirebaseFirestore.getInstance()
                 .collection("barangay").get()
                 .addOnCompleteListener(task -> {
-                    Intent intent = new Intent(this, CoordinatedBrgyDetailsActivity.class);
-                    //Toast.makeText(this, user.getUid(), Toast.LENGTH_SHORT).show();
                     if (task.isSuccessful()) {
                         //FOR EACH
                         //GET ALL ID
@@ -220,7 +221,6 @@ public class GenerateReportActivity extends AppCompatActivity {
                             String barangayName = contactSnap.getString("Barangay");
                             barangayList.add(barangayName);
                         }
-
                     } else {
                         //NO DATA AVAILABLE
                         Toast.makeText(this, "No Barangays Available", Toast.LENGTH_SHORT).show();
@@ -275,7 +275,6 @@ public class GenerateReportActivity extends AppCompatActivity {
 
     //update START DATE value
     private void updateStartDate() {
-        //matched with line 174
         String myFormat = "MM-dd-yyyy";
         SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
         etStartDate.setText(dateFormat.format(calendar.getTime()));
@@ -288,30 +287,23 @@ public class GenerateReportActivity extends AppCompatActivity {
         int mMonth = currentCal.get(Calendar.MONTH);
         int mDay = currentCal.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog.OnDateSetListener startDateListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker arg0, int year, int monthOfYear, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH,monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-                updateStartDate();
-                Log.d("onDateSet()", "arg0 = [" + arg0 + "], year = [" + year + "], monthOfYear = [" + monthOfYear + "], dayOfMonth = [" + dayOfMonth + "]");
-            }
+        DatePickerDialog.OnDateSetListener startDateListener = (arg0, year, monthOfYear, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH,monthOfYear);
+            calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+            updateStartDate();
+            Log.d("onDateSet()", "arg0 = [" + arg0 + "], year = [" + year + "], monthOfYear = [" + monthOfYear + "], dayOfMonth = [" + dayOfMonth + "]");
         };
 
-        etStartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog dpDialog = new DatePickerDialog(GenerateReportActivity.this, startDateListener, mYear, mMonth, mDay);
-                dpDialog.getDatePicker().setMaxDate(currentCal.getTimeInMillis());
-                dpDialog.show();
-            }
+        etStartDate.setOnClickListener(view -> {
+            DatePickerDialog dpDialog = new DatePickerDialog(GenerateReportActivity.this, startDateListener, mYear, mMonth, mDay);
+            dpDialog.getDatePicker().setMaxDate(currentCal.getTimeInMillis());
+            dpDialog.show();
         });
     }
 
     //update END DATE value
     private void updateEndDate() {
-        //matched with line 174
         String myFormat = "MM-dd-yyyy";
         SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
         etEndDate.setText(dateFormat.format(calendar.getTime()));
@@ -324,52 +316,40 @@ public class GenerateReportActivity extends AppCompatActivity {
         int mMonth = currentCal.get(Calendar.MONTH);
         int mDay = currentCal.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog.OnDateSetListener startDateListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker arg0, int year, int monthOfYear, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH,monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-                updateEndDate();
-                Log.d("onDateSet()", "arg0 = [" + arg0 + "], year = [" + year + "], monthOfYear = [" + monthOfYear + "], dayOfMonth = [" + dayOfMonth + "]");
-            }
+        DatePickerDialog.OnDateSetListener startDateListener = (arg0, year, monthOfYear, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH,monthOfYear);
+            calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+            updateEndDate();
+            Log.d("onDateSet()", "arg0 = [" + arg0 + "], year = [" + year + "], monthOfYear = [" + monthOfYear + "], dayOfMonth = [" + dayOfMonth + "]");
         };
 
-        etEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog dpDialog = new DatePickerDialog(GenerateReportActivity.this, startDateListener, mYear, mMonth, mDay);
-                dpDialog.getDatePicker().setMaxDate(currentCal.getTimeInMillis());
-                dpDialog.show();
-            }
+        etEndDate.setOnClickListener(view -> {
+            DatePickerDialog dpDialog = new DatePickerDialog(GenerateReportActivity.this, startDateListener, mYear, mMonth, mDay);
+            dpDialog.getDatePicker().setMaxDate(currentCal.getTimeInMillis());
+            dpDialog.show();
         });
     }
 
     //TODO PDF REPORT LOGIC HERE
     @SuppressLint("SimpleDateFormat")
     public void validateInput() throws ParseException {
-//       Toast.makeText(getApplicationContext(), etStartDate.getText(), Toast.LENGTH_SHORT).show();
-//       Toast.makeText(getApplicationContext(), etEndDate.getText(), Toast.LENGTH_SHORT).show();
-//       Toast.makeText(getApplicationContext(), selectedBarangay, Toast.LENGTH_SHORT).show();
         try{
             //GET DATES
             String start = etStartDate.getText().toString().trim();
             String end = etEndDate.getText().toString().trim();
 
-            if(TextUtils.isEmpty(start)){
+            if(TextUtils.isEmpty(start)) {
                 etStartDate.getText().clear();
                 etStartDate.setHint("Enter a start date");
                 etStartDate.setError("Enter a start date");
-            } else if (TextUtils.isEmpty(end)){
+            } else if (TextUtils.isEmpty(end)) {
                 etEndDate.getText().clear();
                 etEndDate.setHint("Enter a start date");
                 etEndDate.setError("Enter a start date");
             } else {
                 startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
                 endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
-
-                //Spinner variable
-                String barangay = selectedBarangay;
 
                 if(startDate.after(endDate)){
                     etEndDate.getText().clear();
@@ -383,21 +363,15 @@ public class GenerateReportActivity extends AppCompatActivity {
             }
         } catch (ParseException parseException){
             Log.w("Generate Report", parseException.getMessage());
-            //Toast.makeText(getApplicationContext(), "Invalid selected date: " + parseException.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void generateReport(){
-        //Store query-matched reports
-        Map<String, String> reportMap = new HashMap<>();
-
         FirebaseFirestore.getInstance()
                 .collection("reports")
                 .whereEqualTo("Barangay", selectedBarangay).orderBy("Report Date", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
-                    Intent intent = new Intent(this, CoordinatedBrgyDetailsActivity.class);
                     if (task.isSuccessful()) {
                         //startDate occurs before endDate
                         //TODO Match spinner to data
@@ -446,7 +420,6 @@ public class GenerateReportActivity extends AppCompatActivity {
                                 Toast.makeText(this, "Img Catch: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
                             }
-
                             table.addCell(new Paragraph("Name", smallBold));
                             table.addCell(new Paragraph("Address", smallBold));
                             table.addCell(new Paragraph("Report Date", smallBold));
@@ -484,12 +457,10 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     //Toast.makeText(this, "Report Date is not within the range of selected dates", Toast.LENGTH_SHORT).show();
                                 }
                             }
-
                             document.add(new Paragraph("Barangay: " + selectedBarangay, smallNormal));
                             document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
                             document.add(new Paragraph("Number of Reports: " + String.valueOf(count) + "\n\n", smallNormal));
                             document.add(table);
-
                             document.close();
                             Log.i("PDF", "PDF Generated");
 
@@ -514,7 +485,6 @@ public class GenerateReportActivity extends AppCompatActivity {
                                 Log.e("Error", e.getMessage());
                             }
                         }
-
                     } else {
                         //NO DATA AVAILABLE
                         Toast.makeText(this, "No Barangays Available", Toast.LENGTH_SHORT).show();
@@ -525,11 +495,8 @@ public class GenerateReportActivity extends AppCompatActivity {
     //TODO REFACTOR TO PDF
     @SuppressLint("QueryPermissionsNeeded")
     private void sendReport() {
-        String username = "holdsafety.ph@gmail.com";
-        String password = "HoldSafety@4qmag";
         String subject = "REPORT SUMMARY - HoldSafety";
         String recipient = "201801336@iacademy.edu.ph"; // 201801263@iacademy.edu.ph
-        List<String> recipients = Collections.singletonList(recipient);
 
         ///////////////////////////////////////////////////////////////////
 
@@ -538,8 +505,6 @@ public class GenerateReportActivity extends AppCompatActivity {
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient});
 
         ///////////////////////////////////////////////////////////////////
-        Document document = new Document();
-        Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
         //Create a new file that points to the root directory, with the given name:
         File file = new File(getExternalFilesDir(null), "report.pdf");
         Uri path = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
@@ -562,9 +527,10 @@ public class GenerateReportActivity extends AppCompatActivity {
         }
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Summary Report");
         this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+        finish(); //end this activity
     }
 
-    public String getGeoLoc(String reportLat, String reportLong) throws IOException {
+    public String getGeoLoc(String reportLat, String reportLong) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         double doubleLat = Double.parseDouble(reportLat.trim());
@@ -587,10 +553,7 @@ public class GenerateReportActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.w("Barangay Address", "Cannot get Address!");
         }
-
         return strAdd.trim();
-        //textViewBrgyAddress.setText(strAdd);
-        //Toast.makeText(getApplicationContext(), "Address: " + strAdd, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -598,5 +561,9 @@ public class GenerateReportActivity extends AppCompatActivity {
         super.onStart();
         //Asks for permissions on activity start
         setPermissions();
+    }
+
+    private void goBack() {
+        finish();
     }
 }

@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
     DocumentReference docRef;
 
+    ImageView btnBack;
     TextView textViewBrgyName, textViewBrgyCity, textViewBrgyID, btnRemoveBrgy,textViewBrgyAddress;
     EditText textViewBrgyMobileNum, textViewBrgyEmail, textViewBrgyLatitude, textViewBrgyLongitude;
     String brgyName, brgyCity, brgyMobileNum, brgyEmail, brgyLat, brgyLong, brgyID;
@@ -49,7 +51,8 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         textViewBrgyLongitude = findViewById(R.id.txtBrgyLongitude);
         textViewBrgyAddress = findViewById(R.id.txtBrgyAddress);
         textViewBrgyID = findViewById(R.id.txtBrgyID);
-        
+
+        btnBack = findViewById(R.id.backArrow);
         btnBrgyUpdate = findViewById(R.id.btnSaveChanges);
         btnRemoveBrgy = findViewById(R.id.btnRemoveBrgy);
 
@@ -72,9 +75,9 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         
         checkUpdates();
 
+        btnBack.setOnClickListener(view -> goBack());
         btnBrgyUpdate.setOnClickListener(view -> updateBarangay());
         btnRemoveBrgy.setOnClickListener(view -> removeBarangay());
-
     }
 
     private void checkUpdates() {
@@ -96,7 +99,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
                     Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No Changes", Toast.LENGTH_SHORT).show();
                 } else{
                     isNumberChanged = true;
-                    //Toast.makeText(CoordinatedBrgyDetailsActivity.this, "New Barangay Number", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -178,9 +180,9 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         dialogRemoveAccount.setPositiveButton("Delete", (dialog, which) -> {
             docRef.delete();
             //Reload Activity After deleting contact
-            Intent intent = new Intent(this, CoordinatedBrgyDetailsActivity.class);
+            Intent reload = new Intent(this, CoordinatedBrgyDetailsActivity.class);
             finish();
-            startActivity(intent);
+            startActivity(reload);
         });
 
         dialogRemoveAccount.setNegativeButton("Dismiss", (dialogInterface, i) -> dialogInterface.dismiss());
@@ -223,9 +225,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
                         docRef.update("Longitude", changedLong);
 
                         Toast.makeText(this, "Successfully updated", Toast.LENGTH_SHORT).show();
-
-                        startActivity(new Intent(this, CoordinatedBrgyDetailsActivity.class));
-                        finish();
+                        goBack();
                     }
                     else {
                         Toast.makeText(CoordinatedBrgyDetailsActivity.this, "Failed to update", Toast.LENGTH_SHORT).show();
@@ -235,8 +235,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No changes made", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     public void getData(){
@@ -249,10 +247,10 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
             brgyLong = getIntent().getStringExtra("longitude");
             brgyID = getIntent().getStringExtra("barangayID");
 
-            if(getIntent().hasExtra("email")){
+            if(getIntent().hasExtra("email")) {
                 brgyEmail = getIntent().getStringExtra("email");
             }
-        } else{
+        } else {
             Toast.makeText(getApplicationContext(), "No Intent Data", Toast.LENGTH_SHORT).show();
         }
     }
@@ -281,7 +279,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
             Log.w("Barangay Address", "Cannot get Address!");
         }
         textViewBrgyAddress.setText(strAdd);
-        //Toast.makeText(getApplicationContext(), "Address: " + strAdd, Toast.LENGTH_SHORT).show();
     }
 
     public void setData(){
@@ -294,4 +291,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         textViewBrgyID.setText(brgyID);
     }
 
+    private void goBack() {
+        finish();
+    }
 }

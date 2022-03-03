@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class RegistrationDetailsActivity extends AppCompatActivity {
     TextView userID, txtLastName, txtFirstName, txtMiddleName, txtBirthDate, txtSex, txtIdPic;
-    ImageView imgIdPic;
+    ImageView btnBack, imgIdPic;
     Button btnValidate, btnReject;
 
     String id, lastName, firstName, middleName, birthDate, sex, idPic; // USER DATA FOR DISPLAY
@@ -47,12 +47,15 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
         txtSex = findViewById(R.id.txtSex);
         txtIdPic = findViewById(R.id.txtIdPic);
         imgIdPic = findViewById(R.id.imgIdPic);
+        btnBack = findViewById(R.id.backArrow);
         btnValidate = findViewById(R.id.btnValidate);
         btnReject = findViewById(R.id.btnReject);
 
-        getData();
+        btnBack.setOnClickListener(view -> goBack());
         btnValidate.setOnClickListener(v -> validateUser());
         btnReject.setOnClickListener(v -> rejectUser());
+
+        getData();
     }
 
     //GET USER DATA BASED ON ID
@@ -66,13 +69,12 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
                     FirebaseStorage.getInstance().getReference("id").child("/" + id).getDownloadUrl()
                             .addOnSuccessListener(downloadUri -> {
                                 idPic = downloadUri.toString();
-                                txtIdPic.setText(idPic); //THIS HAS TO BE HERE COZ FUCK ASYNC METHODS
+                                txtIdPic.setText(idPic);
 
                                 //SHOW THE ID PIC IN IMAGEVIEW
                                 Glide.with(RegistrationDetailsActivity.this)
                                         .load(downloadUri)
                                         .into(imgIdPic);
-
                                 Log.d("imgURI", "Image download link: " + downloadUri);
                             })
                             .addOnFailureListener(e -> Log.d("imgURI", "No download link fetched"));
@@ -111,24 +113,11 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
     public void validateUser(){
         Map<String, Object> docUsers = new HashMap<>();
-//        docUsers.put("ID", id);
-//        docUsers.put("LastName", lastName);
-//        docUsers.put("FirstName", firstName);
-//        docUsers.put("MiddleName", middleName);
-//        docUsers.put("Sex", sex);
-//        docUsers.put("BirthDate", birthDate);
-//
-//        docUsers.put("MobileNumber", mobileNo);
-//        docUsers.put("Email", email);
-//        docUsers.put("profileComplete", true);
         docUsers.put("isVerified", true);
 
-//        db.collection("users").document(id).set(docUsers)
         db.collection("users").document(id).update(docUsers)
                 .addOnSuccessListener(unused -> Toast.makeText(getApplicationContext(), "User " + firstName + " " + lastName + " has been validated.", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "User NOT validated.", Toast.LENGTH_SHORT).show());
-
-        //TODO: Remove user from list of unverified
         finish();
     }
 
@@ -137,5 +126,9 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
         Intent rejectReason = new Intent (getApplicationContext(), RejectUserActivity.class);
         rejectReason.putExtra("userID", id);
         startActivity(rejectReason);
+    }
+
+    private void goBack() {
+        finish();
     }
 }

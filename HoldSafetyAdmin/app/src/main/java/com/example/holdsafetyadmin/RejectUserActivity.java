@@ -72,7 +72,7 @@ public class RejectUserActivity extends AppCompatActivity {
                             String password = "HoldSafety@4qmag";
                             String subject = "Registration Failed - HoldSafety";
                             String message = "We're sorry to tell you that your registration to HoldSafety has been rejected." +
-                                    "\nReason for failed registration: " + reason;
+                                    "<br />Reason for failed registration: " + reason;
 
                             List<String> recipients = Collections.singletonList(userEmail);
                             new MailTask(RejectUserActivity.this).execute(username, password, recipients, subject, message);

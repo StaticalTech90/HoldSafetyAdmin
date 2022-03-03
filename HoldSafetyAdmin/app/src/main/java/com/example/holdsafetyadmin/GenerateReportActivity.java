@@ -36,9 +36,13 @@ import androidx.work.Data;
 import androidx.work.WorkInfo;
 
 import com.google.android.gms.common.internal.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -77,10 +81,12 @@ public class GenerateReportActivity extends AppCompatActivity {
     private SendReportViewModel srViewModel;
 
     Spinner spinnerBarangay;
-    String selectedBarangay;
+    String selectedBarangay, selectedBarangayID;
     Button btnSendReport;
     EditText etStartDate, etEndDate;
     Date startDate, endDate;
+
+    String barangayId;
 
     final Calendar calendar = Calendar.getInstance();
 
@@ -205,6 +211,7 @@ public class GenerateReportActivity extends AppCompatActivity {
 
     public String dropdownBarangay() {
         final List<String> barangayList = new ArrayList<>();
+        final List<String> barangayIDList = new ArrayList<>();
         barangayList.add("Barangay *");
 
         FirebaseFirestore.getInstance()
@@ -218,6 +225,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot contactSnap : task.getResult()) {
                             //GET BARANGAY NAME AND ADD TO ARRAY
                             String barangayName = contactSnap.getString("Barangay");
+                            barangayIDList.add(contactSnap.getId());
                             barangayList.add(barangayName);
                         }
 
@@ -258,10 +266,12 @@ public class GenerateReportActivity extends AppCompatActivity {
                 // First item is disable and it is used for hint
                 if (position > 0) {
                     // Notify the selected item text
-                    Toast.makeText
-                            (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
+//                    Toast.makeText
+//                            (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
+//                            .show();
                     selectedBarangay = spinnerBarangay.getSelectedItem().toString().trim();
+                    int selectedItemPosition = spinnerBarangay.getSelectedItemPosition();
+                    selectedBarangayID = barangayIDList.get(selectedItemPosition-1);
                 }
             }
 
@@ -408,7 +418,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                         Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
                         //Create a new file that points to the root directory, with the given name:
-                        File file = new File(getExternalFilesDir(null), "report.pdf");
+                        File file = new File(getExternalFilesDir(null), "holdsafety-report-summary.pdf");
                         Uri path = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()), BuildConfig.APPLICATION_ID + ".provider", file);
                         this.grantUriPermission("com.example.holdsafetyadmin", path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
@@ -528,40 +538,66 @@ public class GenerateReportActivity extends AppCompatActivity {
         String username = "holdsafety.ph@gmail.com";
         String password = "HoldSafety@4qmag";
         String subject = "REPORT SUMMARY - HoldSafety";
-        String recipient = "201801336@iacademy.edu.ph"; // 201801263@iacademy.edu.ph
-        List<String> recipients = Collections.singletonList(recipient);
 
-        ///////////////////////////////////////////////////////////////////
+        FirebaseFirestore.getInstance()
+            .collection("barangay").document(selectedBarangayID)
+            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                 @Override
+                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                     if(task.isSuccessful()){
+                         DocumentSnapshot brgyDoc = task.getResult();
+                         if (brgyDoc != null) {
+                             String brgy = brgyDoc.getString("Barangay");
+                             String email = brgyDoc.getString("Email");
+                             Log.i("Barangay Selected","Barangay "+ brgy);
 
-        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-        emailIntent.setType("plain/text");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient});
+                             String recipient = email + ", 201801336@iacademy.edu.ph"; // 201801263@iacademy.edu.ph
+                             List<String> recipients = Collections.singletonList(recipient);
 
-        ///////////////////////////////////////////////////////////////////
-        Document document = new Document();
-        Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
-        //Create a new file that points to the root directory, with the given name:
-        File file = new File(getExternalFilesDir(null), "report.pdf");
-        Uri path = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
-        this.grantUriPermission(String.valueOf(this.getPackageManager().queryIntentActivities(
-                emailIntent,
-                PackageManager.MATCH_DEFAULT_ONLY)),
-                path,
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                             ///////////////////////////////////////////////////////////////////
 
-        emailIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                             final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                             emailIntent.setType("plain/text");
+                             emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient});
 
-        //KEEP FOR DEBUGGING
-        //emailIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        //FOR EMAIL
-        //new MailTask(this).execute(username, password, recipients, subject, path);
+                             ///////////////////////////////////////////////////////////////////
+                             Document document = new Document();
+                             Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
+                             //Create a new file that points to the root directory, with the given name:
+                             File file = new File(getExternalFilesDir(null), "holdsafety-report-summary.pdf");
+                             Uri path = FileProvider.getUriForFile(GenerateReportActivity.this, BuildConfig.APPLICATION_ID + ".provider", file);
+                             GenerateReportActivity.this.grantUriPermission(String.valueOf(GenerateReportActivity.this.getPackageManager().queryIntentActivities(
+                                     emailIntent,
+                                     PackageManager.MATCH_DEFAULT_ONLY)),
+                                     path,
+                                     Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-        if (path != null) {
-            emailIntent.putExtra(Intent.EXTRA_STREAM, path);
-        }
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Summary Report");
-        this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+                             emailIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                             //KEEP FOR DEBUGGING
+                             //emailIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                             //FOR EMAIL
+                             //new MailTask(this).execute(username, password, recipients, subject, path);
+
+                             emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+                             if (path != null) {
+                                 emailIntent.putExtra(Intent.EXTRA_STREAM, path);
+                             }
+                             String emailBody = "Summary Report \n" +
+                                     "\nBarangay: " + brgy +
+                                     "\nDate Range: " + startDate + " to " + endDate;
+                             emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, emailBody);
+                             GenerateReportActivity.this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+                         } else {
+                             Log.d("Barangay Selected", "No such document");
+                         }
+                     } else {
+                         Log.d("Barangay Selected", "Failed with ", task.getException());
+                     }
+
+                     }
+             });
+
     }
 
     public String getGeoLoc(String reportLat, String reportLong) throws IOException {

@@ -48,7 +48,6 @@ public class SendReportViewModel extends ViewModel {
                         ExistingPeriodicWorkPolicy.KEEP, periodicWork);
 
         WorkManager.getInstance(appContext).enqueue(periodicWork);
-
     }
 
     void cancelWork() {

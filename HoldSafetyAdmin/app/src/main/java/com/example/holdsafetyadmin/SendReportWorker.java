@@ -80,7 +80,7 @@ public class SendReportWorker extends Worker {
                                         }
 
                                         //This will become link
-                                        message = "Address: " + reportAdd +"\n Count: "+ count;
+                                        message = "Address: " + reportAdd +"<br /> Count: "+ count;
 
                                     } catch (Exception e) {
                                         e.printStackTrace();

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    ImageView btnBack;
     private EditText etBarangay, etCity, etMobileNumber, etEmail, etLatitude, etLongitude;
     Button btnAddBrgy;
 
@@ -29,7 +31,6 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_coordinated_brgy);
-
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -39,14 +40,14 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.txtBrgyEmail);
         etLatitude = findViewById(R.id.txtBrgyLatitude);
         etLongitude = findViewById(R.id.txtBrgyLongitude);
+        btnBack = findViewById(R.id.backArrow);
         btnAddBrgy = findViewById(R.id.btnAddBrgy);
 
+        btnBack.setOnClickListener(view -> goBack());
         btnAddBrgy.setOnClickListener(view -> saveBrgy());
     }
 
     public void saveBrgy(){
-        Toast.makeText(getApplicationContext(), "Saved New Coordinated Barangay", Toast.LENGTH_LONG).show();
-
         Map<String, Object> docBrgys = new HashMap<>();
 
         String barangay = etBarangay.getText().toString().trim();
@@ -70,22 +71,21 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         docBrgys.put("Latitude", latitude);
         docBrgys.put("Longitude", longitude);
 
-
-        if(TextUtils.isEmpty(barangay)){
+        if(TextUtils.isEmpty(barangay)) {
             etBarangay.setError("Please enter barangay");
-        } else if(TextUtils.isEmpty(city)){
+        } else if(TextUtils.isEmpty(city)) {
             etCity.setError("Please enter city");
-        } else if(TextUtils.isEmpty(mobileNumber)){
+        } else if(TextUtils.isEmpty(mobileNumber)) {
             etMobileNumber.setError("Please enter mobile number");
         } else if (!mobileNumberMatcher.matches()) {
             etMobileNumber.setError("Please enter a valid mobile number");
-        } else if(TextUtils.isEmpty(email)){
+        } else if(TextUtils.isEmpty(email)) {
             etEmail.setError("Please enter email");
         } else if (!emailMatcher.matches()) {
             etEmail.setError("Please enter a valid email");
-        } else if(TextUtils.isEmpty(latitude)){
+        } else if(TextUtils.isEmpty(latitude)) {
             etLatitude.setError("Please enter latitude");
-        } else if(TextUtils.isEmpty(longitude)){
+        } else if(TextUtils.isEmpty(longitude)) {
             etLongitude.setError("Please enter longitude");
         } else {
             db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task -> {
@@ -93,12 +93,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             "Successfully Added Barangay",
                             Toast.LENGTH_SHORT).show();
-
                     finish();
-                    overridePendingTransition(0, 0);
-                    startActivity(getIntent());
-                    overridePendingTransition(0, 0);
-
                 } else {
                     Toast.makeText(getApplicationContext(),
                             Objects.requireNonNull(task.getException()).toString(),
@@ -106,5 +101,9 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void goBack() {
+        finish();
     }
 }

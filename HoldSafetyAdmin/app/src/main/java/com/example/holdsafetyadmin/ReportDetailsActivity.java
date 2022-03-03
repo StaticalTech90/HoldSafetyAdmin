@@ -6,6 +6,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import java.util.Locale;
 public class ReportDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
+    ImageView btnBack;
     TextView txtReportID, txtUserID, txtUsername, txtLocation, txtDateAndTime, txtBarangay, txtEvidenceLink;
     String reportID, reportUsername, reportLocation, reportBarangay, reportEvidenceLink;
     Timestamp reportDateAndTime;
@@ -37,7 +39,9 @@ public class ReportDetailsActivity extends AppCompatActivity {
         txtLocation = findViewById(R.id.txtReportLocation);
         txtBarangay = findViewById(R.id.txtBarangay);
         txtEvidenceLink = findViewById(R.id.txtEvidenceLink);
+        btnBack = findViewById(R.id.backArrow);
 
+        btnBack.setOnClickListener(view -> goBack());
         getData();
     }
 
@@ -60,21 +64,6 @@ public class ReportDetailsActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No report data fetched", Toast.LENGTH_SHORT).show());
-
-        /*
-        db.collection("reportUser").document(userID).collection("reportDetails").document(reportID).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if(documentSnapshot.exists()) {
-                        reportUsername = documentSnapshot.getString("FirstName") + " " + documentSnapshot.getString("LastName");
-                        reportLocation = documentSnapshot.getString("Lat") + ", " + documentSnapshot.getString("Lon");
-                        reportDateAndTime = documentSnapshot.getString("Report Date");
-                        reportBarangay = documentSnapshot.getString("Barangay");
-                        reportEvidenceLink = documentSnapshot.getString("Evidence");
-
-                        setData();
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No report data fetched", Toast.LENGTH_SHORT).show());*/
     }
 
     public String getGeoLoc(String latitude, String longitude) {
@@ -101,9 +90,6 @@ public class ReportDetailsActivity extends AppCompatActivity {
             Log.w("User Report Address", "Cannot get Address!");
         }
         return strAdd;
-        //textViewBrgyAddress.setText(strAdd);
-        //Toast.makeText(getApplicationContext(), "Address: " + strAdd, Toast.LENGTH_SHORT).show();
-
     }
 
     private void setData() {
@@ -114,5 +100,9 @@ public class ReportDetailsActivity extends AppCompatActivity {
         txtLocation.setText(reportLocation);
         txtBarangay.setText(reportBarangay);
         txtEvidenceLink.setText(reportEvidenceLink);
+    }
+
+    private void goBack() {
+        finish();
     }
 }

@@ -113,9 +113,6 @@ public class LoginActivity extends AppCompatActivity {
         //authentication
         fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
-//                    Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
-//                    startActivity(new Intent(LoginActivity.this, LandingActivity.class));
-//                    finish();
                 fAuth = FirebaseAuth.getInstance();
                 FirebaseUser admin = fAuth.getCurrentUser();
 

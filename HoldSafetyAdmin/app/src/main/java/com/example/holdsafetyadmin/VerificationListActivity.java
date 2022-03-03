@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +18,7 @@ public class VerificationListActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
     LinearLayout verificationView;
-    //String displayName;
-    //Boolean isVerified;
+    ImageView btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,9 @@ public class VerificationListActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         verificationView = findViewById(R.id.linearUserList);
+        btnBack = findViewById(R.id.backArrow);
+
+        btnBack.setOnClickListener(view -> goBack());
 
         listUsers();
     }
@@ -38,7 +41,6 @@ public class VerificationListActivity extends AppCompatActivity {
                 for(QueryDocumentSnapshot userSnap : task.getResult()) {
                     String displayName = userSnap.getString("FirstName") + " " + userSnap.getString("LastName");
                     Boolean isVerified = userSnap.getBoolean("isVerified");
-                    //Toast.makeText(getApplicationContext(), "Query: " + displayName, Toast.LENGTH_LONG).show();
 
                     View unverifiedView = getLayoutInflater().inflate(R.layout.verification_row, null, false);
                     if(!isVerified) {
@@ -51,8 +53,6 @@ public class VerificationListActivity extends AppCompatActivity {
 
                                     txtUserID.setText(userSnap.getId());
                                     txtUserName.setText(displayName);
-
-                                    //Toast.makeText(getApplicationContext(), "onSuccess: " + displayName, Toast.LENGTH_LONG).show();
 
                                     //SET ONCLICK PER ROW
                                     unverifiedView.setOnClickListener(v -> {
@@ -68,5 +68,9 @@ public class VerificationListActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void goBack() {
+        finish();
     }
 }

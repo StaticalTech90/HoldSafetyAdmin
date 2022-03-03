@@ -99,13 +99,12 @@
             android:padding="12dp"/>
 
         <ImageView
-            android:id="@+id/sendReport"
+            android:id="@+id/btnSendReport"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
 
             android:clickable="true"
             android:focusable="true"
-            android:onClick="generateReport"
 
             android:src="@drawable/send"
             app:layout_constraintStart_toEndOf="@+id/btnSort"

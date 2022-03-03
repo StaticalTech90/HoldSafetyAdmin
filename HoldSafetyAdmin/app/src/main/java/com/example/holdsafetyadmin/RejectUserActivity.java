@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,13 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 public class RejectUserActivity extends AppCompatActivity {
+    FirebaseFirestore db;
+
     String id, userEmail;
+    ImageView btnBack;
     Button btnSend;
     EditText etReason;
-
-//    String lastName, firstName, middleName, birthDate, sex, mobileNo; // USER DATA FOR UPDATE
-
-    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +38,15 @@ public class RejectUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reject_user);
 
         db = FirebaseFirestore.getInstance();
-        btnSend = findViewById(R.id.btnSend);
         etReason = findViewById(R.id.txtReason);
+        btnBack = findViewById(R.id.backArrow);
+        btnSend = findViewById(R.id.btnSend);
 
         if(getIntent().hasExtra("userID")) {
             id = getIntent().getStringExtra("userID");
         }
 
+        btnBack.setOnClickListener(view -> goBack());
         btnSend.setOnClickListener(v -> sendReasonForDisapproval());
     }
 
@@ -54,7 +56,6 @@ public class RejectUserActivity extends AppCompatActivity {
         if(TextUtils.isEmpty(reason)){
             etReason.setError("Please enter a message");
         } else {
-            //TODO: Send reason to user's email address
             Toast.makeText(getApplicationContext(), "Reason for Disapproval Sent", Toast.LENGTH_SHORT).show();
             FirebaseFirestore.getInstance()
                 .collection("users")
@@ -85,7 +86,6 @@ public class RejectUserActivity extends AppCompatActivity {
                     }
                 });
         }
-
     }
 
     private void updateUserDetails() {
@@ -94,7 +94,6 @@ public class RejectUserActivity extends AppCompatActivity {
         docUsers.put("isVerified", false);
         docUsers.put("imgUri", FieldValue.delete());
 
-
         db.collection("users").document(id).update(docUsers)
                 .addOnSuccessListener(unused -> {
                     //DELETE USER'S PIC FROM FIRESTORE
@@ -102,8 +101,10 @@ public class RejectUserActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "User " + id +  " has changed details in db", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "User NOT validated.", Toast.LENGTH_SHORT).show());
+        goBack();
+    }
 
-        //TODO: Remove user from list of unverified
+    private void goBack() {
         finish();
     }
 }

@@ -24,7 +24,6 @@ public class LandingActivity extends AppCompatActivity {
     private static final int WRITE_EXTERNAL_REQ_CODE = 1000;
     private static final int READ_EXTERNAL_REQ_CODE = 1001;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,8 +74,7 @@ public class LandingActivity extends AppCompatActivity {
             } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 setPermissions(); //getcurrent
-            }
-            else {
+            } else {
                 Intent settingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 Uri uri = Uri.fromParts("package", getPackageName(), null);
                 settingsIntent.setData(uri);
@@ -84,7 +82,6 @@ public class LandingActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please Grant Storage Permission", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == READ_EXTERNAL_REQ_CODE) {
-
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 //DENIED ONCE
                 ActivityCompat.requestPermissions(this,
@@ -115,28 +112,25 @@ public class LandingActivity extends AppCompatActivity {
         setPermissions();
     }
 
-    public void viewReport(){
-        //Toast.makeText(getApplicationContext(), "View Report", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent (getApplicationContext(), ViewReportsActivity.class);
-        startActivity(intent);
+    public void viewReport() {
+        Intent viewReport = new Intent (getApplicationContext(), ViewReportsActivity.class);
+        startActivity(viewReport);
     }
 
-    public void manageCoordinatedBrgys(){
-        //Toast.makeText(getApplicationContext(), "Coordinated Barangays", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent (getApplicationContext(), CoordinatedBrgysActivity.class);
-        startActivity(intent);
+    public void manageCoordinatedBrgys() {
+        Intent manageBrgys = new Intent (getApplicationContext(), CoordinatedBrgysActivity.class);
+        startActivity(manageBrgys);
     }
 
-    public void verifyUser(){
-        //Toast.makeText(getApplicationContext(), "Verify Registration", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent (getApplicationContext(), VerificationListActivity.class);
-        startActivity(intent);
+    public void verifyUser() {
+        Intent verifyUser = new Intent (getApplicationContext(), VerificationListActivity.class);
+        startActivity(verifyUser);
     }
 
-    public void adminLogout(){
-        Toast.makeText(getApplicationContext(), "Logout method", Toast.LENGTH_LONG).show();
+    public void adminLogout() {
         FirebaseAuth.getInstance().signOut();
         Toast.makeText(LandingActivity.this, "Logged Out", Toast.LENGTH_SHORT).show();
+
         startActivity(new Intent(LandingActivity.this, LoginActivity.class));
         finish();
     }

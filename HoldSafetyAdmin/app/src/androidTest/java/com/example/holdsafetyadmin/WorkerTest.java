@@ -30,9 +30,9 @@ public class WorkerTest {
 
     @Test
     public void testSleepWorker() {
-        SendReportWorker worker =
+        GenerateReportWorker worker =
                 TestWorkerBuilder.from(context,
-                        SendReportWorker.class,
+                        GenerateReportWorker.class,
                         executor)
                         .build();
 

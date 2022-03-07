@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -33,14 +32,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
-import androidx.work.Data;
 import androidx.work.WorkInfo;
 
-import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -60,18 +55,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 public class GenerateReportActivity extends AppCompatActivity {
@@ -79,7 +70,7 @@ public class GenerateReportActivity extends AppCompatActivity {
     FirebaseUser user;
     FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private SendReportViewModel srViewModel;
+    private GenerateReportViewModel srViewModel;
 
     ImageView btnBack;
     Spinner spinnerBarangay;
@@ -105,7 +96,7 @@ public class GenerateReportActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
 
         //get viewmodel
-        srViewModel = new SendReportViewModel(getApplication());
+        srViewModel = new GenerateReportViewModel(getApplication());
 
         //TODO DECLARE BOTH DATEPICKER
         //TODO DECLARE ONLICKLISTENER

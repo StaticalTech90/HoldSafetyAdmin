@@ -6,7 +6,7 @@
     <string name="btnRemoveBrgy"><u>Remove Barangay</u></string>
     <string name="location">Location:</string>
     <string name="date">Date:</string>
-    <string name="username">Username</string>
+    <string name="username">Username:</string>
     <string name="_001">001</string>
     <string name="report_id">Report ID:</string>
     <string name="number_village_bldg_street_brgy_city">Number Village/Bldg. Street Brgy. City</string>

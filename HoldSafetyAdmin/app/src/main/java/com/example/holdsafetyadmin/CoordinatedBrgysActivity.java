@@ -53,7 +53,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                 .collection("barangay").get()
                 .addOnCompleteListener(task -> {
                     Intent intent = new Intent(this, CoordinatedBrgyDetailsActivity.class);
-                    Toast.makeText(this, user.getUid(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, user.getUid(), Toast.LENGTH_SHORT).show();
                     if (task.isSuccessful()) {
                         //FOR EACH
                         //GET ALL ID

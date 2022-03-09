@@ -120,22 +120,22 @@ public class GenerateReportActivity extends AppCompatActivity {
         });
         setPermissions();
 
-        //srViewModel.cancelWork();
-        srViewModel.sendReport();
-        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
-            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
-                return;
-            }
-
-            WorkInfo workInfo = listOfWorkInfo.get(0);
-
-            boolean finished = workInfo.getState().isFinished();
-            if (!finished) {
-                Log.i("FINISHED", "NOT Done");
-            } else {
-                Log.i("FINISHED", "Done");
-            }
-        });
+        srViewModel.cancelWork();
+//        srViewModel.sendReport();
+//        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
+//            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
+//                return;
+//            }
+//
+//            WorkInfo workInfo = listOfWorkInfo.get(0);
+//
+//            boolean finished = workInfo.getState().isFinished();
+//            if (!finished) {
+//                Log.i("FINISHED", "NOT Done");
+//            } else {
+//                Log.i("FINISHED", "Done");
+//            }
+//        });
     }
 
     //checks required permissions

@@ -96,9 +96,9 @@ public class GenerateReportWorker extends Worker {
                                     Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
                                     //Create a new file that points to the root directory, with the given name:
-                                    File file = new File(getApplicationContext().getExternalFilesDir(null), "report.pdf");
+                                    reportFile = new File(getApplicationContext().getExternalFilesDir(null), "report.pdf");
                                     Uri path = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()),
-                                            BuildConfig.APPLICATION_ID + ".provider", file);
+                                            BuildConfig.APPLICATION_ID + ".provider", reportFile);
                                     getApplicationContext().grantUriPermission("com.example.holdsafetyadmin",
                                             path,
                                             Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -119,13 +119,12 @@ public class GenerateReportWorker extends Worker {
 //                                        //INITIALIZE PDF HERE
                                         PdfPCell cell = new PdfPCell();
                                         PdfPTable table = new PdfPTable(3);
-                                        PdfWriter.getInstance(document, new FileOutputStream(String.valueOf(file)));
+                                        PdfWriter.getInstance(document, new FileOutputStream(String.valueOf(reportFile)));
 
                                         document.open();
                                         document.addCreationDate();
 
                                         try {
-                                            //InputStream ims = getAssets().open("holdsafety_login_admin.png");
                                             Bitmap bmp = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.holdsafety_login_admin);
                                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                             bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -146,23 +145,20 @@ public class GenerateReportWorker extends Worker {
 
                                             Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
 
-                                            //CHECK IF START DATE IS GREATER THAN END DATE
-                                            //declare long and lat of the report, for geoloc functionality
                                             reportLat = reportSnap.getString("Lat");
                                             reportLong = reportSnap.getString("Lon");
-                                            reportAdd = getGeoLoc(reportLat, reportLong);
                                             count++;
                                             table.addCell(new Paragraph(reportSnap.getString("FirstName") + " " +
                                                     reportSnap.getString("LastName"), smallNormal));
-                                            table.addCell(new Paragraph(reportAdd, smallNormal));
+                                            //table.addCell(new Paragraph(reportAdd, smallNormal));
                                             table.addCell(new Paragraph(tempDate.toString(), smallNormal));
                                         }
 
-                                        //This will become link
-                                        message = "Address: " + reportAdd +"<br /> Count: "+ count;
+                                        //This will become link "Address: " + reportAdd
+                                        message =  "Report Count: "+ count + "<br />";
                                         document.add(new Paragraph("Barangay: "+ "test", smallNormal));
                                         document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
-                                        document.add(new Paragraph("Number of Reports: " + String.valueOf(count) + "\n\n", smallNormal));
+                                        document.add(new Paragraph("Number of Reports: " + count + "\n\n", smallNormal));
                                         document.add(table);
                                         document.close();
                                         Log.i("PDF", "PDF Generated");
@@ -193,69 +189,34 @@ public class GenerateReportWorker extends Worker {
         return Result.success();
     }
 
-    public String getGeoLoc(String reportLat, String reportLong) {
-        String strAdd = "";
-        Geocoder geocoder = new Geocoder(applicationContext, Locale.getDefault());
-        double doubleLat = Double.parseDouble(reportLat.trim());
-        double doubleLong = Double.parseDouble(reportLong.trim());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(doubleLat, doubleLong, 1);
-            if (addresses != null) {
-                Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder();
-
-                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                }
-                strAdd = strReturnedAddress.toString();
-                Log.w("Barangay Address", strReturnedAddress.toString());
-            } else {
-                Log.w("Barangay Address", "No Address returned!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.w("Barangay Address", "Cannot get Address!");
-        }
-
-        return strAdd.trim();
-    }
-
     private void saveToFireBase(Document document){
         FirebaseStorage.getInstance()
                 .getReference("reports")
-                .child(mAuth.getCurrentUser().getUid())
                 .child(reportFile.getName())
                 .putFile(Uri.fromFile(reportFile))
                 .addOnSuccessListener(taskSnapshot -> {
                     Toast.makeText(applicationContext, "Upload successful", Toast.LENGTH_SHORT).show();
-                    getReportLink();
+                    videoRef.child(reportFile.getName()).getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                Log.d("Video to Document", "Fetching report URI success");
+                                //TODO SAVE TO FIREBASE STORAGE AS PDF THEN SEND
+                                try {
+                                    String email = "201801336@iacademy.edu.ph";
+                                    String username = "holdsafety.ph@gmail.com";
+                                    String password = "HoldSafety@4qmag";
+                                    String subject = "AUTOMATED Alert Message - HoldSafety";
+
+                                    List<String> recipients = Collections.singletonList(email);
+                                    new MailTask(GenerateReportWorker.class).execute(username, password, recipients, subject, message+uri);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            })
+                            .addOnFailureListener(e -> Log.d("Video to Document", "Fetching video URI failed. Log: " + e.getMessage()));
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(applicationContext, "Upload failed: " +e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
-    }
-
-    private void getReportLink() {
-        //FETCH VIDEO LINK
-        videoRef.child(reportFile.getName()).getDownloadUrl()
-                .addOnSuccessListener(uri -> {
-                    Log.d("Video to Document", "Fetching report URI success");
-                    //TODO SAVE TO FIREBASE STORAGE AS PDF THEN SEND
-                    try {
-                        String email = "201801263@iacademy.edu.ph";
-                        String username = "holdsafety.ph@gmail.com";
-                        String password = "HoldSafety@4qmag";
-                        String subject = "AUTOMATED Alert Message - HoldSafety";
-
-                        List<String> recipients = Collections.singletonList(email);
-                        //email of sender, password of sender, list of recipients, email subject, email body
-                        new MailTask(GenerateReportWorker.class).execute(username, password, recipients, subject, message+"\n\n"+uri);
-
-                        //Toast.makeText(LandingActivity.this, "Email Sent", Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                })
-                .addOnFailureListener(e -> Log.d("Video to Document", "Fetching video URI failed. Log: " + e.getMessage()));
     }
 }

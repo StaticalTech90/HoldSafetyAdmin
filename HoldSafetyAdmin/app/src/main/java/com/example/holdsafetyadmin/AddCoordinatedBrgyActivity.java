@@ -1,5 +1,8 @@
 package com.example.holdsafetyadmin;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -88,19 +91,43 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         } else if(TextUtils.isEmpty(longitude)) {
             etLongitude.setError("Please enter longitude");
         } else {
-            db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(),
-                            "Successfully Added Barangay",
-                            Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            Objects.requireNonNull(task.getException()).toString(),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+            if(haveNetworkConnection()){
+                db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(),
+                                "Successfully Added Barangay",
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(),
+                                Objects.requireNonNull(task.getException()).toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "Your internet is not connected or unstable. Adding Barangay Failed",
+                        Toast.LENGTH_SHORT).show();
+            }
+
         }
+    }
+
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
     }
 
     private void goBack() {

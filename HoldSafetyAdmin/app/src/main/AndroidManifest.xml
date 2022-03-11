@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HoldSafetyAdmin"
         android:screenOrientation="portrait"
-        android:allowBackup="true">
+        android:allowBackup="false">
         <activity
             android:name=".GenerateReportActivity"
             android:screenOrientation="portrait"

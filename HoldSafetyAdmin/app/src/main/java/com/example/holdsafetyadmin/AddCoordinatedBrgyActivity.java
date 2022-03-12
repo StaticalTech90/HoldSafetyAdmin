@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 public class AddCoordinatedBrgyActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    LogHelper logHelper;
 
     ImageView btnBack;
     private EditText etBarangay, etCity, etMobileNumber, etEmail, etLatitude, etLongitude;
@@ -36,6 +37,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_coordinated_brgy);
 
         mAuth = FirebaseAuth.getInstance();
+        logHelper = new LogHelper(AddCoordinatedBrgyActivity.this, mAuth, this);
 
         etBarangay = findViewById(R.id.txtBarangayName);
         etCity = findViewById(R.id.txtBrgyCity);
@@ -94,17 +96,20 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
             if(haveNetworkConnection()){
                 db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
                         Toast.makeText(getApplicationContext(),
                                 "Successfully Added Barangay",
                                 Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
+                        logHelper.saveToFirebase("saveBrgy", "ERROR", task.getException().getLocalizedMessage());
                         Toast.makeText(getApplicationContext(),
                                 Objects.requireNonNull(task.getException()).toString(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
+                logHelper.saveToFirebase("saveBrgy", "ERROR", "Unstable network connection");
                 Toast.makeText(getApplicationContext(),
                         "Your internet is not connected or unstable. Adding Barangay Failed",
                         Toast.LENGTH_SHORT).show();

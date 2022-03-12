@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,8 +30,9 @@ import java.util.regex.Pattern;
 
 public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
+    FirebaseAuth mAuth;
     DocumentReference docRef;
-
+    LogHelper logHelper;
     ImageView btnBack;
     TextView textViewBrgyName, textViewBrgyCity, textViewBrgyID, btnRemoveBrgy,textViewBrgyAddress;
     EditText textViewBrgyMobileNum, textViewBrgyEmail, textViewBrgyLatitude, textViewBrgyLongitude;
@@ -42,6 +44,9 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coordinated_brgy_details);
+
+        mAuth = FirebaseAuth.getInstance();
+        logHelper =  new LogHelper(CoordinatedBrgyDetailsActivity.this, mAuth, this);
 
         textViewBrgyName = findViewById(R.id.txtBrgyName);
         textViewBrgyCity = findViewById(R.id.txtBrgyCity);
@@ -224,10 +229,12 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
                         docRef.update("Latitude", changedLat);
                         docRef.update("Longitude", changedLong);
 
+                        logHelper.saveToFirebase("updateBarangay","SUCCESS", "Barangay updated successfully");
                         Toast.makeText(this, "Successfully updated", Toast.LENGTH_SHORT).show();
                         goBack();
                     }
                     else {
+                        logHelper.saveToFirebase("updateBarangay","ERROR", "Barangay failed to update");
                         Toast.makeText(CoordinatedBrgyDetailsActivity.this, "Failed to update", Toast.LENGTH_SHORT).show();
                     }
                 });

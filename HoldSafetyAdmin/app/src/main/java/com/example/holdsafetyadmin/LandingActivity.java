@@ -18,7 +18,9 @@ import androidx.core.app.ActivityCompat;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LandingActivity extends AppCompatActivity {
+    FirebaseAuth mAuth;
     Button btnLogout, btnViewReport, btnManageCoordinatedBrgys, btnVerifyUser;
+    LogHelper logHelper;
 
     private static final int WRITE_EXTERNAL_REQ_CODE = 1000;
     private static final int READ_EXTERNAL_REQ_CODE = 1001;
@@ -27,6 +29,9 @@ public class LandingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
+
+        mAuth = FirebaseAuth.getInstance();
+        logHelper =  new LogHelper(LandingActivity.this, mAuth, this);
 
         btnViewReport = findViewById(R.id.btnViewReport);
         btnManageCoordinatedBrgys = findViewById(R.id.btnManageCoordinatedBrgys);
@@ -113,24 +118,35 @@ public class LandingActivity extends AppCompatActivity {
 
     public void viewReport() {
         Intent viewReport = new Intent (getApplicationContext(), ViewReportsActivity.class);
+        logHelper.saveToFirebase("viewReport", "CLICK EVENT", "Go to ViewReportsActivity");
         startActivity(viewReport);
     }
 
     public void manageCoordinatedBrgys() {
         Intent manageBrgys = new Intent (getApplicationContext(), CoordinatedBrgysActivity.class);
+        logHelper.saveToFirebase("manageCoordinatedBrgys", "CLICK EVENT", "Go to CoordinatedBrgysActivity");
         startActivity(manageBrgys);
     }
 
     public void verifyUser() {
         Intent verifyUser = new Intent (getApplicationContext(), VerificationListActivity.class);
+        logHelper.saveToFirebase("verifyUser", "CLICK EVENT", "Go to VerificationListActivity");
         startActivity(verifyUser);
     }
 
     public void adminLogout() {
         FirebaseAuth.getInstance().signOut();
+        logHelper.saveToFirebase("adminLogout", "SUCCESS", "Admin user signed out");
         Toast.makeText(LandingActivity.this, "Logged Out", Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(LandingActivity.this, LoginActivity.class));
+        Intent logoutIntent = new Intent(LandingActivity.this, LoginActivity.class);
+        startActivity(logoutIntent);
+
+        //clears logged-in instance
+        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         finish();
     }
 }

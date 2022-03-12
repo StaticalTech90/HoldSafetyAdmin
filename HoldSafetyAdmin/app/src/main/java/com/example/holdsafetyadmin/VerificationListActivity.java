@@ -1,5 +1,6 @@
 package com.example.holdsafetyadmin;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,12 +11,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
 public class VerificationListActivity extends AppCompatActivity {
     FirebaseFirestore db;
+    FirebaseAuth mAuth;
+    LogHelper logHelper;
 
     LinearLayout verificationView;
     ImageView btnBack;
@@ -26,6 +31,8 @@ public class VerificationListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_verification_list);
 
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        logHelper = new LogHelper(VerificationListActivity.this, mAuth, this);
 
         verificationView = findViewById(R.id.linearUserList);
         btnBack = findViewById(R.id.backArrow);
@@ -60,10 +67,22 @@ public class VerificationListActivity extends AppCompatActivity {
                                         selectedUser.putExtra("userID", userSnap.getId());
                                         startActivity(selectedUser);
                                     });
+
+                                    logHelper.saveToFirebase("listUsers", "SUCCESS", "user added to view");
                                     //ADD TO VIEW
                                     verificationView.addView(unverifiedView);
                                 })
-                                .addOnFailureListener(e -> Toast.makeText(VerificationListActivity.this, "onFailure: " + displayName + " " + e.getMessage(), Toast.LENGTH_LONG).show());
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                        logHelper.saveToFirebase("listUsers", "ERROR", e.getLocalizedMessage());
+
+                                        Toast.makeText(VerificationListActivity.this,
+                                                "onFailure: " + displayName + " " + e.getMessage(),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
                     }
                 }
             }

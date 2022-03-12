@@ -98,8 +98,6 @@ public class GenerateReportActivity extends AppCompatActivity {
         //get viewmodel
         srViewModel = new GenerateReportViewModel(getApplication());
 
-        //TODO DECLARE BOTH DATEPICKER
-        //TODO DECLARE ONLICKLISTENER
         spinnerBarangay = findViewById(R.id.txtBarangayName);
         etStartDate = findViewById(R.id.txtStartDate);
         etEndDate = findViewById(R.id.txtEndDate);
@@ -120,22 +118,22 @@ public class GenerateReportActivity extends AppCompatActivity {
         });
         setPermissions();
 
-        srViewModel.cancelWork();
-//        srViewModel.sendReport();
-//        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
-//            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
-//                return;
-//            }
-//
-//            WorkInfo workInfo = listOfWorkInfo.get(0);
-//
-//            boolean finished = workInfo.getState().isFinished();
-//            if (!finished) {
-//                Log.i("FINISHED", "NOT Done");
-//            } else {
-//                Log.i("FINISHED", "Done");
-//            }
-//        });
+        //srViewModel.cancelWork();
+        srViewModel.sendReport();
+        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
+            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
+                return;
+            }
+
+            WorkInfo workInfo = listOfWorkInfo.get(0);
+
+            boolean finished = workInfo.getState().isFinished();
+            if (!finished) {
+                Log.i("FINISHED", "Work NOT Done");
+            } else {
+                Log.i("FINISHED", "Work Done");
+            }
+        });
     }
 
     //checks required permissions

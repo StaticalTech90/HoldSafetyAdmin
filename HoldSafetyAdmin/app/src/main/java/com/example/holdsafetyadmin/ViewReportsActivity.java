@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -30,6 +31,8 @@ import java.util.Locale;
 
 public class ViewReportsActivity extends AppCompatActivity {
     FirebaseFirestore db;
+    FirebaseAuth mAuth;
+    LogHelper logHelper;
 
     SearchView searchReport;
 
@@ -47,6 +50,8 @@ public class ViewReportsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_reports);
 
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        logHelper = new LogHelper(ViewReportsActivity.this, mAuth, this);
 
         displayLatestReportView = findViewById(R.id.linearReportListLatest);
         displayOldestReportView = findViewById(R.id.linearReportListOldest);
@@ -92,13 +97,22 @@ public class ViewReportsActivity extends AppCompatActivity {
                 .addOnCompleteListener(taskDetails -> {
                     if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
                         try {
+                            logHelper.saveToFirebase("getReportData",
+                                    "SUCCESS",
+                                    "reports sorted by report date");
                             setDataDisplay(displayLatestReportView, taskDetails);
                         } catch (IOException e) {
+                            logHelper.saveToFirebase("getReportData",
+                                    "ERROR",
+                                    e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                         try {
                             setDataDisplay(displayOldestReportView, taskDetails);
                         } catch (IOException e) {
+                            logHelper.saveToFirebase("getReportData",
+                                    "ERROR",
+                                    e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
@@ -108,8 +122,14 @@ public class ViewReportsActivity extends AppCompatActivity {
                 .addOnCompleteListener(taskDetails -> {
                     if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
                         try {
+                            logHelper.saveToFirebase("getReportData",
+                                    "SUCCESS",
+                                    "reports sorted by User ID");
                             setDataDisplay(displaybyUserReportView, taskDetails);
                         } catch (IOException e) {
+                            logHelper.saveToFirebase("getReportData",
+                                    "ERROR",
+                                    e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
@@ -119,8 +139,14 @@ public class ViewReportsActivity extends AppCompatActivity {
                 .addOnCompleteListener(taskDetails -> {
                     if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
                         try {
+                            logHelper.saveToFirebase("getReportData",
+                                    "SUCCESS",
+                                    "reports sorted by Barangay");
                             setDataDisplay(displayByBarangayReportView, taskDetails);
                         } catch (IOException e) {
+                            logHelper.saveToFirebase("getReportData",
+                                    "ERROR",
+                                    e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }

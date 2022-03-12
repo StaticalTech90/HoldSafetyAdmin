@@ -8,9 +8,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -23,6 +27,9 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
     TextView userID, txtLastName, txtFirstName, txtMiddleName, txtBirthDate, txtSex, txtIdPic;
     ImageView btnBack, imgIdPic;
     Button btnValidate, btnReject;
+
+    FirebaseAuth mAuth;
+    LogHelper logHelper;
 
     String id, lastName, firstName, middleName, birthDate, sex, idPic; // USER DATA FOR DISPLAY
     String mobileNo, email; // USER DATA FOR PROFILE UPDATE
@@ -38,6 +45,9 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+
+        logHelper =  new LogHelper(RegistrationDetailsActivity.this, mAuth, this);
 
         userID = findViewById(R.id.lblUserID);
         txtLastName = findViewById(R.id.txtLastName);
@@ -92,6 +102,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
                     setData();
                 } else {
+                    logHelper.saveToFirebase("getData", "NO USER", "No user data from db");
                     Toast.makeText(getApplicationContext(), "No User Data from DB", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -116,12 +127,27 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
         docUsers.put("isVerified", true);
 
         db.collection("users").document(id).update(docUsers)
-                .addOnSuccessListener(unused -> Toast.makeText(getApplicationContext(), "User " + firstName + " " + lastName + " has been validated.", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "User NOT validated.", Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        logHelper.saveToFirebase("validateUser", "USER VALIDATED", "User has been validated");
+                        Toast.makeText(getApplicationContext(),
+                                "User " + firstName + " " + lastName + " has been validated.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        logHelper.saveToFirebase("validateUser", "ERROR", e.getLocalizedMessage());
+                        Toast.makeText(getApplicationContext(), "User NOT validated.", Toast.LENGTH_SHORT).show();
+                    }
+                });
         finish();
     }
 
     public void rejectUser(){
+        logHelper.saveToFirebase("rejectUser", "ACTIVITY REDIRECT", "Go to RejectUserActivity");
         Toast.makeText(getApplicationContext(), "Reject User", Toast.LENGTH_SHORT).show();
         Intent rejectReason = new Intent (getApplicationContext(), RejectUserActivity.class);
         rejectReason.putExtra("userID", id);

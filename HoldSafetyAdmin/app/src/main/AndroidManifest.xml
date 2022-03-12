@@ -51,9 +51,13 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".LandingActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,6 +27,8 @@ import java.util.Map;
 
 public class RejectUserActivity extends AppCompatActivity {
     FirebaseFirestore db;
+    FirebaseAuth mAuth;
+    LogHelper logHelper;
 
     String id, userEmail;
     ImageView btnBack;
@@ -38,6 +41,9 @@ public class RejectUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reject_user);
 
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        logHelper = new LogHelper(RejectUserActivity.this, mAuth,this);
+
         etReason = findViewById(R.id.txtReason);
         btnBack = findViewById(R.id.backArrow);
         btnSend = findViewById(R.id.btnSend);
@@ -78,10 +84,12 @@ public class RejectUserActivity extends AppCompatActivity {
                             List<String> recipients = Collections.singletonList(userEmail);
                             new MailTask(RejectUserActivity.this).execute(username, password, recipients, subject, message);
 
+                            logHelper.saveToFirebase("sendReasonForDisapproval", "SUCCESS", "Email Sent");
                             Toast.makeText(RejectUserActivity.this, "Email Sent", Toast.LENGTH_LONG).show();
                             updateUserDetails();
                         }
                     } else{
+                        logHelper.saveToFirebase("sendReasonForDisapproval", "ERROR", "Data does not exist");
                         Toast.makeText(getApplicationContext(), "Snapshot Does Not Exist", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -97,10 +105,14 @@ public class RejectUserActivity extends AppCompatActivity {
         db.collection("users").document(id).update(docUsers)
                 .addOnSuccessListener(unused -> {
                     //DELETE USER'S PIC FROM FIRESTORE
+                    logHelper.saveToFirebase("updateUserDetails", "SUCCESS", "user updated details");
                     FirebaseStorage.getInstance().getReference("id").child(id).delete();
                     Toast.makeText(getApplicationContext(), "User " + id +  " has changed details in db", Toast.LENGTH_SHORT).show();
                 })
-                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "User NOT validated.", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> logHelper.saveToFirebase("updateUserDetails",
+                        "ERROR", e.getLocalizedMessage())
+                );
+
         goBack();
     }
 

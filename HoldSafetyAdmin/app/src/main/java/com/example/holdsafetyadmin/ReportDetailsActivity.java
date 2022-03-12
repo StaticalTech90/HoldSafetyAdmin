@@ -1,5 +1,6 @@
 package com.example.holdsafetyadmin;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.location.Address;
@@ -10,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -18,6 +21,8 @@ import java.util.Locale;
 
 public class ReportDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
+    FirebaseAuth mAuth;
+    LogHelper logHelper;
 
     ImageView btnBack;
     TextView txtReportID, txtUserID, txtUsername, txtLocation, txtDateAndTime, txtBarangay, txtEvidenceLink;
@@ -31,6 +36,8 @@ public class ReportDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report_details);
 
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        logHelper = new LogHelper(ReportDetailsActivity.this, mAuth, this);
 
         txtReportID = findViewById(R.id.txtReportID);
         txtUserID = findViewById(R.id.txtUserID);
@@ -60,10 +67,17 @@ public class ReportDetailsActivity extends AppCompatActivity {
                         reportBarangay = documentSnapshot.getString("Barangay");
                         reportEvidenceLink = documentSnapshot.getString("Evidence");
 
-                        setData();
+                        logHelper.saveToFirebase("getData", "SUCCESS",
+                                "report data " + documentSnapshot.getId() +" fetched");
                     }
                 })
-                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No report data fetched", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        logHelper.saveToFirebase("getData", "ERROR", e.getLocalizedMessage());
+                        setData();Toast.makeText(getApplicationContext(), "No report data fetched", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     public String getGeoLoc(String latitude, String longitude) {

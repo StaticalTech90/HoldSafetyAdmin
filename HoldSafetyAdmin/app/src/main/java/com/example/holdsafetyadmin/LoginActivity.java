@@ -23,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText txtEmail, txtPassword;
     Button btnLogin;
     FirebaseAuth fAuth;
-    TextView txtToggle;
+    TextView txtToggle, btnForgotPass;
     DocumentReference docRef;
 
     @Override
@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         txtPassword = findViewById(R.id.txtPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txtToggle = findViewById(R.id.txtToggle);
+        btnForgotPass = findViewById(R.id.btnForgotPassword);
 
         txtToggle.setVisibility(View.GONE);
         txtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -107,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             loginAdmin(email,password);
         });
 
+        btnForgotPass.setOnClickListener(view -> forgotPassword());
     }
 
     public void loginAdmin(String email,String password){
@@ -144,5 +146,10 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(getIntent());
             }
         });
+    }
+
+    private void forgotPassword() {
+        Intent forgotPass = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+        startActivity(forgotPass);
     }
 }

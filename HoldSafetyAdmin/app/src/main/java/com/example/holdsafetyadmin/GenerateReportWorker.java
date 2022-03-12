@@ -14,24 +14,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.itextpdf.text.Document;
@@ -49,14 +40,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GenerateReportWorker extends Worker {
     Context applicationContext = getApplicationContext();
@@ -123,6 +116,9 @@ public class GenerateReportWorker extends Worker {
                             if (task.isSuccessful()) {
 
                                 Document document = new Document();
+                                HashMapInteger<String> areaOccurrences = new HashMapInteger<String>();
+                                HashMapInteger<String> dateOccurrences = new HashMapInteger<String>();
+
                                 Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
                                 Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
@@ -172,13 +168,19 @@ public class GenerateReportWorker extends Worker {
                                     table.addCell(new Paragraph("Report Date", smallBold));
 
                                     for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
+
                                         Log.i("report snap", reportSnap.getId());
 
                                         Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
+                                        String reportDate = dateFormat.format(tempDate);
 
                                         reportLat = reportSnap.getString("Lat");
                                         reportLong = reportSnap.getString("Lon");
                                         String reportAdd = getGeoLoc(reportLat, reportLong);
+
+                                        //count occurrences
+                                        areaOccurrences.increment(reportAdd);
+                                        dateOccurrences.increment(reportDate);
 
                                         count++;
 
@@ -188,13 +190,40 @@ public class GenerateReportWorker extends Worker {
                                         table.addCell(new Paragraph(tempDate.toString(), smallNormal));
                                     }
 
+                                    //get max value area
+                                    String areaMaxEntry = "";
+                                    int maxValueInMap=(Collections.max(areaOccurrences.values()));
+                                    for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
+                                        if (entry.getValue()==maxValueInMap) {
+                                            areaMaxEntry = entry.getKey();
+                                        }
+                                    }
+
+                                    //get max value date
+                                    String dateMaxEntry = "";
+                                    int maxValueInDateMap=(Collections.max(dateOccurrences.values()));
+                                    for (Map.Entry<String, Integer> entry : dateOccurrences.entrySet()) {
+                                        if (entry.getValue()==maxValueInDateMap) {
+                                            dateMaxEntry = entry.getKey();
+                                        }
+                                    }
+
                                     //This will become link "Address: " + reportAdd
                                     message =  "Report Count: "+ count + "<br />";
-                                    document.add(new Paragraph("Date generated: "+ formatDateGenerated, smallNormal));
-                                    document.add(new Paragraph("Barangay: "+ "test", smallNormal));
-                                    document.add(new Paragraph("Report Range: " + formatFirstDayOfMonth + " to " + formatLastDayOfMonth, smallNormal));
+
+                                    document.add(new Paragraph("Date generated: "+ formatDateGenerated + "\n\n", smallNormal));
+                                    //document.add(new Paragraph("Barangay: "+ "test", smallNormal));
+                                    document.add(new Paragraph("Report Range: " + formatFirstDayOfMonth + " to " + formatLastDayOfMonth + "\n\n", smallNormal));
                                     document.add(new Paragraph("Number of Reports: " + count + "\n\n", smallNormal));
+                                    document.add(new Paragraph("Area with possible most reported: " + areaMaxEntry + "\n\n", smallNormal));
+                                    document.add(new Paragraph("Occurrences: " + maxValueInMap + "\n\n", smallNormal));
+                                    document.add(new Paragraph("Date with possible most reported: " + dateMaxEntry + "\n\n", smallNormal));
+                                    document.add(new Paragraph("Occurrences: " + maxValueInDateMap + "\n\n", smallNormal));
+
                                     document.add(table);
+
+                                    areaOccurrences.clear();
+                                    dateOccurrences.clear();
                                     document.close();
                                     Log.i("PDF", "PDF Generated");
 

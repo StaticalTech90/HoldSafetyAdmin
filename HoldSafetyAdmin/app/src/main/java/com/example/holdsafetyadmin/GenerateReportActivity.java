@@ -55,6 +55,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class GenerateReportActivity extends AppCompatActivity {
@@ -112,6 +114,7 @@ public class GenerateReportActivity extends AppCompatActivity {
         btnSendReport.setOnClickListener(v -> {
             try {
                   srViewModel.cancelWork();
+                  Log.i("Cancelled Work", "Method cancelled");
 //                validateInput();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -119,21 +122,21 @@ public class GenerateReportActivity extends AppCompatActivity {
         });
         setPermissions();
 
-//        srViewModel.sendReport();
-//        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
-//            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
-//                return;
-//            }
-//
-//            WorkInfo workInfo = listOfWorkInfo.get(0);
-//
-//            boolean finished = workInfo.getState().isFinished();
-//            if (!finished) {
-//                Log.i("FINISHED", "Work NOT Done");
-//            } else {
-//                Log.i("FINISHED", "Work Done");
-//            }
-//        });
+        srViewModel.sendReport();
+        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
+            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
+                return;
+            }
+
+            WorkInfo workInfo = listOfWorkInfo.get(0);
+
+            boolean finished = workInfo.getState().isFinished();
+            if (!finished) {
+                Log.i("FINISHED", "Work NOT Done");
+            } else {
+                Log.i("FINISHED", "Work Done");
+            }
+        });
     }
 
     //checks required permissions
@@ -374,6 +377,9 @@ public class GenerateReportActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         //startDate occurs before endDate
                         Document document = new Document();
+                        HashMapInteger<String> areaOccurrences = new HashMapInteger<String>();
+                        HashMapInteger<String> dateOccurrences = new HashMapInteger<String>();
+
                         Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
                         Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
@@ -425,6 +431,7 @@ public class GenerateReportActivity extends AppCompatActivity {
 
 
                                 Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
+
                                 //suppress lint warnings
                                 assert startDate != null;
                                 assert tempDate != null;
@@ -441,7 +448,8 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     String reportLong = reportSnap.getString("Lon");
                                     String reportAdd = getGeoLoc(reportLat, reportLong);
 
-
+                                    //count occurrences
+                                    areaOccurrences.increment(reportAdd);
 
                                     //Column 2
                                     count++;
@@ -455,9 +463,21 @@ public class GenerateReportActivity extends AppCompatActivity {
                                 }
                             }
 
+                            //get max value area
+                            String areaMaxEntry = "";
+                            int maxValueInMap=(Collections.max(areaOccurrences.values()));
+                            for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
+                                if (entry.getValue()==maxValueInMap) {
+                                    areaMaxEntry = entry.getKey();
+                                }
+                            }
+
                             document.add(new Paragraph("Barangay: " + selectedBarangay, smallNormal));
                             document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
-                            document.add(new Paragraph("Number of Reports: " + String.valueOf(count) + "\n\n", smallNormal));
+                            document.add(new Paragraph("Number of Reports: " + count + "\n\n", smallNormal));
+                            document.add(new Paragraph("Area with possible most reported: " + areaMaxEntry + "\n\n", smallNormal));
+                            document.add(new Paragraph("Occurrences: " + maxValueInMap + "\n\n", smallNormal));
+
                             document.add(table);
                             document.close();
 

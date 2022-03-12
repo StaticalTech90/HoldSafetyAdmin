@@ -313,10 +313,12 @@ public class ViewReportsActivity extends AppCompatActivity {
     }
 
     public String getGeoLoc() throws IOException {
+
         String strAdd = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         Double doubleLat = Double.parseDouble(reportLat.trim());
         Double doubleLong = Double.parseDouble(reportLong.trim());
+
         try {
             List<Address> addresses = geocoder.getFromLocation(doubleLat, doubleLong, 1);
             if (addresses != null) {

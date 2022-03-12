@@ -178,6 +178,8 @@ public class GenerateReportWorker extends Worker {
 
                                         reportLat = reportSnap.getString("Lat");
                                         reportLong = reportSnap.getString("Lon");
+                                        String reportAdd = getGeoLoc(reportLat, reportLong);
+
                                         count++;
 
                                         table.addCell(new Paragraph(reportSnap.getString("FirstName") + " " +
@@ -251,5 +253,31 @@ public class GenerateReportWorker extends Worker {
                 .addOnFailureListener(e -> {
                     Toast.makeText(applicationContext, "Upload failed: " +e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    public String getGeoLoc(String reportLat, String reportLong) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        double doubleLat = Double.parseDouble(reportLat.trim());
+        double doubleLong = Double.parseDouble(reportLong.trim());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(doubleLat, doubleLong, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder();
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.w("Barangay Address", strReturnedAddress.toString());
+            } else {
+                Log.w("Barangay Address", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("Barangay Address", "Cannot get Address!");
+        }
+        return strAdd.trim();
     }
 }

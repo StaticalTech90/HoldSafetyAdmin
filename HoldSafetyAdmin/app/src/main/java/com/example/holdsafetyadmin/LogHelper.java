@@ -43,13 +43,7 @@ public class LogHelper {
         logMap.put("Description", description);
         logMap.put("Timestamp", timestamp);
 
-        db.collection("adminLogs")
-                .document(String.valueOf(calendar.get(Calendar.MONTH)) + "-"
-                + String.valueOf(calendar.get(Calendar.DATE)) + "-"
-                + String.valueOf(calendar.get(Calendar.YEAR)))
-                .collection(String.valueOf(calendar.get(Calendar.HOUR))
-                        + "-" + String.valueOf(calendar.get(Calendar.MINUTE)))
-                .document(action).set(logMap)
+        db.collection("adminLogs").document().set(logMap)
             .addOnSuccessListener(aVoid -> {
                 Log.i(TAG, "logging success");
             })
@@ -57,9 +51,4 @@ public class LogHelper {
                 Log.w(TAG, "Error writing document", e);
             });
     }
-
-    private void encrypt(){
-
-    }
-
 }

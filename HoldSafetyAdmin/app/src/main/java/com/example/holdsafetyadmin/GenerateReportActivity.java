@@ -111,29 +111,29 @@ public class GenerateReportActivity extends AppCompatActivity {
         btnBack.setOnClickListener(view -> goBack());
         btnSendReport.setOnClickListener(v -> {
             try {
-                validateInput();
-            } catch (ParseException e) {
+                  srViewModel.cancelWork();
+//                validateInput();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
         setPermissions();
 
-        //srViewModel.cancelWork();
-        srViewModel.sendReport();
-        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
-            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
-                return;
-            }
-
-            WorkInfo workInfo = listOfWorkInfo.get(0);
-
-            boolean finished = workInfo.getState().isFinished();
-            if (!finished) {
-                Log.i("FINISHED", "Work NOT Done");
-            } else {
-                Log.i("FINISHED", "Work Done");
-            }
-        });
+//        srViewModel.sendReport();
+//        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
+//            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
+//                return;
+//            }
+//
+//            WorkInfo workInfo = listOfWorkInfo.get(0);
+//
+//            boolean finished = workInfo.getState().isFinished();
+//            if (!finished) {
+//                Log.i("FINISHED", "Work NOT Done");
+//            } else {
+//                Log.i("FINISHED", "Work Done");
+//            }
+//        });
     }
 
     //checks required permissions
@@ -373,9 +373,6 @@ public class GenerateReportActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         //startDate occurs before endDate
-                        //TODO Match spinner to data
-                        //TODO Dates must be between
-                        //TODO Handle if theres no report
                         Document document = new Document();
                         Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
                         Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
@@ -426,13 +423,12 @@ public class GenerateReportActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
                                 Log.i("report snap", reportSnap.getId());
 
-                                Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
 
+                                Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
                                 //suppress lint warnings
                                 assert startDate != null;
                                 assert tempDate != null;
 
-                                //TODO DISABLED CONDITION IN THE MEANTIME [WIP]
                                 //Toast.makeText(this, reportSnap.getId(), Toast.LENGTH_SHORT).show();
                                 //DATE NOTES
                                 //date.after(); // means date is date1 > date2
@@ -445,6 +441,8 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     String reportLong = reportSnap.getString("Lon");
                                     String reportAdd = getGeoLoc(reportLat, reportLong);
 
+
+
                                     //Column 2
                                     count++;
                                     table.addCell(new Paragraph(reportSnap.getString("FirstName") + " " +
@@ -456,11 +454,13 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     //Toast.makeText(this, "Report Date is not within the range of selected dates", Toast.LENGTH_SHORT).show();
                                 }
                             }
+
                             document.add(new Paragraph("Barangay: " + selectedBarangay, smallNormal));
                             document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
                             document.add(new Paragraph("Number of Reports: " + String.valueOf(count) + "\n\n", smallNormal));
                             document.add(table);
                             document.close();
+
                             Log.i("PDF", "PDF Generated");
 
                             if(count<1){

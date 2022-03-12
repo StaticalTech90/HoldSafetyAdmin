@@ -118,19 +118,16 @@ public class LandingActivity extends AppCompatActivity {
 
     public void viewReport() {
         Intent viewReport = new Intent (getApplicationContext(), ViewReportsActivity.class);
-        logHelper.saveToFirebase("viewReport", "CLICK EVENT", "Go to ViewReportsActivity");
         startActivity(viewReport);
     }
 
     public void manageCoordinatedBrgys() {
         Intent manageBrgys = new Intent (getApplicationContext(), CoordinatedBrgysActivity.class);
-        logHelper.saveToFirebase("manageCoordinatedBrgys", "CLICK EVENT", "Go to CoordinatedBrgysActivity");
         startActivity(manageBrgys);
     }
 
     public void verifyUser() {
         Intent verifyUser = new Intent (getApplicationContext(), VerificationListActivity.class);
-        logHelper.saveToFirebase("verifyUser", "CLICK EVENT", "Go to VerificationListActivity");
         startActivity(verifyUser);
     }
 

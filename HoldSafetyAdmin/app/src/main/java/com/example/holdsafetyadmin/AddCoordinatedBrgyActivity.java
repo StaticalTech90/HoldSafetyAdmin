@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
 
 public class AddCoordinatedBrgyActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    FirebaseUser user;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     LogHelper logHelper;
 
@@ -37,7 +39,8 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_coordinated_brgy);
 
         mAuth = FirebaseAuth.getInstance();
-        logHelper = new LogHelper(AddCoordinatedBrgyActivity.this, mAuth, this);
+        user = mAuth.getCurrentUser();
+        logHelper = new LogHelper(AddCoordinatedBrgyActivity.this, mAuth, user, this);
 
         etBarangay = findViewById(R.id.txtBarangayName);
         etCity = findViewById(R.id.txtBrgyCity);

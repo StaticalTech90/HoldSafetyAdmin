@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -29,6 +30,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
     Button btnValidate, btnReject;
 
     FirebaseAuth mAuth;
+    FirebaseUser user;
     LogHelper logHelper;
 
     String id, lastName, firstName, middleName, birthDate, sex, idPic; // USER DATA FOR DISPLAY
@@ -46,8 +48,9 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
-        logHelper =  new LogHelper(RegistrationDetailsActivity.this, mAuth, this);
+        logHelper =  new LogHelper(RegistrationDetailsActivity.this, mAuth, user,this);
 
         userID = findViewById(R.id.lblUserID);
         txtLastName = findViewById(R.id.txtLastName);

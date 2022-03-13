@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,6 +29,7 @@ import java.util.Map;
 public class RejectUserActivity extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    FirebaseUser user;
     LogHelper logHelper;
 
     String id, userEmail;
@@ -42,7 +44,8 @@ public class RejectUserActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        logHelper = new LogHelper(RejectUserActivity.this, mAuth,this);
+        user = mAuth.getCurrentUser();
+        logHelper = new LogHelper(RejectUserActivity.this, mAuth,user,this);
 
         etReason = findViewById(R.id.txtReason);
         btnBack = findViewById(R.id.backArrow);

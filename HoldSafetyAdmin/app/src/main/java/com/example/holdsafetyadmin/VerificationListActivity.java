@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -20,6 +21,7 @@ import com.google.firebase.storage.FirebaseStorage;
 public class VerificationListActivity extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    FirebaseUser user;
     LogHelper logHelper;
 
     LinearLayout verificationView;
@@ -32,7 +34,8 @@ public class VerificationListActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        logHelper = new LogHelper(VerificationListActivity.this, mAuth, this);
+        user = mAuth.getCurrentUser();
+        logHelper = new LogHelper(VerificationListActivity.this, mAuth,user, this);
 
         verificationView = findViewById(R.id.linearUserList);
         btnBack = findViewById(R.id.backArrow);

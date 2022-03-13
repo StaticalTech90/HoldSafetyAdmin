@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
 public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    FirebaseUser user;
     DocumentReference docRef;
     LogHelper logHelper;
     ImageView btnBack;
@@ -46,7 +48,8 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_coordinated_brgy_details);
 
         mAuth = FirebaseAuth.getInstance();
-        logHelper =  new LogHelper(CoordinatedBrgyDetailsActivity.this, mAuth, this);
+        user = mAuth.getCurrentUser();
+        logHelper =  new LogHelper(CoordinatedBrgyDetailsActivity.this, mAuth,user, this);
 
         textViewBrgyName = findViewById(R.id.txtBrgyName);
         textViewBrgyCity = findViewById(R.id.txtBrgyCity);

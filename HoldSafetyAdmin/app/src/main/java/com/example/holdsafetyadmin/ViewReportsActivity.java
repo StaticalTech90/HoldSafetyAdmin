@@ -19,6 +19,7 @@ import androidx.appcompat.widget.SearchView;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,6 +31,7 @@ import java.util.Locale;
 public class ViewReportsActivity extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    FirebaseUser user;
     LogHelper logHelper;
 
     SearchView searchReport;
@@ -49,7 +51,8 @@ public class ViewReportsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        logHelper = new LogHelper(ViewReportsActivity.this, mAuth, this);
+        user = mAuth.getCurrentUser();
+        logHelper = new LogHelper(ViewReportsActivity.this, mAuth,user, this);
 
         displayLatestReportView = findViewById(R.id.linearReportListLatest);
         displayOldestReportView = findViewById(R.id.linearReportListOldest);

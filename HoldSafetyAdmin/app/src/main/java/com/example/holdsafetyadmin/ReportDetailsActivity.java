@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Locale;
 public class ReportDetailsActivity extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    FirebaseUser user;
     LogHelper logHelper;
 
     ImageView btnBack;
@@ -37,7 +39,8 @@ public class ReportDetailsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        logHelper = new LogHelper(ReportDetailsActivity.this, mAuth, this);
+        user = mAuth.getCurrentUser();
+        logHelper = new LogHelper(ReportDetailsActivity.this, mAuth,user, this);
 
         txtReportID = findViewById(R.id.txtReportID);
         txtUserID = findViewById(R.id.txtUserID);

@@ -28,7 +28,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        logHelper = new LogHelper(ForgotPasswordActivity.this, mAuth, this);
+        logHelper = new LogHelper(ForgotPasswordActivity.this, mAuth,user, this);
 
         txtEmail = findViewById(R.id.txtEmail);
         btnBack = findViewById(R.id.backArrow);

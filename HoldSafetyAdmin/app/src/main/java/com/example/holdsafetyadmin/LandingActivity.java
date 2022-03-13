@@ -16,9 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LandingActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
+    FirebaseUser user;
     Button btnLogout, btnViewReport, btnManageCoordinatedBrgys, btnVerifyUser;
     LogHelper logHelper;
 
@@ -31,7 +33,8 @@ public class LandingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_landing);
 
         mAuth = FirebaseAuth.getInstance();
-        logHelper =  new LogHelper(LandingActivity.this, mAuth, this);
+        user = mAuth.getCurrentUser();
+        logHelper =  new LogHelper(LandingActivity.this, mAuth, user,this);
 
         btnViewReport = findViewById(R.id.btnViewReport);
         btnManageCoordinatedBrgys = findViewById(R.id.btnManageCoordinatedBrgys);

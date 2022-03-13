@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.sql.Timestamp;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,12 +24,14 @@ public class LogHelper {
 
     FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser user;
     Activity activity;
     HashMap <String, Object> logMap = new HashMap<>();
 
-    public LogHelper(Context c, FirebaseAuth fAuth, Activity classActivity){
+    public LogHelper(Context c, FirebaseAuth fAuth, FirebaseUser fUser, Activity classActivity){
         context = c;
         mAuth = fAuth;
+        user = fUser;
         activity = classActivity;
     }
 
@@ -38,17 +41,19 @@ public class LogHelper {
         timestamp = new Timestamp(date.getTime());
 
         logMap.put("Activity", activity.getLocalClassName());
+        logMap.put("UserID", user.getUid());
         logMap.put("Action", action);
         logMap.put("Result", result);
         logMap.put("Description", description);
         logMap.put("Timestamp", timestamp);
 
-        db.collection("adminLogs").document().set(logMap)
-            .addOnSuccessListener(aVoid -> {
-                Log.i(TAG, "logging success");
-            })
-            .addOnFailureListener(e -> {
-                Log.w(TAG, "Error writing document", e);
-            });
+        db.collection("clientLogs").document().set(logMap)
+                .addOnSuccessListener(aVoid -> {
+                    Log.i(TAG, "Logging success");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error writing document", e);
+                });
     }
+
 }

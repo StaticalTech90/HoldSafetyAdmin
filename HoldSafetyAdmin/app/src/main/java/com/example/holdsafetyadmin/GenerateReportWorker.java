@@ -96,8 +96,8 @@ public class GenerateReportWorker extends Worker {
 
         Calendar calendar = Calendar.getInstance();
         Date date = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
-        DateFormat dateGeneratedFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm", Locale.getDefault());
+        DateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.getDefault());
+        DateFormat dateGeneratedFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", Locale.getDefault());
         Date currentDate = calendar.getTime();
         String formatDateGenerated = dateGeneratedFormat.format(currentDate);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
@@ -314,7 +314,7 @@ public class GenerateReportWorker extends Worker {
                                                                 int finalCount = count;
 
                                                                 try {
-                                                                    document.add(new Paragraph("Barangay: " + nearestBrgy, smallNormal));
+                                                                    document.add(new Paragraph("Barangay: " + nearestBrgy + "\n\n", smallNormal));
                                                                     document.add(new Paragraph("Date generated: " + formatDateGenerated + "\n\n", smallNormal));
                                                                     document.add(new Paragraph("Report Range: " + formatFirstDayOfMonth + " to " + formatLastDayOfMonth + "\n\n", smallNormal));
                                                                     document.add(new Paragraph("Number of Reports: " + finalCount + "\n\n", smallNormal));

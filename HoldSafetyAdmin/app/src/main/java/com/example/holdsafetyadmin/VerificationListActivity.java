@@ -79,11 +79,11 @@ public class VerificationListActivity extends AppCompatActivity {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
 
-                                        logHelper.saveToFirebase("listUsers", "ERROR", e.getLocalizedMessage());
+                                        //logHelper.saveToFirebase("listUsers", "ERROR", e.getLocalizedMessage());
 
-                                        Toast.makeText(VerificationListActivity.this,
-                                                "onFailure: " + displayName + " " + e.getMessage(),
-                                                Toast.LENGTH_LONG).show();
+//                                        Toast.makeText(VerificationListActivity.this,
+//                                                "onFailure: " + displayName + " " + e.getMessage(),
+//                                                Toast.LENGTH_LONG).show();
                                     }
                                 });
                     }
@@ -93,6 +93,12 @@ public class VerificationListActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         finish();
     }
 }

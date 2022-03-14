@@ -12,7 +12,7 @@
     <string name="number_village_bldg_street_brgy_city">Number Village/Bldg. Street Brgy. City</string>
     <string name="user_id">User ID</string>
     <string name="user_name">User Name</string>
-    <string name="validate_user">Validate User</string>
+    <string name="verify_user">Verify User</string>
 
 <!--    Database collections    -->
     <string name="adminDB">admin</string>

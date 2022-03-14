@@ -123,9 +123,9 @@ public class GenerateReportWorker extends Worker {
         String formattedHour = hourFormat.format(date);
 
         try {
-            Date currentDay = hourFormat.parse(formattedHour);
-            Date startDate = hourFormat.parse(DEFAULT_START_TIME);
-            Date endDate = hourFormat.parse(DEFAULT_END_TIME);
+//            Date currentDay = hourFormat.parse(formattedHour);
+//            Date startDate = hourFormat.parse(DEFAULT_START_TIME);
+//            Date endDate = hourFormat.parse(DEFAULT_END_TIME);
 
             //if (day == 1 && currentDay.after(startDate) && currentDay.before(endDate)) {
             try {
@@ -206,7 +206,7 @@ public class GenerateReportWorker extends Worker {
 
                                             String nearestBrgyValue = nearestBrgySnap.getString("Barangay");
 
-                                            db.collection("reports").whereEqualTo("nearest", nearestBrgyValue)
+                                            db.collection("reports").whereEqualTo("Nearest Barangay", nearestBrgyValue)
                                                     .get().addOnCompleteListener(task -> {
                                                         if (task.isSuccessful()) {
 
@@ -318,10 +318,8 @@ public class GenerateReportWorker extends Worker {
                                                                     document.add(new Paragraph("Date generated: " + formatDateGenerated + "\n\n", smallNormal));
                                                                     document.add(new Paragraph("Report Range: " + formatFirstDayOfMonth + " to " + formatLastDayOfMonth + "\n\n", smallNormal));
                                                                     document.add(new Paragraph("Number of Reports: " + finalCount + "\n\n", smallNormal));
-                                                                    document.add(new Paragraph("Area with possible most reported: " + finalAreaMaxEntry + "\n\n", smallNormal));
-                                                                    document.add(new Paragraph("Occurrences: " + maxValueInMap + "\n\n", smallNormal));
-                                                                    document.add(new Paragraph("Date with possible most reported: " + finalDateMaxEntry + "\n\n", smallNormal));
-                                                                    document.add(new Paragraph("Occurrences: " + maxValueInDateMap + "\n\n", smallNormal));
+                                                                    document.add(new Paragraph("Area with possible most reported: " + finalAreaMaxEntry + " with " + maxValueInMap + " reports\n\n", smallNormal));
+                                                                    document.add(new Paragraph("Date with possible most reported: " + finalDateMaxEntry + " with " + maxValueInDateMap + " reports\n\n", smallNormal));
 
                                                                     document.add(table);
 
@@ -376,7 +374,6 @@ public class GenerateReportWorker extends Worker {
                     videoRef.child(reportFile.getName()).getDownloadUrl()
                             .addOnSuccessListener(uri -> {
                                 Log.d("Video to Document", "Fetching report URI success");
-                                //TODO SAVE TO FIREBASE STORAGE AS PDF THEN SEND
                                 try {
                                     String email = "201801263@iacademy.edu.ph";
                                     String username = "holdsafety.ph@gmail.com";
@@ -393,7 +390,7 @@ public class GenerateReportWorker extends Worker {
                             .addOnFailureListener(e -> Log.d("Video to Document", "Fetching video URI failed. Log: " + e.getMessage()));
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(applicationContext, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(applicationContext, "Auto report generation failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 

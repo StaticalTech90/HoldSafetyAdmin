@@ -32,12 +32,15 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.itextpdf.text.Document;
@@ -93,7 +96,6 @@ public class GenerateReportWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-
         Calendar calendar = Calendar.getInstance();
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.getDefault());
@@ -129,224 +131,148 @@ public class GenerateReportWorker extends Worker {
 
             //if (day == 1 && currentDay.after(startDate) && currentDay.before(endDate)) {
             try {
-                fusedLocationProviderClient.getLastLocation()
-                        .addOnCompleteListener(task1 -> {
-                            Location location = task1.getResult();
 
-                            String address = "";
-                            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+                db.collection("barangay").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(QueryDocumentSnapshot barangaySnap: task.getResult()){
 
-                            try {
-                                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                                if (addresses != null) {
-                                    Address returnedAddress = addresses.get(0);
-                                    StringBuilder strReturnedAddress = new StringBuilder("");
+                            Log.i("barangay iteration", barangaySnap.getString("Barangay"));
+                            db.collection("reports").whereEqualTo("Nearest Barangay", barangaySnap.getString("Barangay")).orderBy("Report Date")
+                                    .get().addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
 
-                                    for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
-                                        strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                                    String barangayID = barangaySnap.getString("Barangay");
+                                    String barangayEmail = barangaySnap.getString("Email");
+                                    Document document = new Document();
+                                    HashMapInteger<String> areaOccurrences = new HashMapInteger<String>();
+                                    HashMapInteger<String> dateOccurrences = new HashMapInteger<String>();
+
+                                    Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
+                                    Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+
+                                    //Create a new file that points to the root directory, with the given name:
+                                    reportFile = new File(getApplicationContext().getExternalFilesDir(null), barangayID+"-report.pdf");
+                                    Uri path = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()),
+                                            BuildConfig.APPLICATION_ID + ".provider", reportFile);
+                                    getApplicationContext().grantUriPermission("com.example.holdsafetyadmin",
+                                            path,
+                                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                                    int count = 0;
+
+                                    //Checking the availability state of the External Storage.
+                                    String state = Environment.getExternalStorageState();
+                                    if (!Environment.MEDIA_MOUNTED.equals(state)) {
+                                        //If it isn't mounted - we can't write into it.
+                                        return;
                                     }
-                                    address = strReturnedAddress.toString();
-                                    Log.w("User Address", address);
+
+                                    //This point and below is responsible for the write operation
+                                    FileOutputStream outputStream = null;
+
+                                    try {
+                                        //INITIALIZE PDF HERE
+                                        PdfPCell cell = new PdfPCell();
+                                        PdfPTable table = new PdfPTable(3);
+                                        PdfWriter.getInstance(document, new FileOutputStream(String.valueOf(reportFile)));
+
+                                        document.open();
+                                        document.addCreationDate();
+
+                                        try {
+                                            Bitmap bmp = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.holdsafety_login_admin);
+                                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                            Image image = Image.getInstance(stream.toByteArray());
+                                            image.scalePercent(10);
+                                            image.setAlignment(Element.ALIGN_CENTER);
+                                            document.add(image);
+                                        } catch (IOException e) {
+                                            Log.e("IOEXception", e.getMessage());
+                                        }
+
+                                        table.addCell(new Paragraph("Name", smallBold));
+                                        table.addCell(new Paragraph("Address", smallBold));
+                                        table.addCell(new Paragraph("Report Date", smallBold));
+
+                                        for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task1.getResult())) {
+
+                                            Log.i("report snap", reportSnap.getId());
+
+                                            Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
+                                            String reportDate = dateFormat.format(tempDate);
+
+                                            reportLat = reportSnap.getString("Lat");
+                                            reportLong = reportSnap.getString("Lon");
+                                            String reportAdd = getGeoLoc(reportLat, reportLong);
+                                            String reportStreetAdd = getGeoLocStreet(reportLat, reportLong);
+
+
+                                            //count occurrences
+                                            areaOccurrences.increment(reportStreetAdd);
+                                            dateOccurrences.increment(reportDate);
+
+                                            count++;
+
+                                            table.addCell(new Paragraph(reportSnap.getString("FirstName") + " " +
+                                                    reportSnap.getString("LastName"), smallNormal));
+                                            table.addCell(new Paragraph(reportAdd, smallNormal));
+                                            table.addCell(new Paragraph(tempDate.toString(), smallNormal));
+                                        }
+
+                                        //get max value area
+                                        String areaMaxEntry = "";
+                                        int maxValueInMap = (Collections.max(areaOccurrences.values()));
+                                        for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
+                                            if (entry.getValue() == maxValueInMap) {
+                                                areaMaxEntry = entry.getKey();
+                                            }
+                                        }
+
+                                        //get max value date
+                                        String dateMaxEntry = "";
+                                        int maxValueInDateMap = (Collections.max(dateOccurrences.values()));
+                                        for (Map.Entry<String, Integer> entry : dateOccurrences.entrySet()) {
+                                            if (entry.getValue() == maxValueInDateMap) {
+                                                dateMaxEntry = entry.getKey();
+                                            }
+                                        }
+
+                                        //This will become link "Address: " + reportAdd
+                                        //message =  "Report Count: "+ count + "<br />";
+                                        message = "Report for " + date + "<br />";
+
+                                        int finalCount = count;
+
+                                        try {
+                                            document.add(new Paragraph("Barangay: " + barangayID + "\n\n", smallNormal));
+                                            document.add(new Paragraph("Date generated: " + formatDateGenerated + "\n\n", smallNormal));
+                                            document.add(new Paragraph("Report Range: " + formatFirstDayOfMonth + " to " + formatLastDayOfMonth + "\n\n", smallNormal));
+                                            document.add(new Paragraph("Number of Reports: " + finalCount + "\n\n", smallNormal));
+                                            document.add(new Paragraph("Area with possible most reported: " + areaMaxEntry + " with " + maxValueInMap + " reports\n\n", smallNormal));
+                                            document.add(new Paragraph("Date with possible most reported: " + dateMaxEntry + " with " + maxValueInDateMap + " reports\n\n", smallNormal));
+
+                                            document.add(table);
+
+                                            areaOccurrences.clear();
+                                            dateOccurrences.clear();
+                                            document.close();
+                                            Log.i("PDF", "PDF Generated");
+                                        } catch (DocumentException de) {
+                                            de.getLocalizedMessage();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    saveToFireBase(reportFile,barangaySnap.getString("Email"), barangaySnap.getString("Barangay"));
                                 } else {
-                                    Log.w("User Address", "No Address returned!");
+                                    Log.e("Task Error", task1.getException().getLocalizedMessage());
                                 }
-                                coordsLat = Double.toString(location.getLatitude());
-                                coordsLon = Double.toString(location.getLongitude());
-
-                                //GET ESTABLISHMENTS LOCATIONS
-                                FirebaseFirestore.getInstance()
-                                        .collection("barangay")
-                                        .get()
-                                        .addOnCompleteListener(task2 -> {
-                                            HashMap<String, Object> hashBrgys = new HashMap<>();
-
-                                            for (QueryDocumentSnapshot brgySnap : task2.getResult()) {
-                                                HashMap<String, Object> brgySnapHash = new HashMap<>();
-                                                String brgyID = brgySnap.getId();
-
-                                                String lat = brgySnap.getString("Latitude");
-                                                String lon = brgySnap.getString("Longitude");
-
-                                                //COMPARE BRGY LAT & LON TO USER
-                                                if (lat != null && lon != null) {
-                                                    float[] results = new float[1];
-                                                    Location.distanceBetween(
-                                                            location.getLatitude(), location.getLongitude(),
-                                                            Double.parseDouble(lat), Double.parseDouble(lon), results);
-                                                    //FLOAT[] WILL RETURN DISTANCE IN METER
-                                                    float distance = results[0];
-
-                                                    //ADD TO HASHMAP
-                                                    brgySnapHash.put("brgySnap", brgySnap);
-                                                    brgySnapHash.put("distance", distance);
-                                                    //ADD TO ALL BRGY SNAP
-                                                    hashBrgys.put(brgyID, brgySnapHash);
-                                                }
-                                            }
-
-                                            //COMPARE DISTANCES BETWEEN BARANGAYS
-                                            QueryDocumentSnapshot nearestBrgySnap = null;
-                                            float nearestDistance = 0;
-                                            for (String key : hashBrgys.keySet()) {
-                                                HashMap<String, Object> hashDistances = (HashMap<String, Object>) hashBrgys.get(key);
-                                                if (hashDistances != null) {
-                                                    QueryDocumentSnapshot brgySnap = (QueryDocumentSnapshot) hashDistances.get("brgySnap");
-                                                    float distance = (float) hashDistances.get("distance");
-
-                                                    if (nearestDistance == 0) { //FIRST KEY
-                                                        nearestDistance = distance;
-                                                        nearestBrgySnap = brgySnap;
-                                                    } else if (distance < nearestDistance) {
-                                                        nearestDistance = distance;
-                                                        nearestBrgySnap = brgySnap;
-                                                    }
-                                                    nearestBrgy = nearestBrgySnap.getString("Barangay");
-                                                }
-                                            }
-
-                                            String nearestBrgyValue = nearestBrgySnap.getString("Barangay");
-
-                                            db.collection("reports").whereEqualTo("Nearest Barangay", nearestBrgyValue)
-                                                    .get().addOnCompleteListener(task -> {
-                                                        if (task.isSuccessful()) {
-
-                                                            Document document = new Document();
-                                                            HashMapInteger<String> areaOccurrences = new HashMapInteger<String>();
-                                                            HashMapInteger<String> dateOccurrences = new HashMapInteger<String>();
-
-                                                            Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
-                                                            Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
-
-                                                            //Create a new file that points to the root directory, with the given name:
-                                                            reportFile = new File(getApplicationContext().getExternalFilesDir(null), "report.pdf");
-                                                            Uri path = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()),
-                                                                    BuildConfig.APPLICATION_ID + ".provider", reportFile);
-                                                            getApplicationContext().grantUriPermission("com.example.holdsafetyadmin",
-                                                                    path,
-                                                                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                                                            int count = 0;
-
-                                                            //Checking the availability state of the External Storage.
-                                                            String state = Environment.getExternalStorageState();
-                                                            if (!Environment.MEDIA_MOUNTED.equals(state)) {
-                                                                //If it isn't mounted - we can't write into it.
-                                                                return;
-                                                            }
-
-                                                            //This point and below is responsible for the write operation
-                                                            FileOutputStream outputStream = null;
-
-                                                            try {
-                                                                //INITIALIZE PDF HERE
-                                                                PdfPCell cell = new PdfPCell();
-                                                                PdfPTable table = new PdfPTable(3);
-                                                                PdfWriter.getInstance(document, new FileOutputStream(String.valueOf(reportFile)));
-
-                                                                document.open();
-                                                                document.addCreationDate();
-
-                                                                try {
-                                                                    Bitmap bmp = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.holdsafety_login_admin);
-                                                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                                                    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                                                    Image image = Image.getInstance(stream.toByteArray());
-                                                                    image.scalePercent(10);
-                                                                    image.setAlignment(Element.ALIGN_CENTER);
-                                                                    document.add(image);
-                                                                } catch (IOException e) {
-                                                                    Log.e("IOEXception", e.getMessage());
-                                                                }
-
-                                                                table.addCell(new Paragraph("Name", smallBold));
-                                                                table.addCell(new Paragraph("Address", smallBold));
-                                                                table.addCell(new Paragraph("Report Date", smallBold));
-
-                                                                for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
-
-                                                                    Log.i("report snap", reportSnap.getId());
-
-                                                                    Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
-                                                                    String reportDate = dateFormat.format(tempDate);
-
-                                                                    reportLat = reportSnap.getString("Lat");
-                                                                    reportLong = reportSnap.getString("Lon");
-                                                                    String reportAdd = getGeoLoc(reportLat, reportLong);
-                                                                    String reportStreetAdd = getGeoLocStreet(reportLat, reportLong);
-
-
-                                                                    //count occurrences
-                                                                    areaOccurrences.increment(reportStreetAdd);
-                                                                    dateOccurrences.increment(reportDate);
-
-                                                                    count++;
-
-                                                                    table.addCell(new Paragraph(reportSnap.getString("FirstName") + " " +
-                                                                            reportSnap.getString("LastName"), smallNormal));
-                                                                    table.addCell(new Paragraph(reportAdd, smallNormal));
-                                                                    table.addCell(new Paragraph(tempDate.toString(), smallNormal));
-                                                                }
-
-                                                                //get max value area
-                                                                String areaMaxEntry = "";
-                                                                int maxValueInMap = (Collections.max(areaOccurrences.values()));
-                                                                for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
-                                                                    if (entry.getValue() == maxValueInMap) {
-                                                                        areaMaxEntry = entry.getKey();
-                                                                    }
-                                                                }
-
-                                                                //get max value date
-                                                                String dateMaxEntry = "";
-                                                                int maxValueInDateMap = (Collections.max(dateOccurrences.values()));
-                                                                for (Map.Entry<String, Integer> entry : dateOccurrences.entrySet()) {
-                                                                    if (entry.getValue() == maxValueInDateMap) {
-                                                                        dateMaxEntry = entry.getKey();
-                                                                    }
-                                                                }
-
-                                                                //This will become link "Address: " + reportAdd
-                                                                //message =  "Report Count: "+ count + "<br />";
-                                                                message = "Report for " + date + "<br />";
-
-                                                                String finalAreaMaxEntry = areaMaxEntry;
-                                                                String finalDateMaxEntry = dateMaxEntry;
-                                                                int finalCount = count;
-
-                                                                try {
-                                                                    document.add(new Paragraph("Barangay: " + nearestBrgy + "\n\n", smallNormal));
-                                                                    document.add(new Paragraph("Date generated: " + formatDateGenerated + "\n\n", smallNormal));
-                                                                    document.add(new Paragraph("Report Range: " + formatFirstDayOfMonth + " to " + formatLastDayOfMonth + "\n\n", smallNormal));
-                                                                    document.add(new Paragraph("Number of Reports: " + finalCount + "\n\n", smallNormal));
-                                                                    document.add(new Paragraph("Area with possible most reported: " + finalAreaMaxEntry + " with " + maxValueInMap + " reports\n\n", smallNormal));
-                                                                    document.add(new Paragraph("Date with possible most reported: " + finalDateMaxEntry + " with " + maxValueInDateMap + " reports\n\n", smallNormal));
-
-                                                                    document.add(table);
-
-                                                                    areaOccurrences.clear();
-                                                                    dateOccurrences.clear();
-                                                                    document.close();
-                                                                    Log.i("PDF", "PDF Generated");
-
-                                                                    saveToFireBase(document);
-                                                                } catch (DocumentException de) {
-                                                                    de.getLocalizedMessage();
-                                                                }
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-
-                                                        } else {
-                                                            Log.e("Task Error", task.getException().getLocalizedMessage());
-                                                        }
-                                                    });
-
-                                        });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        });
+                            });
+                        }
+                    }
+                });
 
             } catch (Throwable throwable) {
                 Log.e(TAG, "Error", throwable);
@@ -363,21 +289,21 @@ public class GenerateReportWorker extends Worker {
         return Result.success();
     }
 
-    private void saveToFireBase(Document document) {
+    private void saveToFireBase(File reportPDF, String barangayEmail, String barangay) {
         FirebaseStorage.getInstance()
                 .getReference("reports")
-                .child(reportFile.getName())
-                .putFile(Uri.fromFile(reportFile))
+                .child(reportPDF.getName())
+                .putFile(Uri.fromFile(reportPDF))
                 .addOnSuccessListener(taskSnapshot -> {
-                    Toast.makeText(applicationContext, "Upload successful", Toast.LENGTH_SHORT).show();
-                    videoRef.child(reportFile.getName()).getDownloadUrl()
+                    //Toast.makeText(applicationContext, "Upload successful", Toast.LENGTH_SHORT).show();
+                    videoRef.child(reportPDF.getName()).getDownloadUrl()
                             .addOnSuccessListener(uri -> {
-                                Log.d("Video to Document", "Fetching report URI success");
+                                Log.d("PDF", "Fetching report URI success");
                                 try {
-                                    String email = "201801263@iacademy.edu.ph";
+                                    String email = barangayEmail;
                                     String username = "holdsafety.ph@gmail.com";
                                     String password = "HoldSafety@4qmag";
-                                    String subject = "AUTOMATED Alert Message - HoldSafety";
+                                    String subject = "HoldSafety Monthly Summary Report for Barangay " + barangay;
 
                                     List<String> recipients = Collections.singletonList(email);
                                     new MailTask(GenerateReportWorker.class).execute(username, password, recipients, subject, message + uri);
@@ -386,7 +312,7 @@ public class GenerateReportWorker extends Worker {
                                     e.printStackTrace();
                                 }
                             })
-                            .addOnFailureListener(e -> Log.d("Video to Document", "Fetching video URI failed. Log: " + e.getMessage()));
+                            .addOnFailureListener(e -> Log.d("PDF Report", "Fetching PDF URI failed. Log: " + e.getMessage()));
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(applicationContext, "Auto report generation failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();

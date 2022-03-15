@@ -122,6 +122,24 @@ public class GenerateReportActivity extends AppCompatActivity {
             }
         });
         setPermissions();
+
+        //Auto report generation after admin user sends email///
+        srViewModel.sendReport();
+        srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
+            if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
+                return;
+            }
+
+            WorkInfo workInfo = listOfWorkInfo.get(0);
+
+            boolean finished = workInfo.getState().isFinished();
+            if (!finished) {
+                Log.i("Auto report generate", "Work NOT Done");
+            } else {
+                Log.i("Auto report generate", "Work Done");
+            }
+        });
+        ////////////////////////////////////////////////////////
     }
 
     //checks required permissions
@@ -356,8 +374,8 @@ public class GenerateReportActivity extends AppCompatActivity {
                 etStartDate.setError("Enter a start date");
             } else if (TextUtils.isEmpty(end)) {
                 etEndDate.getText().clear();
-                etEndDate.setHint("Enter a start date");
-                etEndDate.setError("Enter a start date");
+                etEndDate.setHint("Enter an end date");
+                etEndDate.setError("Enter an end date");
             } else {
                 startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
                 endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
@@ -379,16 +397,18 @@ public class GenerateReportActivity extends AppCompatActivity {
 
     public void generateReport(){
         Map<String, String> reportMap = new HashMap<>();
+        DateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.getDefault());
 
         FirebaseFirestore.getInstance()
                 .collection("reports")
-                .whereEqualTo("Nearest Barangay", selectedBarangay)
+                .whereEqualTo("Nearest Barangay", selectedBarangay).orderBy("Report Date")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         //startDate occurs before endDate
                         Document document = new Document();
                         HashMapInteger<String> areaOccurrences = new HashMapInteger<String>();
+                        HashMapInteger<String> dateOccurrences = new HashMapInteger<String>();
 
                         Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
                         Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
@@ -432,24 +452,26 @@ public class GenerateReportActivity extends AppCompatActivity {
                                 Toast.makeText(this, "Img Catch: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
                             }
-                            table.addCell(new Paragraph("Name", smallBold));
+                            table.addCell(new Paragraph("ID", smallBold));
                             table.addCell(new Paragraph("Address", smallBold));
                             table.addCell(new Paragraph("Report Date", smallBold));
+
+                            ///////////include end date/////////
+                            calendar.setTime(endDate);
+                            calendar.add(Calendar.DATE, 1);
+                            endDate = calendar.getTime();
+                            ///////////////////////////////////
 
                             for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
                                 Log.i("report snap", reportSnap.getId());
 
 
                                 Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
+                                String reportDate = dateFormat.format(tempDate);
 
                                 //suppress lint warnings
                                 assert startDate != null;
                                 assert tempDate != null;
-
-                                //Toast.makeText(this, reportSnap.getId(), Toast.LENGTH_SHORT).show();
-                                //DATE NOTES
-                                //date.after(); // means date is date1 > date2
-                                //date.before(); // means date is date1 < date2
 
                                 //CHECK IF START DATE IS GREATER THAN END DATE
                                 if(tempDate.after(startDate) && tempDate.before(endDate)){
@@ -457,14 +479,16 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     String reportLat = reportSnap.getString("Lat");
                                     String reportLong = reportSnap.getString("Lon");
                                     String reportAdd = getGeoLoc(reportLat, reportLong);
+                                    String reportStreetAdd = getGeoLocStreet(reportLat, reportLong);
+
 
                                     //count occurrences
-                                    areaOccurrences.increment(reportAdd);
+                                    areaOccurrences.increment(reportStreetAdd);
+                                    dateOccurrences.increment(reportDate);
 
                                     //Column 2
                                     count++;
-                                    table.addCell(new Paragraph(reportSnap.getString("FirstName") + " " +
-                                            reportSnap.getString("LastName"), smallNormal));
+                                    table.addCell(new Paragraph(reportSnap.getString("User ID"), smallNormal));
                                     table.addCell(new Paragraph(reportAdd, smallNormal));
                                     table.addCell(new Paragraph(tempDate.toString(), smallNormal));
 
@@ -474,19 +498,32 @@ public class GenerateReportActivity extends AppCompatActivity {
                             }
 
                             //get max value area
-//                            String areaMaxEntry = "";
-//                            int maxValueInMap=(Collections.max(areaOccurrences.values()));
-//                            for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
-//                                if (entry.getValue()==maxValueInMap) {
-//                                    areaMaxEntry = entry.getKey();
-//                                }
-//                            }
+                            String areaMaxEntry = "";
+                            int maxValueInMap=(Collections.max(areaOccurrences.values()));
+                            for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
+                                if (entry.getValue()==maxValueInMap) {
+                                    areaMaxEntry = entry.getKey();
+                                }
+                            }
 
+                            //get max value date
+                            String dateMaxEntry = "";
+                            int maxValueInDateMap = (Collections.max(dateOccurrences.values()));
+                            for (Map.Entry<String, Integer> entry : dateOccurrences.entrySet()) {
+                                if (entry.getValue() == maxValueInDateMap) {
+                                    dateMaxEntry = entry.getKey();
+                                }
+                            }
+
+
+                            calendar.setTime(endDate);
+                            calendar.add(Calendar.DATE, -1);
+                            endDate = calendar.getTime();
                             document.add(new Paragraph("Barangay: " + selectedBarangay, smallNormal));
                             document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
                             document.add(new Paragraph("Number of Reports: " + count + "\n\n", smallNormal));
-                            //document.add(new Paragraph("Area with possible most reported: " + areaMaxEntry + "\n\n", smallNormal));
-                            //document.add(new Paragraph("Occurrences: " + maxValueInMap + "\n\n", smallNormal));
+                            document.add(new Paragraph("Area with possible most reported: " + areaMaxEntry + " with " + maxValueInMap + " reports\n\n", smallNormal));
+                            document.add(new Paragraph("Date with possible most reported: " + dateMaxEntry + " with " + maxValueInDateMap + " reports\n\n", smallNormal));
 
                             document.add(table);
                             document.close();
@@ -502,23 +539,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                                 }
                             }
 
-                            //Auto report generation after admin user sends email///
-                            srViewModel.sendReport();
-                            srViewModel.getOutputWorkInfo().observe(this, listOfWorkInfo -> {
-                                if (listOfWorkInfo == null || listOfWorkInfo.isEmpty()) {
-                                    return;
-                                }
 
-                                WorkInfo workInfo = listOfWorkInfo.get(0);
-
-                                boolean finished = workInfo.getState().isFinished();
-                                if (!finished) {
-                                    Log.i("Auto report generate", "Work NOT Done");
-                                } else {
-                                    Log.i("Auto report generate", "Work Done");
-                                }
-                            });
-                            ////////////////////////////////////////////////////////
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -534,6 +555,32 @@ public class GenerateReportActivity extends AppCompatActivity {
                         Toast.makeText(this, "No Barangays Available", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public String getGeoLocStreet(String reportLat, String reportLong) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        double doubleLat = Double.parseDouble(reportLat.trim());
+        double doubleLong = Double.parseDouble(reportLong.trim());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(doubleLat, doubleLong, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder();
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getThoroughfare()).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.w("Address", strReturnedAddress.toString());
+            } else {
+                Log.e("Address", "No address Returned");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Address", e.getLocalizedMessage());
+        }
+        return strAdd.trim();
     }
 
     public String getGeoLoc(String reportLat, String reportLong) {

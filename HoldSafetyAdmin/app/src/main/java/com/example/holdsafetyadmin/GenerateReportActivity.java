@@ -349,25 +349,40 @@ public class GenerateReportActivity extends AppCompatActivity {
             String start = etStartDate.getText().toString().trim();
             String end = etEndDate.getText().toString().trim();
 
+            Boolean valid = true;
+
             if(TextUtils.isEmpty(start)) {
                 etStartDate.getText().clear();
                 etStartDate.setHint("Enter a start date");
                 etStartDate.setError("Enter a start date");
-            } else if (TextUtils.isEmpty(end)) {
+                valid = false;
+            }
+
+            if (TextUtils.isEmpty(end)) {
                 etEndDate.getText().clear();
                 etEndDate.setHint("Enter a start date");
                 etEndDate.setError("Enter a start date");
-            } else {
+                valid = false;
+            }
+
+            if(spinnerBarangay.getSelectedItem().equals("Barangay *")) {
+                ((TextView)spinnerBarangay.getSelectedView()).setError("Please select barangay");
+                valid = false;
+            }
+
+            if(valid){
                 startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
                 endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
+
+                Boolean validDate = true;
 
                 if(startDate.after(endDate)){
                     etEndDate.getText().clear();
                     etEndDate.setHint("End date should be later than start date");
                     etEndDate.setError("End date should be later than start date");
-                } else if(spinnerBarangay.getSelectedItem().equals("Barangay *")) {
-                    ((TextView)spinnerBarangay.getSelectedView()).setError("Please select barangay");
-                } else {
+                    validDate = false;
+                }
+                if(validDate){
                     generateReport();
                 }
             }

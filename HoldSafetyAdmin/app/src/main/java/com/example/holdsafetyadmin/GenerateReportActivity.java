@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -392,6 +393,8 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     public void generateReport(){
+        Map<String, String> reportMap = new HashMap<>();
+
         FirebaseFirestore.getInstance()
                 .collection("reports")
                 .whereEqualTo("Nearest Barangay", selectedBarangay)
@@ -464,7 +467,7 @@ public class GenerateReportActivity extends AppCompatActivity {
                                 //date.before(); // means date is date1 < date2
 
                                 //CHECK IF START DATE IS GREATER THAN END DATE
-                                if(isWithinRange(tempDate)){
+                                if(tempDate.after(startDate) && tempDate.before(endDate)){
                                     //declare long and lat of the report, for geoloc functionality
                                     String reportLat = reportSnap.getString("Lat");
                                     String reportLong = reportSnap.getString("Lon");
@@ -502,46 +505,17 @@ public class GenerateReportActivity extends AppCompatActivity {
 
                             document.add(table);
                             document.close();
-
                             Log.i("PDF", "PDF Generated");
-                            String subject = "REPORT SUMMARY - HoldSafety";
 
-                            String brgy = selectedBarangay;
-                            String email = "201801263@iacademy.edu.ph";
-                            Log.i("Barangay Selected","Barangay "+ brgy);
-
-                            String recipient = email + ", 201801344@iacademy.edu.ph"; // 201801263@iacademy.edu.ph
-                            List<String> recipients = Collections.singletonList(recipient);
-
-                            ///////////////////////////////////////////////////////////////////
-
-                            final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-                            emailIntent.setType("plain/text");
-                            emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient});
-
-                            ///////////////////////////////////////////////////////////////////
-                            GenerateReportActivity.this.grantUriPermission(String.valueOf(GenerateReportActivity.this.getPackageManager().queryIntentActivities(
-                                    emailIntent,
-                                    PackageManager.MATCH_DEFAULT_ONLY)),
-                                    path,
-                                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                            emailIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                            //KEEP FOR DEBUGGING
-                            //emailIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                            //FOR EMAIL
-                            //new MailTask(this).execute(username, password, recipients, subject, path);
-
-                            emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-                            if (path != null) {
-                                emailIntent.putExtra(Intent.EXTRA_STREAM, path);
+                            if(count<1){
+                                Toast.makeText(this, "No reports within the range", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    sendReport();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                            String emailBody = "Summary Report \n" +
-                                    "\nBarangay: " + brgy +
-                                    "\nDate Range: " + startDate + " to " + endDate;
-                            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, emailBody);
-                            GenerateReportActivity.this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
 
                             //Auto report generation after admin user sends email///
                             srViewModel.sendReport();
@@ -562,18 +536,16 @@ public class GenerateReportActivity extends AppCompatActivity {
                             ////////////////////////////////////////////////////////
 
                         } catch (Exception e) {
-                            Toast.makeText(this, "Error Catch: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
+                            Log.e("Exception", e.getMessage());
                         } finally {
                             try {
                                 document.close();
                             } catch (Exception e) {
-                                Toast.makeText(this, "Error Finally Catch: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                Log.e("Error", e.getMessage());
+                                Log.e("Exception", e.getMessage());
                             }
                         }
                     } else {
-                        //NO DATA AVAILABLE
                         Toast.makeText(this, "No Barangays Available", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -605,8 +577,71 @@ public class GenerateReportActivity extends AppCompatActivity {
         return strAdd.trim();
     }
 
-    boolean isWithinRange(Date testDate) {
-        return !(testDate.before(startDate) || testDate.after(endDate));
+    @SuppressLint("QueryPermissionsNeeded")
+    private void sendReport() {
+        String username = "holdsafety.ph@gmail.com";
+        String password = "HoldSafety@4qmag";
+        String subject = "REPORT SUMMARY - HoldSafety";
+
+        FirebaseFirestore.getInstance()
+                .collection("barangay").document(selectedBarangayID)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot brgyDoc = task.getResult();
+                    if (brgyDoc != null) {
+                        String brgy = brgyDoc.getString("Barangay");
+                        String email = brgyDoc.getString("Email");
+                        Log.i("Barangay Selected","Barangay "+ brgy);
+
+                        String recipient = email + ", 201801263@iacademy.edu.ph"; // 201801263@iacademy.edu.ph
+                        List<String> recipients = Collections.singletonList(recipient);
+
+                        ///////////////////////////////////////////////////////////////////
+
+                        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        emailIntent.setType("plain/text");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{recipient});
+
+                        ///////////////////////////////////////////////////////////////////
+                        Document document = new Document();
+                        Font smallNormal = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
+                        //Create a new file that points to the root directory, with the given name:
+                        File file = new File(getExternalFilesDir(null), "holdsafety-report-summary.pdf");
+                        Uri path = FileProvider.getUriForFile(GenerateReportActivity.this, BuildConfig.APPLICATION_ID + ".provider", file);
+                        GenerateReportActivity.this.grantUriPermission(String.valueOf(GenerateReportActivity.this.getPackageManager().queryIntentActivities(
+                                emailIntent,
+                                PackageManager.MATCH_DEFAULT_ONLY)),
+                                path,
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                        emailIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                        //KEEP FOR DEBUGGING
+                        //emailIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        //FOR EMAIL
+                        //new MailTask(this).execute(username, password, recipients, subject, path);
+
+                        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+                        if (path != null) {
+                            emailIntent.putExtra(Intent.EXTRA_STREAM, path);
+                        }
+                        String emailBody = "Summary Report \n" +
+                                "\nBarangay: " + brgy +
+                                "\nDate Range: " + startDate + " to " + endDate;
+                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, emailBody);
+                        GenerateReportActivity.this.startActivity(Intent.createChooser(emailIntent, "Sending email..."));
+                    } else {
+                        Log.d("Barangay Selected", "No such document");
+                    }
+                } else {
+                    Log.d("Barangay Selected", "Failed with ", task.getException());
+                }
+
+            }
+        });
+
     }
 
     @Override
@@ -628,10 +663,6 @@ public class GenerateReportActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//        if(srViewModel!=null){
-//            srViewModel.cancelWork();
-//            Log.i("Cancelled Work", "Method cancelled");
-//        }
     }
 
     private void goBack() {

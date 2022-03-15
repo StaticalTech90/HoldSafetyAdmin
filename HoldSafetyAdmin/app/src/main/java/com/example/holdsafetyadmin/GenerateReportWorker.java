@@ -337,7 +337,6 @@ public class GenerateReportWorker extends Worker {
                                                             }
 
                                                         } else {
-                                                            //NO DATA AVAILABLE
                                                             Log.e("Task Error", task.getException().getLocalizedMessage());
                                                         }
                                                     });

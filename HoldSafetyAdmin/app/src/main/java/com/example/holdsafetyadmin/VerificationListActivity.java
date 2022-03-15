@@ -41,6 +41,7 @@ public class VerificationListActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.backArrow);
 
         btnBack.setOnClickListener(view -> goBack());
+
         listUsers();
     }
 
@@ -55,32 +56,36 @@ public class VerificationListActivity extends AppCompatActivity {
                     if(!isVerified) {
                         //CHECK IF USER HAS ID PIC UPLOADED
                         FirebaseStorage.getInstance().getReference("id").child(userSnap.getId()).getDownloadUrl()
-                            .addOnSuccessListener(uri -> {
-                                //ASSIGN TO UI
-                                TextView txtUserID = unverifiedView.findViewById(R.id.txtUserID);
-                                TextView txtUserName = unverifiedView.findViewById(R.id.txtUserName);
+                                .addOnSuccessListener(uri -> {
+                                    //ASSIGN TO UI
+                                    TextView txtUserID = unverifiedView.findViewById(R.id.txtUserID);
+                                    TextView txtUserName = unverifiedView.findViewById(R.id.txtUserName);
 
-                                txtUserID.setText(userSnap.getId());
-                                txtUserName.setText(displayName);
+                                    txtUserID.setText(userSnap.getId());
+                                    txtUserName.setText(displayName);
 
-                                //SET ONCLICK PER ROW
-                                unverifiedView.setOnClickListener(v -> {
-                                    Intent selectedUser = new Intent(VerificationListActivity.this, RegistrationDetailsActivity.class);
-                                    selectedUser.putExtra("userID", userSnap.getId());
-                                    startActivity(selectedUser);
+                                    //SET ONCLICK PER ROW
+                                    unverifiedView.setOnClickListener(v -> {
+                                        Intent selectedUser = new Intent(VerificationListActivity.this, RegistrationDetailsActivity.class);
+                                        selectedUser.putExtra("userID", userSnap.getId());
+                                        startActivity(selectedUser);
+                                    });
+
+                                    logHelper.saveToFirebase("listUsers", "SUCCESS", "user added to view");
+                                    //ADD TO VIEW
+                                    verificationView.addView(unverifiedView);
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                        //logHelper.saveToFirebase("listUsers", "ERROR", e.getLocalizedMessage());
+
+//                                        Toast.makeText(VerificationListActivity.this,
+//                                                "onFailure: " + displayName + " " + e.getMessage(),
+//                                                Toast.LENGTH_LONG).show();
+                                    }
                                 });
-
-                                logHelper.saveToFirebase("listUsers", "SUCCESS", "user added to view");
-                                //ADD TO VIEW
-                                verificationView.addView(unverifiedView);
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    logHelper.saveToFirebase("listUsers", "ERROR", e.getLocalizedMessage());
-                                    //Toast.makeText(VerificationListActivity.this,"onFailure: " + displayName + " " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
                     }
                 }
             }
@@ -88,6 +93,12 @@ public class VerificationListActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         finish();
     }
 }

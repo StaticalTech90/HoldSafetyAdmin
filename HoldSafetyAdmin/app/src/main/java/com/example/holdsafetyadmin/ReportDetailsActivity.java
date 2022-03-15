@@ -67,8 +67,16 @@ public class ReportDetailsActivity extends AppCompatActivity {
                         longitude = documentSnapshot.getString("Lon");
                         reportLocation = getGeoLoc(latitude, longitude);
                         reportDateAndTime = documentSnapshot.getTimestamp("Report Date");
-                        reportBarangay = documentSnapshot.getString("Barangay");
+                        reportBarangay = documentSnapshot.getString("Nearest Barangay");
                         reportEvidenceLink = documentSnapshot.getString("Evidence");
+
+                        txtReportID.setText("Report ID: " + reportID);
+                        txtUserID.setText(userID);
+                        txtUsername.setText(reportUsername);
+                        txtDateAndTime.setText(reportDateAndTime.toDate().toString());
+                        txtLocation.setText(reportLocation);
+                        txtBarangay.setText(reportBarangay);
+                        txtEvidenceLink.setText(reportEvidenceLink);
 
                         logHelper.saveToFirebase("getData", "SUCCESS",
                                 "report data " + documentSnapshot.getId() +" fetched");
@@ -78,7 +86,7 @@ public class ReportDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         logHelper.saveToFirebase("getData", "ERROR", e.getLocalizedMessage());
-                        setData();Toast.makeText(getApplicationContext(), "No report data fetched", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "No report data fetched", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -109,17 +117,13 @@ public class ReportDetailsActivity extends AppCompatActivity {
         return strAdd;
     }
 
-    private void setData() {
-        txtReportID.setText("Report ID: " + reportID);
-        txtUserID.setText(userID);
-        txtUsername.setText(reportUsername);
-        txtDateAndTime.setText(reportDateAndTime.toDate().toString());
-        txtLocation.setText(reportLocation);
-        txtBarangay.setText(reportBarangay);
-        txtEvidenceLink.setText(reportEvidenceLink);
+    private void goBack() {
+        finish();
     }
 
-    private void goBack() {
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         finish();
     }
 }

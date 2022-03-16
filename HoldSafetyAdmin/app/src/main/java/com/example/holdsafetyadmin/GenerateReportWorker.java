@@ -305,6 +305,7 @@ public class GenerateReportWorker extends Worker {
                                     String password = "HoldSafety@4qmag";
                                     String subject = "HoldSafety Monthly Summary Report for Barangay " + barangay;
 
+                                    Toast.makeText(getApplicationContext(), "Sending automated email for " + barangay, Toast.LENGTH_SHORT).show();
                                     List<String> recipients = Collections.singletonList(email);
                                     new MailTask(GenerateReportWorker.class).execute(username, password, recipients, subject, message + uri);
 

@@ -83,7 +83,6 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
 
                             //SET DETAILS ONCLICK LISTENER
                             detailsView.setOnClickListener(view -> {
-                                Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
 
                                 //PREPARE DATA TO PASS
                                 intent.putExtra("barangay", barangay);

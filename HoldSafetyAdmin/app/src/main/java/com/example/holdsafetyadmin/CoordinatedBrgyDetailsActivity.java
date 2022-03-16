@@ -189,7 +189,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         dialogRemoveAccount.setPositiveButton("Delete", (dialog, which) -> {
             docRef.delete();
             //Reload Activity After deleting contact
-            startActivity(getIntent());
+            startActivity(new Intent(this, CoordinatedBrgysActivity.class));
             finish();
         });
 

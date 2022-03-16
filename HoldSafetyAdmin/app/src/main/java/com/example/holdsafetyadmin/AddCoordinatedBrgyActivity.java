@@ -1,6 +1,7 @@
 package com.example.holdsafetyadmin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -103,6 +104,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),
                                 "Successfully Added Barangay",
                                 Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, CoordinatedBrgysActivity.class));
                         finish();
                     } else {
                         logHelper.saveToFirebase("saveBrgy", "ERROR", task.getException().getLocalizedMessage());

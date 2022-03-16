@@ -79,11 +79,6 @@ public class VerificationListActivity extends AppCompatActivity {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
 
-                                        //logHelper.saveToFirebase("listUsers", "ERROR", e.getLocalizedMessage());
-
-//                                        Toast.makeText(VerificationListActivity.this,
-//                                                "onFailure: " + displayName + " " + e.getMessage(),
-//                                                Toast.LENGTH_LONG).show();
                                     }
                                 });
                     }

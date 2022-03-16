@@ -76,6 +76,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         setData();
 
         db = FirebaseFirestore.getInstance();
@@ -188,9 +189,8 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         dialogRemoveAccount.setPositiveButton("Delete", (dialog, which) -> {
             docRef.delete();
             //Reload Activity After deleting contact
-            Intent reload = new Intent(this, CoordinatedBrgyDetailsActivity.class);
+            startActivity(getIntent());
             finish();
-            startActivity(reload);
         });
 
         dialogRemoveAccount.setNegativeButton("Dismiss", (dialogInterface, i) -> dialogInterface.dismiss());
@@ -234,9 +234,10 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
 
                         logHelper.saveToFirebase("updateBarangay","SUCCESS", "Barangay updated successfully");
                         Toast.makeText(this, "Successfully updated", Toast.LENGTH_SHORT).show();
-                        goBack();
-                    }
-                    else {
+
+                        startActivity(new Intent(this, CoordinatedBrgysActivity.class));
+                        finish();
+                    } else {
                         logHelper.saveToFirebase("updateBarangay","ERROR", "Barangay failed to update");
                         Toast.makeText(CoordinatedBrgyDetailsActivity.this, "Failed to update", Toast.LENGTH_SHORT).show();
                     }
@@ -260,8 +261,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
             if(getIntent().hasExtra("email")) {
                 brgyEmail = getIntent().getStringExtra("email");
             }
-        } else {
-            Toast.makeText(getApplicationContext(), "No Intent Data", Toast.LENGTH_SHORT).show();
         }
     }
 

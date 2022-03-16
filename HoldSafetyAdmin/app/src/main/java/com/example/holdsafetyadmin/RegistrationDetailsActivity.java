@@ -151,7 +151,6 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
     public void rejectUser(){
         logHelper.saveToFirebase("rejectUser", "ACTIVITY REDIRECT", "Go to RejectUserActivity");
-        Toast.makeText(getApplicationContext(), "Reject User", Toast.LENGTH_SHORT).show();
         Intent rejectReason = new Intent (getApplicationContext(), RejectUserActivity.class);
         rejectReason.putExtra("userID", id);
         startActivity(rejectReason);

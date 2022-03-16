@@ -285,10 +285,6 @@ public class GenerateReportActivity extends AppCompatActivity {
                 // If user change the default selection
                 // First item is disable and it is used for hint
                 if (position > 0) {
-                    // Notify the selected item text
-//                    Toast.makeText
-//                            (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-//                            .show();
                     selectedBarangay = spinnerBarangay.getSelectedItem().toString().trim();
                     int selectedItemPosition = spinnerBarangay.getSelectedItemPosition();
                     selectedBarangayID = barangayIDList.get(selectedItemPosition-1);
@@ -465,7 +461,6 @@ public class GenerateReportActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
                                 Log.i("report snap", reportSnap.getId());
 
-
                                 Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
                                 String reportDate = dateFormat.format(tempDate);
 
@@ -492,8 +487,6 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     table.addCell(new Paragraph(reportAdd, smallNormal));
                                     table.addCell(new Paragraph(tempDate.toString(), smallNormal));
 
-                                } else {
-                                    //Toast.makeText(this, "Report Date is not within the range of selected dates", Toast.LENGTH_SHORT).show();
                                 }
                             }
 

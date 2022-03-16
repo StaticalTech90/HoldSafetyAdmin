@@ -106,9 +106,6 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                         finish();
                     } else {
                         logHelper.saveToFirebase("saveBrgy", "ERROR", task.getException().getLocalizedMessage());
-                        Toast.makeText(getApplicationContext(),
-                                Objects.requireNonNull(task.getException()).toString(),
-                                Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {

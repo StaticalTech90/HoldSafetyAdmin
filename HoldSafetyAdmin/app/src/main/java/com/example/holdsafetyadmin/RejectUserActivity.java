@@ -74,8 +74,6 @@ public class RejectUserActivity extends AppCompatActivity {
                     if(documentSnapshot.exists()) {
                         userEmail = documentSnapshot.getString("Email");
 
-                        Toast.makeText(getApplicationContext(), "User Email: " + userEmail, Toast.LENGTH_SHORT).show();
-
                         if(userEmail!=null){
                             //Send Email
                             String username = "holdsafety.ph@gmail.com";
@@ -93,7 +91,7 @@ public class RejectUserActivity extends AppCompatActivity {
                         }
                     } else{
                         logHelper.saveToFirebase("sendReasonForDisapproval", "ERROR", "Data does not exist");
-                        Toast.makeText(getApplicationContext(), "Snapshot Does Not Exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Entry does not exist", Toast.LENGTH_SHORT).show();
                     }
                 });
         }

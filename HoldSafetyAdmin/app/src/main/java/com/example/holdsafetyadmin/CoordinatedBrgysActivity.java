@@ -145,7 +145,8 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
     }
 
     public void addBrgy() {
-        startActivity(new Intent (getApplicationContext(), AddCoordinatedBrgyActivity.class));
+        startActivity(new Intent (this, AddCoordinatedBrgyActivity.class));
+        finish();
     }
 
     private void goBack() {

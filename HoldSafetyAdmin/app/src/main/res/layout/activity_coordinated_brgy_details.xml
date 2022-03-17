@@ -267,6 +267,7 @@
                         android:fontFamily="sans-serif"
 
                         android:maxLines="1"
+                        android:maxLength="11"
                         android:scrollHorizontally="true"
 
                         android:inputType="number"

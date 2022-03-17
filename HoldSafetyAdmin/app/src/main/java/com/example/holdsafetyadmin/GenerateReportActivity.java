@@ -116,6 +116,8 @@ public class GenerateReportActivity extends AppCompatActivity {
         btnBack.setOnClickListener(view -> goBack());
         btnSendReport.setOnClickListener(v -> {
             try {
+                srViewModel.cancelWork();
+                Log.i("Cancelled Work", "Method cancelled");
                 validateInput();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -465,42 +467,43 @@ public class GenerateReportActivity extends AppCompatActivity {
                                 }
                             }
 
-                            //get max value area
-                            String areaMaxEntry = "";
-                            int maxValueInMap=(Collections.max(areaOccurrences.values()));
-                            for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
-                                if (entry.getValue()==maxValueInMap) {
-                                    areaMaxEntry = entry.getKey();
-                                }
-                            }
-
-                            //get max value date
-                            String dateMaxEntry = "";
-                            int maxValueInDateMap = (Collections.max(dateOccurrences.values()));
-                            for (Map.Entry<String, Integer> entry : dateOccurrences.entrySet()) {
-                                if (entry.getValue() == maxValueInDateMap) {
-                                    dateMaxEntry = entry.getKey();
-                                }
-                            }
-
-
-                            calendar.setTime(endDate);
-                            calendar.add(Calendar.DATE, -1);
-                            endDate = calendar.getTime();
-                            document.add(new Paragraph("Barangay: " + selectedBarangay, smallNormal));
-                            document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
-                            document.add(new Paragraph("Number of Reports: " + count + "\n\n", smallNormal));
-                            document.add(new Paragraph("Area with possible most reported: " + areaMaxEntry + " with " + maxValueInMap + " reports\n\n", smallNormal));
-                            document.add(new Paragraph("Date with possible most reported: " + dateMaxEntry + " with " + maxValueInDateMap + " reports\n\n", smallNormal));
-
-                            document.add(table);
-                            document.close();
-                            Log.i("PDF", "PDF Generated");
 
                             if(count<1){
                                 Toast.makeText(this, "No reports within the range", Toast.LENGTH_SHORT).show();
                             } else {
                                 try {
+                                    //get max value area
+                                    String areaMaxEntry = "";
+                                    int maxValueInMap=(Collections.max(areaOccurrences.values()));
+                                    for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
+                                        if (entry.getValue()==maxValueInMap) {
+                                            areaMaxEntry = entry.getKey();
+                                        }
+                                    }
+
+                                    //get max value date
+                                    String dateMaxEntry = "";
+                                    int maxValueInDateMap = (Collections.max(dateOccurrences.values()));
+                                    for (Map.Entry<String, Integer> entry : dateOccurrences.entrySet()) {
+                                        if (entry.getValue() == maxValueInDateMap) {
+                                            dateMaxEntry = entry.getKey();
+                                        }
+                                    }
+
+
+                                    calendar.setTime(endDate);
+                                    calendar.add(Calendar.DATE, -1);
+                                    endDate = calendar.getTime();
+                                    document.add(new Paragraph("Barangay: " + selectedBarangay, smallNormal));
+                                    document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
+                                    document.add(new Paragraph("Number of Reports: " + count + "\n\n", smallNormal));
+                                    document.add(new Paragraph("Area with possible most reported: " + areaMaxEntry + " with " + maxValueInMap + " reports\n\n", smallNormal));
+                                    document.add(new Paragraph("Date with possible most reported: " + dateMaxEntry + " with " + maxValueInDateMap + " reports\n\n", smallNormal));
+
+                                    document.add(table);
+                                    document.close();
+                                    Log.i("PDF", "PDF Generated");
+
                                     sendReport();
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -651,36 +654,13 @@ public class GenerateReportActivity extends AppCompatActivity {
         setPermissions();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(srViewModel!=null){
-            srViewModel.cancelWork();
-            Log.i("Cancelled Work", "Method cancelled");
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     private void goBack() {
-        srViewModel.cancelWork();
-        if(srViewModel!=null){
-            srViewModel.cancelWork();
-            Log.i("Cancelled Work", "Method cancelled");
-        }
         finish();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(srViewModel!=null){
-            srViewModel.cancelWork();
-            Log.i("Cancelled Work", "Method cancelled");
-        }
         finish();
     }
 }

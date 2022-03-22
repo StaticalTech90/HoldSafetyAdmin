@@ -70,7 +70,7 @@ public class ReportDetailsActivity extends AppCompatActivity {
                         reportBarangay = documentSnapshot.getString("Nearest Barangay");
                         reportEvidenceLink = documentSnapshot.getString("Evidence");
 
-                        txtReportID.setText("Report ID: " + reportID);
+                        txtReportID.setText("Report ID: " + documentSnapshot.getString("reportId"));
                         txtUserID.setText(userID);
                         txtUsername.setText(reportUsername);
                         txtDateAndTime.setText(reportDateAndTime.toDate().toString());

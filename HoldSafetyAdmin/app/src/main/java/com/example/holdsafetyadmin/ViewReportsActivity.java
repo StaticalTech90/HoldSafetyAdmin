@@ -119,7 +119,7 @@ public class ViewReportsActivity extends AppCompatActivity {
                     }
                 });
 
-        db.collection("reports").orderBy("User ID").get()
+        db.collection("reports").orderBy("reportId").get()
                 .addOnCompleteListener(taskDetails -> {
                     if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
                         try {
@@ -175,7 +175,7 @@ public class ViewReportsActivity extends AppCompatActivity {
             TextView txtReportLocation = reportListView.findViewById(R.id.txtReportLocation);
             TextView txtReportDate = reportListView.findViewById(R.id.txtReportDate);
 
-            txtReportID.setText(detailsSnap.getId());
+            txtReportID.setText(detailsSnap.getString("reportId"));
             txtReportUsername.setText(displayName);
             txtReportLocation.setText(getGeoLoc());
             txtReportDate.setText(date.toDate().toString());

@@ -113,7 +113,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                            if(barangay.equals(brgyName)) {
                                etBarangay.setError("This barangay already exists!");
                                valid = false;
-                           } else
+                           }
                            if(email.equals(brgyEmail)) {
                                etEmail.setError("This barangay email already exists!");
                                valid = false;

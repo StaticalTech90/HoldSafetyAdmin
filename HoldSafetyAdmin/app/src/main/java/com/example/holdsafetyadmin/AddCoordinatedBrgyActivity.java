@@ -129,8 +129,8 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                            }
 
                            if(valid) { //BARANGAY IS NEW
-                               db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task -> {
-                                   if (task.isSuccessful()) {
+                               db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task1 -> {
+                                   if (task1.isSuccessful()) {
                                        logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
                                        Toast.makeText(getApplicationContext(),
                                                "Successfully Added Barangay",
@@ -138,7 +138,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                                        startActivity(new Intent(this, CoordinatedBrgysActivity.class));
                                        finish();
                                    } else {
-                                       logHelper.saveToFirebase("saveBrgy", "ERROR", task.getException().getLocalizedMessage());
+                                       logHelper.saveToFirebase("saveBrgy", "ERROR", task1.getException().getLocalizedMessage());
                                    }
                                });
                            }

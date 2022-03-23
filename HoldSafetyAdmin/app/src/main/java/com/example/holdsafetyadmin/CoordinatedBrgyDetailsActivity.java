@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -204,11 +205,8 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         String changedLat = textViewBrgyLatitude.getText().toString().trim();
         String changedLong = textViewBrgyLongitude.getText().toString().trim();
 
-        String emailRegex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
         String mobileNumberRegex = "^(09|\\+639)\\d{9}$";
-        Pattern emailPattern = Pattern.compile(emailRegex);
         Pattern mobileNumberPattern = Pattern.compile(mobileNumberRegex);
-        Matcher emailMatcher = emailPattern.matcher(changedEmail);
         Matcher mobileNumberMatcher = mobileNumberPattern.matcher(changedMobileNumber);
 
         if(isNumberChanged || isLatChanged || isLongChanged || isEmailChanged){
@@ -218,7 +216,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
                 textViewBrgyMobileNum.setError("Please enter a valid mobile number");
             } else if(TextUtils.isEmpty(changedEmail)){
                 textViewBrgyEmail.setError("Please enter email");
-            } else if (!emailMatcher.matches()) {
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(changedEmail).matches()) {
                 textViewBrgyEmail.setError("Please enter a valid email");
             } else if (TextUtils.isEmpty(changedLat)){
                 textViewBrgyLatitude.setError("Please enter a latitude");

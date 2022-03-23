@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,11 +68,8 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         String latitude = etLatitude.getText().toString().trim();
         String longitude = etLongitude.getText().toString().trim();
 
-        String emailRegex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
         String mobileNumberRegex = "^(09|\\+639)\\d{9}$";
-        Pattern emailPattern = Pattern.compile(emailRegex);
         Pattern mobileNumberPattern = Pattern.compile(mobileNumberRegex);
-        Matcher emailMatcher = emailPattern.matcher(email);
         Matcher mobileNumberMatcher = mobileNumberPattern.matcher(mobileNumber);
 
         docBrgys.put("Barangay", barangay);
@@ -91,7 +89,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
             etMobileNumber.setError("Please enter a valid mobile number");
         } else if(TextUtils.isEmpty(email)) {
             etEmail.setError("Please enter email");
-        } else if (!emailMatcher.matches()) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etEmail.setError("Please enter a valid email");
         } else if(TextUtils.isEmpty(latitude)) {
             etLatitude.setError("Please enter latitude");

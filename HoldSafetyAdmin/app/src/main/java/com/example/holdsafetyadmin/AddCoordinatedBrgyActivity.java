@@ -1,13 +1,11 @@
 package com.example.holdsafetyadmin;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,12 +20,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AddCoordinatedBrgyActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
     FirebaseUser user;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     LogHelper logHelper;
@@ -55,7 +52,10 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         btnAddBrgy = findViewById(R.id.btnAddBrgy);
 
         btnBack.setOnClickListener(view -> goBack());
-        btnAddBrgy.setOnClickListener(view -> saveBrgy());
+        btnAddBrgy.setOnClickListener(view -> {
+            clearErrorMessages();
+            saveBrgy();
+        });
     }
 
     public void saveBrgy(){
@@ -72,13 +72,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         Pattern mobileNumberPattern = Pattern.compile(mobileNumberRegex);
         Matcher mobileNumberMatcher = mobileNumberPattern.matcher(mobileNumber);
 
-        docBrgys.put("Barangay", barangay);
-        docBrgys.put("City", city);
-        docBrgys.put("MobileNumber", mobileNumber);
-        docBrgys.put("Email", email);
-        docBrgys.put("Latitude", latitude);
-        docBrgys.put("Longitude", longitude);
-
+        // validation for empty string and number/email pattern
         if(TextUtils.isEmpty(barangay)) {
             etBarangay.setError("Please enter barangay");
         } else if(TextUtils.isEmpty(city)) {
@@ -97,59 +91,67 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
             etLongitude.setError("Please enter longitude");
         } else {
             if(haveNetworkConnection()) {
-                //CHECK IF FIELDS ARE NON-DUPLICATES IN DB
                 db.collection("barangay").get().addOnCompleteListener(task -> {
                    if(task.isSuccessful()) {
                        boolean valid = true;
+
+                       // validation for duplicate info in db
                        for(QueryDocumentSnapshot brgySnap : task.getResult()) {
-                           String brgyName = brgySnap.getString("Barangay");
                            String brgyEmail = brgySnap.getString("Email");
                            String brgyLat = brgySnap.getString("Latitude");
                            String brgyLon = brgySnap.getString("Longitude");
                            String brgyNum = brgySnap.getString("MobileNumber");
 
-                           if(barangay.equals(brgyName)) {
-                               etBarangay.setError("This barangay already exists!");
-                               valid = false;
-                           }
                            if(email.equals(brgyEmail)) {
                                etEmail.setError("This barangay email already exists!");
                                valid = false;
                            }
                            if(latitude.equals(brgyLat) && longitude.equals(brgyLon)) {
-                               etLatitude.setError("This barangay already exists!");
-                               etLongitude.setError("This barangay already exists!");
+                               etLatitude.setError("This barangay location already exists!");
+                               etLongitude.setError("This barangay location already exists!");
                                valid = false;
                            }
                            if(mobileNumber.equals(brgyNum)) {
                                etMobileNumber.setError("This barangay mobile number already exists!");
                                valid = false;
                            }
+                       }
 
-                           if(valid) { //BARANGAY IS NEW
-                               db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task1 -> {
-                                   if (task1.isSuccessful()) {
-                                       logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
-                                       Toast.makeText(getApplicationContext(),
-                                               "Successfully Added Barangay",
-                                               Toast.LENGTH_SHORT).show();
-                                       startActivity(new Intent(this, CoordinatedBrgysActivity.class));
-                                       finish();
-                                   } else {
-                                       logHelper.saveToFirebase("saveBrgy", "ERROR", task1.getException().getLocalizedMessage());
-                                   }
-                               });
-                           }
+                       // barangay is new, proceed with db push
+                       if(valid) {
+                           docBrgys.put("Barangay", barangay);
+                           docBrgys.put("City", city);
+                           docBrgys.put("MobileNumber", mobileNumber);
+                           docBrgys.put("Email", email);
+                           docBrgys.put("Latitude", latitude);
+                           docBrgys.put("Longitude", longitude);
+
+                           db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task1 -> {
+                               if (task1.isSuccessful()) {
+                                   logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
+                                   Toast.makeText(getApplicationContext(), "Successfully Added Barangay", Toast.LENGTH_SHORT).show();
+                                   finish();
+                               } else {
+                                   logHelper.saveToFirebase("saveBrgy", "ERROR", task1.getException().getLocalizedMessage());
+                               }
+                           });
                        }
                    }
                 });
             } else {
                 logHelper.saveToFirebase("saveBrgy", "ERROR", "Unstable network connection");
-                Toast.makeText(getApplicationContext(),
-                        "Your internet is not connected or unstable. Adding Barangay Failed",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Your internet is not connected or unstable. Adding Barangay Failed", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void clearErrorMessages() {
+        etBarangay.setError(null);
+        etCity.setError(null);
+        etMobileNumber.setError(null);
+        etEmail.setError(null);
+        etLatitude.setError(null);
+        etLongitude.setError(null);
     }
 
     private boolean haveNetworkConnection() {

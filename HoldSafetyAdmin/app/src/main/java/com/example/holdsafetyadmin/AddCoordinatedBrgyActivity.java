@@ -20,7 +20,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -87,6 +86,8 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
             etEmail.setError("Please enter email");
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etEmail.setError("Please enter a valid email");
+        } else if(!CustomDNSChecker.checkEmailDNS(email)) {
+            etEmail.setError("Enter a GOOGLE or YAHOO email only");
         } else if(TextUtils.isEmpty(latitude)) {
             etLatitude.setError("Please enter latitude");
         } else if(TextUtils.isEmpty(longitude)) {
@@ -127,13 +128,11 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                                docBrgys.put("Latitude", latitude);
                                docBrgys.put("Longitude", longitude);
 
-                               for (QueryDocumentSnapshot qs: task.getResult()){
-                                   if(qs.getString("ID").equals("BRGY-"+brgyId)){
+                               for (QueryDocumentSnapshot qs: task.getResult()) {
+                                   if(qs.getString("ID").equals("BRGY-"+brgyId)) {
                                        brgyId = randomNumber();
-                                       docBrgys.put("ID", "BRGY-"+brgyId);
-                                   } else {
-                                       docBrgys.put("ID", "BRGY-"+brgyId);
                                    }
+                                   docBrgys.put("ID", "BRGY-"+brgyId);
                                }
 
                                db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task1 -> {

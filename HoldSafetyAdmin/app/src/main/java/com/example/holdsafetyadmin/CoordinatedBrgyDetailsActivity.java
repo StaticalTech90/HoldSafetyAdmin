@@ -1,7 +1,6 @@
 package com.example.holdsafetyadmin;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -113,7 +112,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
             }
         });
 
-
         textViewBrgyEmail.addTextChangedListener(new TextWatcher() {
             String newEmail;
             @Override
@@ -131,7 +129,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
                     Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No Changes", Toast.LENGTH_SHORT).show();
                 } else{
                     isEmailChanged = true;
-                    //Toast.makeText(CoordinatedBrgyDetailsActivity.this, "New Barangay Email", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -153,7 +150,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
                     Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No Changes", Toast.LENGTH_SHORT).show();
                 } else{
                     isLatChanged = true;
-                    //Toast.makeText(CoordinatedBrgyDetailsActivity.this, "New Barangay Lat", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -175,7 +171,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
                     Toast.makeText(CoordinatedBrgyDetailsActivity.this, "No Changes", Toast.LENGTH_SHORT).show();
                 } else{
                     isLongChanged = true;
-                    //Toast.makeText(CoordinatedBrgyDetailsActivity.this, "New Barangay Longitude", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -218,13 +213,15 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
                 textViewBrgyEmail.setError("Please enter email");
             } else if (!Patterns.EMAIL_ADDRESS.matcher(changedEmail).matches()) {
                 textViewBrgyEmail.setError("Please enter a valid email");
+            } else if(!CustomDNSChecker.checkEmailDNS(changedEmail)) {
+                textViewBrgyEmail.setError("Enter a GOOGLE or YAHOO email only");
             } else if (TextUtils.isEmpty(changedLat)){
                 textViewBrgyLatitude.setError("Please enter a latitude");
             } else if (TextUtils.isEmpty(changedLong)){
                 textViewBrgyLongitude.setError("Please enter a longitude");
             } else {
                 docRef.get().addOnSuccessListener(documentSnapshot -> {
-                    if(documentSnapshot.exists()){
+                    if(documentSnapshot.exists()) {
                         docRef.update("MobileNumber", changedMobileNumber);
                         docRef.update("Email", changedEmail);
                         docRef.update("Latitude", changedLat);

@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,6 +108,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                            String brgyLat = brgySnap.getString("Latitude");
                            String brgyLon = brgySnap.getString("Longitude");
                            String brgyNum = brgySnap.getString("MobileNumber");
+                           String brgyId = randomNumber();
 
                            if(barangay.equals(brgyName)) {
                                etBarangay.setError("This barangay already exists!");
@@ -127,6 +129,16 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                            }
 
                            if(valid) { //BARANGAY IS NEW
+
+                               for (QueryDocumentSnapshot qs: task.getResult()){
+                                   if(qs.getString("ID").equals(brgyId)){
+                                       brgyId = randomNumber();
+                                       docBrgys.put("ID", "BRGY-"+brgyId);
+                                   } else {
+                                       docBrgys.put("ID", "BRGY-"+brgyId);
+                                   }
+                               }
+
                                db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task1 -> {
                                    if (task1.isSuccessful()) {
                                        logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
@@ -150,6 +162,17 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private String randomNumber() {
+        String code;
+
+        int random  = new Random().nextInt(999999 + 1);
+        code = String.valueOf(random);
+        while(code.length() != 6) {
+            code = "0" + code;
+        }
+        return code;
     }
 
     private boolean haveNetworkConnection() {

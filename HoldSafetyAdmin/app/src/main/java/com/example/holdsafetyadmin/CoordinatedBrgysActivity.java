@@ -65,7 +65,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                             String latitude = contactSnap.getString("Latitude");
                             String longitude = contactSnap.getString("Longitude");
                             String mobileNumber = contactSnap.getString("MobileNumber");
-                            String documentId = contactSnap.getId();
+                            String barangayId = contactSnap.getString("ID");
 
                             //DECLARE THE LAYOUT - CARDVIEW
                             View detailsView = getLayoutInflater().inflate(R.layout.coordinated_brgy_row, null, false);
@@ -91,7 +91,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                                 intent.putExtra("latitude", latitude);
                                 intent.putExtra("longitude", longitude);
                                 intent.putExtra("mobileNumber", mobileNumber);
-                                intent.putExtra("barangayID", documentId);
+                                intent.putExtra("barangayID", barangayId);
 
                                 startActivity(intent);
                             });

@@ -118,35 +118,35 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                                etMobileNumber.setError("This barangay mobile number already exists!");
                                valid = false;
                            }
-                       }
 
                            if(valid) { //BARANGAY IS NEW
-                                docBrgys.put("Barangay", barangay);
-                                docBrgys.put("City", city);
-                                docBrgys.put("MobileNumber", mobileNumber);
-                                docBrgys.put("Email", email);
-                                docBrgys.put("Latitude", latitude);
-                                docBrgys.put("Longitude", longitude);
+                               docBrgys.put("Barangay", barangay);
+                               docBrgys.put("City", city);
+                               docBrgys.put("MobileNumber", mobileNumber);
+                               docBrgys.put("Email", email);
+                               docBrgys.put("Latitude", latitude);
+                               docBrgys.put("Longitude", longitude);
 
-                                for (QueryDocumentSnapshot qs: task.getResult()){
-                                    if(qs.getString("ID").equals("BRGY-"+brgyId)){
-                                        brgyId = randomNumber();
-                                        docBrgys.put("ID", "BRGY-"+brgyId);
-                                    } else {
-                                        docBrgys.put("ID", "BRGY-"+brgyId);
-                                    }
-                                }
+                               for (QueryDocumentSnapshot qs: task.getResult()){
+                                   if(qs.getString("ID").equals("BRGY-"+brgyId)){
+                                       brgyId = randomNumber();
+                                       docBrgys.put("ID", "BRGY-"+brgyId);
+                                   } else {
+                                       docBrgys.put("ID", "BRGY-"+brgyId);
+                                   }
+                               }
 
-                                db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task1 -> {
-                                    if (task1.isSuccessful()) {
-                                        logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
-                                        Toast.makeText(getApplicationContext(), "Successfully Added Barangay", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    } else {
-                                        logHelper.saveToFirebase("saveBrgy", "ERROR", task1.getException().getLocalizedMessage());
-                                    }
-                                });
+                               db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task1 -> {
+                                   if (task1.isSuccessful()) {
+                                       logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
+                                       Toast.makeText(getApplicationContext(), "Successfully Added Barangay", Toast.LENGTH_SHORT).show();
+                                       finish();
+                                   } else {
+                                       logHelper.saveToFirebase("saveBrgy", "ERROR", task1.getException().getLocalizedMessage());
+                                   }
+                               });
                            }
+                       }
                    }
                 });
             } else {

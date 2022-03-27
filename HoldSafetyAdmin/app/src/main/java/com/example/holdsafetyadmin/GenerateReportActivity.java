@@ -116,6 +116,8 @@ public class GenerateReportActivity extends AppCompatActivity {
         btnBack.setOnClickListener(view -> goBack());
         btnSendReport.setOnClickListener(v -> {
             try {
+                srViewModel.cancelWork();
+                Log.i("Cancelled Work", "Method cancelled");
                 validateInput();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -145,14 +147,6 @@ public class GenerateReportActivity extends AppCompatActivity {
     //checks required permissions
     private void setPermissions() {
         if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-            //DENIED LOCATION PERMISSION
-            Log.d("location permission", "Please Grant Location Permission");
-            //SHOW PERMISSION
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_REQ_CODE);
-        } else if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             //DENIED LOCATION PERMISSION
             Log.d("location permission", "Please Grant Location Permission");
@@ -174,24 +168,7 @@ public class GenerateReportActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_REQ_CODE) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                //DENIED ONCE
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        LOCATION_REQ_CODE);
-            } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                setPermissions();
-            }
-            else {
-                Intent settingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                settingsIntent.setData(uri);
-                startActivity(settingsIntent);
-                Toast.makeText(this, "Please Grant Location Permission.", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == WRITE_EXTERNAL_REQ_CODE) {
+        if (requestCode == WRITE_EXTERNAL_REQ_CODE) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 //DENIED ONCE
                 ActivityCompat.requestPermissions(this,
@@ -285,10 +262,6 @@ public class GenerateReportActivity extends AppCompatActivity {
                 // If user change the default selection
                 // First item is disable and it is used for hint
                 if (position > 0) {
-                    // Notify the selected item text
-//                    Toast.makeText
-//                            (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-//                            .show();
                     selectedBarangay = spinnerBarangay.getSelectedItem().toString().trim();
                     int selectedItemPosition = spinnerBarangay.getSelectedItemPosition();
                     selectedBarangayID = barangayIDList.get(selectedItemPosition-1);
@@ -368,43 +341,25 @@ public class GenerateReportActivity extends AppCompatActivity {
             String start = etStartDate.getText().toString().trim();
             String end = etEndDate.getText().toString().trim();
 
-            Boolean valid = true;
-
             if(TextUtils.isEmpty(start)) {
                 etStartDate.getText().clear();
                 etStartDate.setHint("Enter a start date");
                 etStartDate.setError("Enter a start date");
-                valid = false;
-            }
-
-            if (TextUtils.isEmpty(end)) {
+            } else if (TextUtils.isEmpty(end)) {
                 etEndDate.getText().clear();
-                etEndDate.setHint("Enter a start date");
-                etEndDate.setError("Enter a start date");
-                valid = false;
-            }
-
-            if(spinnerBarangay.getSelectedItem().equals("Barangay *")) {
-                ((TextView)spinnerBarangay.getSelectedView()).setError("Please select barangay");
-                valid = false;
-            }
-
-            if(valid){
                 etEndDate.setHint("Enter an end date");
                 etEndDate.setError("Enter an end date");
             } else {
                 startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
                 endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
 
-                Boolean validDate = true;
-
                 if(startDate.after(endDate)){
                     etEndDate.getText().clear();
                     etEndDate.setHint("End date should be later than start date");
                     etEndDate.setError("End date should be later than start date");
-                    validDate = false;
-                }
-                if(validDate){
+                } else if(spinnerBarangay.getSelectedItem().equals("Barangay *")) {
+                    ((TextView)spinnerBarangay.getSelectedView()).setError("Please select barangay");
+                } else {
                     generateReport();
                 }
             }
@@ -483,7 +438,6 @@ public class GenerateReportActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot reportSnap : Objects.requireNonNull(task.getResult())) {
                                 Log.i("report snap", reportSnap.getId());
 
-
                                 Date tempDate = reportSnap.getTimestamp("Report Date").toDate();
                                 String reportDate = dateFormat.format(tempDate);
 
@@ -510,47 +464,46 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     table.addCell(new Paragraph(reportAdd, smallNormal));
                                     table.addCell(new Paragraph(tempDate.toString(), smallNormal));
 
-                                } else {
-                                    //Toast.makeText(this, "Report Date is not within the range of selected dates", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
-                            //get max value area
-                            String areaMaxEntry = "";
-                            int maxValueInMap=(Collections.max(areaOccurrences.values()));
-                            for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
-                                if (entry.getValue()==maxValueInMap) {
-                                    areaMaxEntry = entry.getKey();
-                                }
-                            }
-
-                            //get max value date
-                            String dateMaxEntry = "";
-                            int maxValueInDateMap = (Collections.max(dateOccurrences.values()));
-                            for (Map.Entry<String, Integer> entry : dateOccurrences.entrySet()) {
-                                if (entry.getValue() == maxValueInDateMap) {
-                                    dateMaxEntry = entry.getKey();
-                                }
-                            }
-
-
-                            calendar.setTime(endDate);
-                            calendar.add(Calendar.DATE, -1);
-                            endDate = calendar.getTime();
-                            document.add(new Paragraph("Barangay: " + selectedBarangay, smallNormal));
-                            document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
-                            document.add(new Paragraph("Number of Reports: " + count + "\n\n", smallNormal));
-                            document.add(new Paragraph("Area with possible most reported: " + areaMaxEntry + " with " + maxValueInMap + " reports\n\n", smallNormal));
-                            document.add(new Paragraph("Date with possible most reported: " + dateMaxEntry + " with " + maxValueInDateMap + " reports\n\n", smallNormal));
-
-                            document.add(table);
-                            document.close();
-                            Log.i("PDF", "PDF Generated");
 
                             if(count<1){
                                 Toast.makeText(this, "No reports within the range", Toast.LENGTH_SHORT).show();
                             } else {
                                 try {
+                                    //get max value area
+                                    String areaMaxEntry = "";
+                                    int maxValueInMap=(Collections.max(areaOccurrences.values()));
+                                    for (Map.Entry<String, Integer> entry : areaOccurrences.entrySet()) {
+                                        if (entry.getValue()==maxValueInMap) {
+                                            areaMaxEntry = entry.getKey();
+                                        }
+                                    }
+
+                                    //get max value date
+                                    String dateMaxEntry = "";
+                                    int maxValueInDateMap = (Collections.max(dateOccurrences.values()));
+                                    for (Map.Entry<String, Integer> entry : dateOccurrences.entrySet()) {
+                                        if (entry.getValue() == maxValueInDateMap) {
+                                            dateMaxEntry = entry.getKey();
+                                        }
+                                    }
+
+
+                                    calendar.setTime(endDate);
+                                    calendar.add(Calendar.DATE, -1);
+                                    endDate = calendar.getTime();
+                                    document.add(new Paragraph("Barangay: " + selectedBarangay, smallNormal));
+                                    document.add(new Paragraph("Report Range: " + startDate + " to " + endDate, smallNormal));
+                                    document.add(new Paragraph("Number of Reports: " + count + "\n\n", smallNormal));
+                                    document.add(new Paragraph("Area with possible most reported: " + areaMaxEntry + " with " + maxValueInMap + " reports\n\n", smallNormal));
+                                    document.add(new Paragraph("Date with possible most reported: " + dateMaxEntry + " with " + maxValueInDateMap + " reports\n\n", smallNormal));
+
+                                    document.add(table);
+                                    document.close();
+                                    Log.i("PDF", "PDF Generated");
+
                                     sendReport();
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -701,36 +654,13 @@ public class GenerateReportActivity extends AppCompatActivity {
         setPermissions();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(srViewModel!=null){
-            srViewModel.cancelWork();
-            Log.i("Cancelled Work", "Method cancelled");
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     private void goBack() {
-        srViewModel.cancelWork();
-        if(srViewModel!=null){
-            srViewModel.cancelWork();
-            Log.i("Cancelled Work", "Method cancelled");
-        }
         finish();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(srViewModel!=null){
-            srViewModel.cancelWork();
-            Log.i("Cancelled Work", "Method cancelled");
-        }
         finish();
     }
 }

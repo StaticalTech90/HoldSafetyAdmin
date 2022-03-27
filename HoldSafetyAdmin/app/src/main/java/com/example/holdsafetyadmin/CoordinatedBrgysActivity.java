@@ -83,11 +83,8 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
 
                             //SET DETAILS ONCLICK LISTENER
                             detailsView.setOnClickListener(view -> {
-                                Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
 
                                 //PREPARE DATA TO PASS
-                                //TODO: THIS CAN BE TURNED INTO A HASHMAP FOR SHORTER CODE
-                                //TODO: LMAO YOU DO IT
                                 intent.putExtra("barangay", barangay);
                                 intent.putExtra("city", city);
                                 intent.putExtra("email", email);
@@ -148,7 +145,8 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
     }
 
     public void addBrgy() {
-        startActivity(new Intent (getApplicationContext(), AddCoordinatedBrgyActivity.class));
+        startActivity(new Intent (this, AddCoordinatedBrgyActivity.class));
+        finish();
     }
 
     private void goBack() {

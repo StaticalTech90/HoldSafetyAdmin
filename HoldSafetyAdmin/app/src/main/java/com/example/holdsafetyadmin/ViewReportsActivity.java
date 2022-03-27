@@ -12,10 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +40,7 @@ public class ViewReportsActivity extends AppCompatActivity {
     SearchView searchReport;
 
     ImageView btnBack, btnSort, btnSendReport;
-    RadioGroup sortReport;
+    RadioGroup sortReport, radioPages;
     RadioButton latest, oldest, byBrgy, byUser;
     LinearLayout displayLatestReportView, displayOldestReportView, displaybyUserReportView, displayByBarangayReportView;
 
@@ -60,6 +63,7 @@ public class ViewReportsActivity extends AppCompatActivity {
         displayByBarangayReportView = findViewById(R.id.linearReportListByBarangay);
         searchReport = findViewById(R.id.reportSearch);
         sortReport = findViewById(R.id.reportSort);
+        radioPages = findViewById(R.id.radioPages);
         btnBack = findViewById(R.id.backArrow);
         btnSort = findViewById(R.id.btnSort);
         btnSendReport = findViewById(R.id.btnSendReport);
@@ -94,20 +98,54 @@ public class ViewReportsActivity extends AppCompatActivity {
     }
 
     public void getReportData() {
+        final int SIZE_PER_PAGE = 10;
         db.collection("reports").orderBy("Report Date").get()
                 .addOnCompleteListener(taskDetails -> {
                     if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
                         try {
+                            int numOfPages = taskDetails.getResult().size() / SIZE_PER_PAGE;
+                            int remainder = taskDetails.getResult().size() % SIZE_PER_PAGE;
+                            int totalPages = remainder > 0 ? numOfPages + 1 : numOfPages;
+                            Log.d("PAGINATION", "Total Pages: " + totalPages);
+
+                            for(int currentPage = 0; currentPage < totalPages; currentPage++){
+                                //ADD RADIO BUTTON
+                                RadioButton radioBtnReports = (RadioButton) getLayoutInflater().inflate(R.layout.reports_radio_button, null, false);
+                                radioBtnReports.setText(String.valueOf(currentPage+1));
+
+                                //SET CLICK
+                                int finalCurrentPage = currentPage;
+                                radioBtnReports.setOnClickListener(view -> {
+                                    displayLatestReportView.removeAllViews();
+                                    int start = SIZE_PER_PAGE * finalCurrentPage;
+                                    int end = start + SIZE_PER_PAGE;
+
+                                    Log.d("PAGINATION", "Page: " + finalCurrentPage);
+
+                                    try {
+                                        setDataDisplay(displayLatestReportView, taskDetails, start, end);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                                radioPages.addView(radioBtnReports);
+
+                                //FIRST PAGE LISTENER
+                                if(currentPage==0){
+                                    radioBtnReports.performClick();
+                                }
+                            }
                             logHelper.saveToFirebase("getReportData",
                                     "SUCCESS",
                                     "reports sorted by report date");
-                            setDataDisplay(displayLatestReportView, taskDetails);
-                        } catch (IOException e) {
+                            //setDataDisplay(displayLatestReportView, taskDetails);
+                        } catch (Exception e) {
                             logHelper.saveToFirebase("getReportData",
                                     "ERROR",
                                     e.getLocalizedMessage());
                             e.printStackTrace();
                         }
+                        /*
                         try {
                             setDataDisplay(displayOldestReportView, taskDetails);
                         } catch (IOException e) {
@@ -116,10 +154,19 @@ public class ViewReportsActivity extends AppCompatActivity {
                                     e.getLocalizedMessage());
                             e.printStackTrace();
                         }
+                         */
                     }
-                });
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(ViewReportsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+        });
 
-        db.collection("reports").orderBy("User ID").get()
+        /*
+
+        db.collection("reports").orderBy("reportId").get()
                 .addOnCompleteListener(taskDetails -> {
                     if(taskDetails.isSuccessful()) { //ALL REPORTS FETCHED
                         try {
@@ -152,52 +199,65 @@ public class ViewReportsActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+         */
     }
 
-    private void setDataDisplay(LinearLayout linearLayout, Task<QuerySnapshot> taskDetails) throws IOException {
+    private void setDataDisplay(LinearLayout linearLayout, Task<QuerySnapshot> taskDetails, int start, int end) throws IOException {
+        int index = 0;
+
+        //CHeCK IF INDEX IS STILL IN RANGE
         for(QueryDocumentSnapshot detailsSnap : taskDetails.getResult()) {
             //View reportListView = getLayoutInflater().inflate(R.layout.reports_row, null, false);
 
-            String reportID = detailsSnap.getId();
-            String userID = detailsSnap.getString("User ID");
-            String displayName = detailsSnap.getString("LastName") + ", " + detailsSnap.getString("FirstName");
-            String barangay = detailsSnap.getString("Barangay");
+            if(index >= start && index < end){
+                String reportID = detailsSnap.getString("reportId");
 
-            reportLat = detailsSnap.getString("Lat");
-            reportLong =  detailsSnap.getString("Lon");
-            //String location = detailsSnap.getString("Lat") + ", " + detailsSnap.getString("Lon");
-            Timestamp date = detailsSnap.getTimestamp("Report Date");
+                //String reportID = detailsSnap.getId();
+                String userID = detailsSnap.getString("User ID");
+                String displayName = detailsSnap.getString("LastName") + ", " + detailsSnap.getString("FirstName");
+                String barangay = detailsSnap.getString("Barangay");
 
-            View reportListView = getLayoutInflater().inflate(R.layout.reports_row, null, false);
-            //ASSIGN TO UI
-            TextView txtReportID = reportListView.findViewById(R.id.txtReportID);
-            TextView txtReportUsername = reportListView.findViewById(R.id.txtReportUsername);
-            TextView txtReportLocation = reportListView.findViewById(R.id.txtReportLocation);
-            TextView txtReportDate = reportListView.findViewById(R.id.txtReportDate);
+                reportLat = detailsSnap.getString("Lat");
+                reportLong =  detailsSnap.getString("Lon");
+                //String location = detailsSnap.getString("Lat") + ", " + detailsSnap.getString("Lon");
+                Timestamp date = detailsSnap.getTimestamp("Report Date");
 
-            txtReportID.setText(detailsSnap.getId());
-            txtReportUsername.setText(displayName);
-            txtReportLocation.setText(getGeoLoc());
-            txtReportDate.setText(date.toDate().toString());
+                View reportListView = getLayoutInflater().inflate(R.layout.reports_row, null, false);
+                //ASSIGN TO UI
+                TextView txtReportID = reportListView.findViewById(R.id.txtReportID);
+                TextView txtReportUsername = reportListView.findViewById(R.id.txtReportUsername);
+                TextView txtReportLocation = reportListView.findViewById(R.id.txtReportLocation);
+                TextView txtReportDate = reportListView.findViewById(R.id.txtReportDate);
 
-            //SET ONCLICK PER ROW
-            reportListView.setOnClickListener(v -> {
-                Intent selectedReport = new Intent(ViewReportsActivity.this, ReportDetailsActivity.class);
-                selectedReport.putExtra("userID", userID);
-                selectedReport.putExtra("reportID", reportID);
-                startActivity(selectedReport);
-            });
+                txtReportID.setText(detailsSnap.getString("reportId"));
+                txtReportUsername.setText(displayName);
+                txtReportLocation.setText(getGeoLoc());
+                txtReportDate.setText(date.toDate().toString());
 
-            if(displayLatestReportView.equals(linearLayout)){
-                //ADD TO VIEW
-                linearLayout.addView(reportListView, 0);
-            } else if (displayOldestReportView.equals(linearLayout)){
-                linearLayout.addView(reportListView);
-            } else if (displaybyUserReportView.equals(linearLayout)){
-                linearLayout.addView(reportListView);
-            } else if (displayByBarangayReportView.equals(linearLayout)){
-                linearLayout.addView(reportListView);
+                //SET ONCLICK PER ROW
+                reportListView.setOnClickListener(v -> {
+                    String reportIDRaw = detailsSnap.getId();
+                    Intent selectedReport = new Intent(ViewReportsActivity.this, ReportDetailsActivity.class);
+                    selectedReport.putExtra("userID", userID);
+                    selectedReport.putExtra("reportID", reportIDRaw);
+                    startActivity(selectedReport);
+                });
+
+                if(displayLatestReportView.equals(linearLayout)){
+                    //ADD TO VIEW
+                    linearLayout.addView(reportListView, 0);
+                } else if (displayOldestReportView.equals(linearLayout)){
+                    linearLayout.addView(reportListView);
+                } else if (displaybyUserReportView.equals(linearLayout)){
+                    linearLayout.addView(reportListView);
+                } else if (displayByBarangayReportView.equals(linearLayout)){
+                    linearLayout.addView(reportListView);
+                }
+
+                Log.d("PAGINATION", "Report ID: " + reportID);
             }
+            index++;
         }
     }
 

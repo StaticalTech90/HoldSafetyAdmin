@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -76,6 +77,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         setData();
 
         db = FirebaseFirestore.getInstance();
@@ -188,9 +190,8 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         dialogRemoveAccount.setPositiveButton("Delete", (dialog, which) -> {
             docRef.delete();
             //Reload Activity After deleting contact
-            Intent reload = new Intent(this, CoordinatedBrgyDetailsActivity.class);
+            startActivity(new Intent(this, CoordinatedBrgysActivity.class));
             finish();
-            startActivity(reload);
         });
 
         dialogRemoveAccount.setNegativeButton("Dismiss", (dialogInterface, i) -> dialogInterface.dismiss());
@@ -204,11 +205,8 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
         String changedLat = textViewBrgyLatitude.getText().toString().trim();
         String changedLong = textViewBrgyLongitude.getText().toString().trim();
 
-        String emailRegex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
         String mobileNumberRegex = "^(09|\\+639)\\d{9}$";
-        Pattern emailPattern = Pattern.compile(emailRegex);
         Pattern mobileNumberPattern = Pattern.compile(mobileNumberRegex);
-        Matcher emailMatcher = emailPattern.matcher(changedEmail);
         Matcher mobileNumberMatcher = mobileNumberPattern.matcher(changedMobileNumber);
 
         if(isNumberChanged || isLatChanged || isLongChanged || isEmailChanged){
@@ -218,7 +216,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
                 textViewBrgyMobileNum.setError("Please enter a valid mobile number");
             } else if(TextUtils.isEmpty(changedEmail)){
                 textViewBrgyEmail.setError("Please enter email");
-            } else if (!emailMatcher.matches()) {
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(changedEmail).matches()) {
                 textViewBrgyEmail.setError("Please enter a valid email");
             } else if (TextUtils.isEmpty(changedLat)){
                 textViewBrgyLatitude.setError("Please enter a latitude");
@@ -234,9 +232,10 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
 
                         logHelper.saveToFirebase("updateBarangay","SUCCESS", "Barangay updated successfully");
                         Toast.makeText(this, "Successfully updated", Toast.LENGTH_SHORT).show();
-                        goBack();
-                    }
-                    else {
+
+                        startActivity(new Intent(this, CoordinatedBrgysActivity.class));
+                        finish();
+                    } else {
                         logHelper.saveToFirebase("updateBarangay","ERROR", "Barangay failed to update");
                         Toast.makeText(CoordinatedBrgyDetailsActivity.this, "Failed to update", Toast.LENGTH_SHORT).show();
                     }
@@ -260,8 +259,6 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
             if(getIntent().hasExtra("email")) {
                 brgyEmail = getIntent().getStringExtra("email");
             }
-        } else {
-            Toast.makeText(getApplicationContext(), "No Intent Data", Toast.LENGTH_SHORT).show();
         }
     }
 

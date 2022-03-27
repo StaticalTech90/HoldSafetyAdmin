@@ -26,7 +26,6 @@ public class LandingActivity extends AppCompatActivity {
 
     private static final int WRITE_EXTERNAL_REQ_CODE = 1000;
     private static final int READ_EXTERNAL_REQ_CODE = 1001;
-    private static final int LOCATION_REQ_CODE = 1002;
 
 
     @Override
@@ -52,17 +51,9 @@ public class LandingActivity extends AppCompatActivity {
     //checks required permissions
     private void setPermissions(){
         if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-            //DENIED LOCATION PERMISSION
-            Log.d("location permission", "Please Grant Location Permission");
-            //SHOW PERMISSION
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_REQ_CODE);
-        } else if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             //DENIED LOCATION PERMISSION
-            Log.d("location permission", "Please Grant Location Permission");
+            Log.d("Storage permission", "Please Grant Storage Permission");
             //SHOW PERMISSION
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -70,7 +61,7 @@ public class LandingActivity extends AppCompatActivity {
         } else if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             //DENIED LOCATION PERMISSION
-            Log.d("location permission", "Please Grant Location Permission");
+            Log.d("Storage permission", "Please Grant Storage Permission");
             //SHOW PERMISSION
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -82,24 +73,7 @@ public class LandingActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == LOCATION_REQ_CODE) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                //DENIED ONCE
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        LOCATION_REQ_CODE);
-            } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                setPermissions();
-            }
-            else {
-                Intent settingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                settingsIntent.setData(uri);
-                startActivity(settingsIntent);
-                Toast.makeText(this, "Please Grant Location Permission.", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == WRITE_EXTERNAL_REQ_CODE) {
+        if (requestCode == WRITE_EXTERNAL_REQ_CODE) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 //DENIED ONCE
                 ActivityCompat.requestPermissions(this,

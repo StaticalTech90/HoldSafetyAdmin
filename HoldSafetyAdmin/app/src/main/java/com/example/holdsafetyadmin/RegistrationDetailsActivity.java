@@ -33,7 +33,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
     FirebaseUser user;
     LogHelper logHelper;
 
-    String id, lastName, firstName, middleName, birthDate, sex, idPic; // USER DATA FOR DISPLAY
+    String userId, id, lastName, firstName, middleName, birthDate, sex, idPic; // USER DATA FOR DISPLAY
     String mobileNo, email; // USER DATA FOR PROFILE UPDATE
 
     FirebaseFirestore db;
@@ -92,6 +92,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
                             })
                             .addOnFailureListener(e -> Log.d("imgURI", "No download link fetched"));
 
+                    userId = documentSnapshot.getString("ID");
                     lastName = documentSnapshot.getString("LastName");
                     firstName = documentSnapshot.getString("FirstName");
                     middleName = documentSnapshot.getString("MiddleName");
@@ -116,7 +117,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
     //SET DATA IN UI
     private  void setData(){
-        userID.setText("User ID: " + id);
+        userID.setText("User ID: " + userId);
         txtLastName.setText(lastName);
         txtFirstName.setText(firstName);
         txtMiddleName.setText(middleName);
@@ -151,7 +152,6 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
 
     public void rejectUser(){
         logHelper.saveToFirebase("rejectUser", "ACTIVITY REDIRECT", "Go to RejectUserActivity");
-        Toast.makeText(getApplicationContext(), "Reject User", Toast.LENGTH_SHORT).show();
         Intent rejectReason = new Intent (getApplicationContext(), RejectUserActivity.class);
         rejectReason.putExtra("userID", id);
         startActivity(rejectReason);

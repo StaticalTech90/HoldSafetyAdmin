@@ -236,9 +236,26 @@
                 android:orientation="vertical"
                 android:layout_gravity="center_horizontal"
                 android:visibility="gone"/>
-
         </LinearLayout>
     </ScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
+        app:layout_constraintBottom_toBottomOf="@id/mainGuidelineH2">
+
+        <RadioGroup
+            android:id="@+id/radioPages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"/>
+
+    </HorizontalScrollView>
+
+
 
     <!--
     <RelativeLayout
@@ -423,7 +440,5 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.95" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

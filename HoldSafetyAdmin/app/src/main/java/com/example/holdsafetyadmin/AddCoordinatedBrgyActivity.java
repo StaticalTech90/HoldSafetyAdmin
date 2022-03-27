@@ -1,10 +1,12 @@
 package com.example.holdsafetyadmin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,11 +68,8 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
         String latitude = etLatitude.getText().toString().trim();
         String longitude = etLongitude.getText().toString().trim();
 
-        String emailRegex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
         String mobileNumberRegex = "^(09|\\+639)\\d{9}$";
-        Pattern emailPattern = Pattern.compile(emailRegex);
         Pattern mobileNumberPattern = Pattern.compile(mobileNumberRegex);
-        Matcher emailMatcher = emailPattern.matcher(email);
         Matcher mobileNumberMatcher = mobileNumberPattern.matcher(mobileNumber);
 
         docBrgys.put("Barangay", barangay);
@@ -89,27 +89,59 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
             etMobileNumber.setError("Please enter a valid mobile number");
         } else if(TextUtils.isEmpty(email)) {
             etEmail.setError("Please enter email");
-        } else if (!emailMatcher.matches()) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etEmail.setError("Please enter a valid email");
         } else if(TextUtils.isEmpty(latitude)) {
             etLatitude.setError("Please enter latitude");
         } else if(TextUtils.isEmpty(longitude)) {
             etLongitude.setError("Please enter longitude");
         } else {
-            if(haveNetworkConnection()){
-                db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
-                        Toast.makeText(getApplicationContext(),
-                                "Successfully Added Barangay",
-                                Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        logHelper.saveToFirebase("saveBrgy", "ERROR", task.getException().getLocalizedMessage());
-                        Toast.makeText(getApplicationContext(),
-                                Objects.requireNonNull(task.getException()).toString(),
-                                Toast.LENGTH_SHORT).show();
-                    }
+            if(haveNetworkConnection()) {
+                //CHECK IF FIELDS ARE NON-DUPLICATES IN DB
+                db.collection("barangay").get().addOnCompleteListener(task -> {
+                   if(task.isSuccessful()) {
+                       boolean valid = true;
+                       for(QueryDocumentSnapshot brgySnap : task.getResult()) {
+                           String brgyName = brgySnap.getString("Barangay");
+                           String brgyEmail = brgySnap.getString("Email");
+                           String brgyLat = brgySnap.getString("Latitude");
+                           String brgyLon = brgySnap.getString("Longitude");
+                           String brgyNum = brgySnap.getString("MobileNumber");
+
+                           if(barangay.equals(brgyName)) {
+                               etBarangay.setError("This barangay already exists!");
+                               valid = false;
+                           }
+                           if(email.equals(brgyEmail)) {
+                               etEmail.setError("This barangay email already exists!");
+                               valid = false;
+                           }
+                           if(latitude.equals(brgyLat) && longitude.equals(brgyLon)) {
+                               etLatitude.setError("This barangay already exists!");
+                               etLongitude.setError("This barangay already exists!");
+                               valid = false;
+                           }
+                           if(mobileNumber.equals(brgyNum)) {
+                               etMobileNumber.setError("This barangay mobile number already exists!");
+                               valid = false;
+                           }
+
+                           if(valid) { //BARANGAY IS NEW
+                               db.collection("barangay").add(docBrgys).addOnCompleteListener(this, task1 -> {
+                                   if (task1.isSuccessful()) {
+                                       logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
+                                       Toast.makeText(getApplicationContext(),
+                                               "Successfully Added Barangay",
+                                               Toast.LENGTH_SHORT).show();
+                                       startActivity(new Intent(this, CoordinatedBrgysActivity.class));
+                                       finish();
+                                   } else {
+                                       logHelper.saveToFirebase("saveBrgy", "ERROR", task1.getException().getLocalizedMessage());
+                                   }
+                               });
+                           }
+                       }
+                   }
                 });
             } else {
                 logHelper.saveToFirebase("saveBrgy", "ERROR", "Unstable network connection");
@@ -117,7 +149,6 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                         "Your internet is not connected or unstable. Adding Barangay Failed",
                         Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 

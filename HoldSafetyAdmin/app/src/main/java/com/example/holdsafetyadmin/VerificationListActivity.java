@@ -61,7 +61,7 @@ public class VerificationListActivity extends AppCompatActivity {
                                     TextView txtUserID = unverifiedView.findViewById(R.id.txtUserID);
                                     TextView txtUserName = unverifiedView.findViewById(R.id.txtUserName);
 
-                                    txtUserID.setText(userSnap.getId());
+                                    txtUserID.setText(userSnap.getString("ID"));
                                     txtUserName.setText(displayName);
 
                                     //SET ONCLICK PER ROW
@@ -79,11 +79,6 @@ public class VerificationListActivity extends AppCompatActivity {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
 
-                                        //logHelper.saveToFirebase("listUsers", "ERROR", e.getLocalizedMessage());
-
-//                                        Toast.makeText(VerificationListActivity.this,
-//                                                "onFailure: " + displayName + " " + e.getMessage(),
-//                                                Toast.LENGTH_LONG).show();
                                     }
                                 });
                     }

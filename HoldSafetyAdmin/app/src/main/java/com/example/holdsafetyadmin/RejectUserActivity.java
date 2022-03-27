@@ -109,7 +109,8 @@ public class RejectUserActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> logHelper.saveToFirebase("updateUserDetails",
                         "ERROR", e.getLocalizedMessage())
                 );
-        startActivity(landingIntent);
+        
+        startActivity(new Intent(this, VerificationListActivity.class));
         finish();
     }
 

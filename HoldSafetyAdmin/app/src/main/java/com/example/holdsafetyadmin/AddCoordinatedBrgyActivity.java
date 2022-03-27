@@ -140,6 +140,7 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
                                if (task1.isSuccessful()) {
                                    logHelper.saveToFirebase("saveBrgy", "SUCCESS", "Barangay added successfully");
                                    Toast.makeText(getApplicationContext(), "Successfully Added Barangay", Toast.LENGTH_SHORT).show();
+                                   startActivity(getIntent());
                                    finish();
                                } else {
                                    logHelper.saveToFirebase("saveBrgy", "ERROR", task1.getException().getLocalizedMessage());

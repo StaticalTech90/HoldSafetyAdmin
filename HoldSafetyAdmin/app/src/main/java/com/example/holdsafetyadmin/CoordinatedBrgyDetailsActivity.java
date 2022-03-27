@@ -251,7 +251,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
             brgyMobileNum = getIntent().getStringExtra("mobileNumber");
             brgyLat = getIntent().getStringExtra("latitude");
             brgyLong = getIntent().getStringExtra("longitude");
-            brgyID = getIntent().getStringExtra("barangayID");
+            brgyID = getIntent().getStringExtra("brgyID");
 
             if(getIntent().hasExtra("email")) {
                 brgyEmail = getIntent().getStringExtra("email");
@@ -296,6 +296,7 @@ public class CoordinatedBrgyDetailsActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent(CoordinatedBrgyDetailsActivity.this, CoordinatedBrgysActivity.class));
         finish();
     }
 

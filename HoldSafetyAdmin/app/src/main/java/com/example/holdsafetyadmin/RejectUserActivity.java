@@ -1,22 +1,17 @@
 package com.example.holdsafetyadmin;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -99,6 +94,7 @@ public class RejectUserActivity extends AppCompatActivity {
 
     private void updateUserDetails() {
         Map<String, Object> docUsers = new HashMap<>();
+        Intent landingIntent = new Intent(RejectUserActivity.this, LandingActivity.class);
         docUsers.put("profileComplete", false);
         docUsers.put("isVerified", false);
         docUsers.put("imgUri", FieldValue.delete());
@@ -113,8 +109,8 @@ public class RejectUserActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> logHelper.saveToFirebase("updateUserDetails",
                         "ERROR", e.getLocalizedMessage())
                 );
-
-        goBack();
+        startActivity(landingIntent);
+        finish();
     }
 
     private void goBack() {

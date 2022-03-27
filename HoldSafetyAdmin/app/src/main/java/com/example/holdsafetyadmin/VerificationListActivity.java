@@ -69,6 +69,7 @@ public class VerificationListActivity extends AppCompatActivity {
                                         Intent selectedUser = new Intent(VerificationListActivity.this, RegistrationDetailsActivity.class);
                                         selectedUser.putExtra("userID", userSnap.getId());
                                         startActivity(selectedUser);
+                                        finish();
                                     });
 
                                     logHelper.saveToFirebase("listUsers", "SUCCESS", "user added to view");
@@ -88,6 +89,7 @@ public class VerificationListActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent(VerificationListActivity.this, LandingActivity.class));
         finish();
     }
 

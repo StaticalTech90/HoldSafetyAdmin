@@ -91,6 +91,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                                 intent.putExtra("longitude", longitude);
                                 intent.putExtra("mobileNumber", mobileNumber);
                                 intent.putExtra("barangayID", barangayId);
+                                intent.putExtra("brgyID", contactSnap.getId());
 
                                 startActivity(intent);
                             });
@@ -148,6 +149,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent (this, LandingActivity.class));
         finish();
     }
 

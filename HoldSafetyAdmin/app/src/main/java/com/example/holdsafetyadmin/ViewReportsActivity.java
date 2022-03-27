@@ -202,7 +202,6 @@ public class ViewReportsActivity extends AppCompatActivity {
     }
 
     public void searchReports() {
-        //TODO: Search function for reports
         searchReport.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -251,7 +250,6 @@ public class ViewReportsActivity extends AppCompatActivity {
         }
 
         isRadioVisible = !isRadioVisible;
-        //TODO: Sort function for reports
         sortReport.setOnCheckedChangeListener((group, checkedId) -> {
             LinearLayout  linearShowing = getShowingLinear();
             switch (checkedId) {
@@ -344,6 +342,7 @@ public class ViewReportsActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent (this, LandingActivity.class));
         finish();
     }
 }

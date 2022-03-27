@@ -23,6 +23,7 @@ public class LandingActivity extends AppCompatActivity {
     FirebaseUser user;
     Button btnLogout, btnViewReport, btnManageCoordinatedBrgys, btnVerifyUser;
     LogHelper logHelper;
+    Intent intent;
 
     private static final int WRITE_EXTERNAL_REQ_CODE = 1000;
     private static final int READ_EXTERNAL_REQ_CODE = 1001;
@@ -123,16 +124,19 @@ public class LandingActivity extends AppCompatActivity {
     public void viewReport() {
         Intent viewReport = new Intent (getApplicationContext(), ViewReportsActivity.class);
         startActivity(viewReport);
+        finish();
     }
 
     public void manageCoordinatedBrgys() {
         Intent manageBrgys = new Intent (getApplicationContext(), CoordinatedBrgysActivity.class);
         startActivity(manageBrgys);
+        finish();
     }
 
     public void verifyUser() {
         Intent verifyUser = new Intent (getApplicationContext(), VerificationListActivity.class);
         startActivity(verifyUser);
+        finish();
     }
 
     public void adminLogout() {

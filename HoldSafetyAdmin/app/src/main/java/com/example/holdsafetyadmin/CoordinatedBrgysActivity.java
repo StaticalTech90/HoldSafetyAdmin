@@ -23,7 +23,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
     ImageView btnBack, btnAdd;
     SearchView searchBrgy;
 
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
     FirebaseUser user;
     FirebaseFirestore db;
 
@@ -65,7 +65,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                             String latitude = contactSnap.getString("Latitude");
                             String longitude = contactSnap.getString("Longitude");
                             String mobileNumber = contactSnap.getString("MobileNumber");
-                            String documentId = contactSnap.getId();
+                            String barangayId = contactSnap.getString("ID");
 
                             //DECLARE THE LAYOUT - CARDVIEW
                             View detailsView = getLayoutInflater().inflate(R.layout.coordinated_brgy_row, null, false);
@@ -74,7 +74,6 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                             TextView txtBarangayName = detailsView.findViewById(R.id.txtBrgyName);
                             TextView txtCityName = detailsView.findViewById(R.id.txtBrgyCity);
                             TextView txtMobileNumber = detailsView.findViewById(R.id.txtBrgyMobileNum);
-                            TextView details = detailsView.findViewById(R.id.btnDetails);
 
                             //SET TEXTS
                             txtBarangayName.setText(barangay);
@@ -91,7 +90,8 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
                                 intent.putExtra("latitude", latitude);
                                 intent.putExtra("longitude", longitude);
                                 intent.putExtra("mobileNumber", mobileNumber);
-                                intent.putExtra("barangayID", documentId);
+                                intent.putExtra("barangayID", barangayId);
+                                intent.putExtra("brgyID", contactSnap.getId());
 
                                 startActivity(intent);
                             });
@@ -130,7 +130,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
 
                     newText = newText.toLowerCase();
 
-                    //CHECK IF INPUT IS PRESENT IN EVERY TET VIEWS
+                    //CHECK IF INPUT IS PRESENT IN EVERY TEXT VIEWS
                     if(name.contains(newText)|| city.contains(newText) || number.contains(newText)) {
                         //CONTAINS
                         barangayView.setVisibility(View.VISIBLE);
@@ -150,6 +150,7 @@ public class CoordinatedBrgysActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent (this, LandingActivity.class));
         finish();
     }
 

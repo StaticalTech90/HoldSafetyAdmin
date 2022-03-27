@@ -151,4 +151,8 @@ public class LoginActivity extends AppCompatActivity {
         Intent forgotPass = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
         startActivity(forgotPass);
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

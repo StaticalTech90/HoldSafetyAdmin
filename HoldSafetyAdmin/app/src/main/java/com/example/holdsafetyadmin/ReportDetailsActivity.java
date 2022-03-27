@@ -3,6 +3,7 @@ package com.example.holdsafetyadmin;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -118,12 +119,11 @@ public class ReportDetailsActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent(this, ViewReportsActivity.class));
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 }

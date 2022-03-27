@@ -115,12 +115,11 @@ public class RejectUserActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent(this, VerificationListActivity.class));
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 }

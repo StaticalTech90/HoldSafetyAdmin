@@ -159,6 +159,11 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent(this, VerificationListActivity.class));
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

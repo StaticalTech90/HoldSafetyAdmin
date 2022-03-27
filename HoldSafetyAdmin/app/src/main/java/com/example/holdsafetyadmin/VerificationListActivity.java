@@ -95,7 +95,5 @@ public class VerificationListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 }

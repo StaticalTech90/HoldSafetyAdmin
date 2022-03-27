@@ -404,4 +404,8 @@ public class ViewReportsActivity extends AppCompatActivity {
         startActivity(new Intent (this, LandingActivity.class));
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

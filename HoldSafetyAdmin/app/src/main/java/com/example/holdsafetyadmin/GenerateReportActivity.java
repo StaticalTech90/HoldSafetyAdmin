@@ -655,12 +655,11 @@ public class GenerateReportActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent(this, ViewReportsActivity.class));
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 }

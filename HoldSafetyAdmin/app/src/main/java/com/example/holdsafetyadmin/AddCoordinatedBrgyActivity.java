@@ -195,12 +195,11 @@ public class AddCoordinatedBrgyActivity extends AppCompatActivity {
     }
 
     private void goBack() {
+        startActivity(new Intent(this, CoordinatedBrgysActivity.class));
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 }

@@ -68,8 +68,9 @@ public class VerificationListActivity extends AppCompatActivity {
                                     unverifiedView.setOnClickListener(v -> {
                                         Intent selectedUser = new Intent(VerificationListActivity.this, RegistrationDetailsActivity.class);
                                         selectedUser.putExtra("userID", userSnap.getId());
-                                        startActivity(selectedUser);
                                         finish();
+                                        startActivity(selectedUser);
+
                                     });
 
                                     logHelper.saveToFirebase("listUsers", "SUCCESS", "user added to view");

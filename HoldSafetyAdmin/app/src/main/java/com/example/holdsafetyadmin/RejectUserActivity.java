@@ -97,7 +97,7 @@ public class RejectUserActivity extends AppCompatActivity {
         Intent landingIntent = new Intent(RejectUserActivity.this, LandingActivity.class);
         docUsers.put("profileComplete", false);
         docUsers.put("isVerified", false);
-        docUsers.put("imgUri", FieldValue.delete());
+        docUsers.put("imgUri", "");
 
         db.collection("users").document(id).update(docUsers)
                 .addOnSuccessListener(unused -> {
@@ -109,8 +109,12 @@ public class RejectUserActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> logHelper.saveToFirebase("updateUserDetails",
                         "ERROR", e.getLocalizedMessage())
                 );
+
         
-        startActivity(new Intent(this, VerificationListActivity.class));
+        //startActivity(new Intent(this, VerificationListActivity.class));
+        Intent verificationIntent = new Intent(this, VerificationListActivity.class);
+        verificationIntent.putExtra("refresh", "yes");
+        startActivity(verificationIntent);
         finish();
     }
 

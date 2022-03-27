@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -128,6 +129,10 @@ public class ViewReportsActivity extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                 });
+
+                                RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                params.setMargins(10, 15, 10, 15);
+                                radioBtnReports.setLayoutParams(params);
                                 radioPages.addView(radioBtnReports);
 
                                 //FIRST PAGE LISTENER

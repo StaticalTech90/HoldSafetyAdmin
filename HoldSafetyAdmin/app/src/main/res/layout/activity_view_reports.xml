@@ -197,7 +197,7 @@
         app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
         app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
         app:layout_constraintTop_toBottomOf="@+id/reportSort"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/paginationView">
 
         <LinearLayout
             android:id="@+id/linearViewCoordinatedBrgys"
@@ -240,22 +240,23 @@
     </ScrollView>
 
     <HorizontalScrollView
+        android:id="@+id/paginationView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@id/mainGuidelineV2"
         app:layout_constraintStart_toStartOf="@id/mainGuidelineV1"
-        app:layout_constraintBottom_toBottomOf="@id/mainGuidelineH2">
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
 
         <RadioGroup
             android:id="@+id/radioPages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:gravity="center"
             android:orientation="horizontal"/>
 
     </HorizontalScrollView>
-
-
 
     <!--
     <RelativeLayout

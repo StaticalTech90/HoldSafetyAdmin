@@ -147,7 +147,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "User NOT validated.", Toast.LENGTH_SHORT).show();
                     }
                 });
-        startActivity(getIntent());
+        startActivity(new Intent(this, VerificationListActivity.class));
         finish();
     }
 

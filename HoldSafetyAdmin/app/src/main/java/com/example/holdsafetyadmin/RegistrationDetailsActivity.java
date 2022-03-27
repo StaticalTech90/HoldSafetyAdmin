@@ -45,6 +45,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration_details);
 
+
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
@@ -156,6 +157,7 @@ public class RegistrationDetailsActivity extends AppCompatActivity {
         Intent rejectReason = new Intent (getApplicationContext(), RejectUserActivity.class);
         rejectReason.putExtra("userID", id);
         startActivity(rejectReason);
+        finish();
     }
 
     private void goBack() {

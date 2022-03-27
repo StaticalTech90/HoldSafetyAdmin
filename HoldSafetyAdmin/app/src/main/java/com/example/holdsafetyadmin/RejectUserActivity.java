@@ -113,7 +113,7 @@ public class RejectUserActivity extends AppCompatActivity {
         
         //startActivity(new Intent(this, VerificationListActivity.class));
         Intent verificationIntent = new Intent(this, VerificationListActivity.class);
-        verificationIntent.putExtra("refresh", "yes");
+        //verificationIntent.putExtra("refresh", "yes");
         startActivity(verificationIntent);
         finish();
     }

@@ -122,7 +122,6 @@ public class ViewReportsActivity extends AppCompatActivity {
                                     int end = start + SIZE_PER_PAGE;
 
                                     Log.d("PAGINATION", "Page: " + finalCurrentPage);
-
                                     try {
                                         setDataDisplay(displayLatestReportView, taskDetails, start, end);
                                     } catch (IOException e) {
